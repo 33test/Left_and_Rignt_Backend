@@ -16,12 +16,16 @@ git clone https://github.com/your-username/Left_and_Right_Backend.git
 cd Left_and_Right_Backend
 ```
 
-2. 安裝相依套件
+2. 下載 database
+- 下載 database 資料夾中的 .sql 檔案，並 import 到你本地的 MySQL 中
+
+  
+3. 安裝相依套件
 ```bash
 npm install
 ```
 
-3. 環境設定
+4. 環境設定
 - 複製 `.env.example` 檔案並命名為 `.env`
 - 設定必要的環境變數：
 ```env
@@ -29,7 +33,7 @@ DATABASE_URL="mysql://user:password@localhost:3306/database_name"
 PORT=3300
 ```
 
-4. 初始化資料庫
+5. 初始化資料庫
 ```bash
 # 從現有數據庫生成 Prisma schema
 npx prisma db pull
