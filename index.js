@@ -11,7 +11,7 @@ app.use(cors())
 
 app.use(express.json())
 app.use('/products', productsRouter)
-app.use('/registerLoginAuth',registerLoginRouter)
+app.use('/users',registerLoginRouter)
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
