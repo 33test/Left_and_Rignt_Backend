@@ -14,7 +14,7 @@ const SECRET_KEY = process.env.SECRET_KEY
 //get資料
 router.get("/", async (req, res) => {
     try {
-        const rows = await prisma.profile.findMany()
+        const rows = await prisma.users.findMany()
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -58,7 +58,7 @@ router.post('/register',validateRegister,async(req,res) =>{
       const { username,email,gender,password_hash } = req.body
       const hashPassword = await bcrypt.hash(password_hash,10)//密碼加密處理
 
-      const lastProfile = await prisma.profile.findFirst({
+      const lastProfile = await prisma.users.findFirst({
         orderBy: {
           userId: 'desc' // 根據 userId 進行降序排序，取得最大 userId
         }
@@ -66,7 +66,7 @@ router.post('/register',validateRegister,async(req,res) =>{
       
       const newUserId = lastProfile ? lastProfile.userId + 1 : 1; // 如果有資料，+1；否則從 1 開始
 
-      await prisma.profile.create({
+      await prisma.users.create({
         data:{
           userId:newUserId,
           username,
@@ -93,7 +93,7 @@ router.post('/login',async(req,res) => {
   try{
     const {email,password_hash} = req.body
 
-    const user = await prisma.profile.findUnique({
+    const user = await prisma.users.findUnique({
       where:{ email }
     })
 
