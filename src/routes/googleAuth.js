@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 const prisma = require('../configs/db');
+const { v4: uuidv4 } = require('uuid')
 
 const CLIENT_ID = "201131820318-om98jaudikrjuraavdmt8o0jlitaf7b1.apps.googleusercontent.com"
 const client = new OAuth2Client(CLIENT_ID);
@@ -63,28 +64,18 @@ router.post('/register', async (req, res) => {
   try {
     const { email, name, google_id } = req.body;
 
-    // 使用事務來確保 userId 不會重複
-    const newUser = await prisma.$transaction(async (prisma) => {
-      // 找出最後一筆資料
-      const lastUser = await prisma.profile.findFirst({
-        orderBy: {
-          userId: 'desc'
-        }
-      });
+      // 用 uuidv4
+      const newUserId = uuidv4()
 
-      // 判斷是否有資料，沒有就從 10001 開始。並且轉型別成 String，因為 DB 要求 VARCHAR
-      const newUserId = lastUser ? String(Number(lastUser.userId) + 1) : '10001';
-
-      return await prisma.profile.create({
+      const newUser = await prisma.profile.create({
         data: {
           userId: newUserId,
           email,
           username: name,
           google_id,
-          gender: "O" // Other，因為 google 不能輕易取到 gneder
+          gender: "O" // Other，因為 google 不能輕易取到 gender
         }
       });
-    });
 
     res.json({
       exists: true,
