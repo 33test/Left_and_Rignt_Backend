@@ -87,3 +87,49 @@ model profile {
 
   @@index([userId], map: "user_id")
 }
+
+model credit_card {
+  id              Int    @id
+  card_number     String @db.VarChar(16)
+  owner_name      String @db.VarChar(50)
+  expiration_date String @db.VarChar(6)
+  security_code   String @db.VarChar(3)
+  owner           Int
+  users           users  @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_owner_userId")
+
+  @@index([owner], map: "userId_idx")
+}
+
+model deliver {
+  id              Int     @id
+  phone           String? @db.VarChar(20)
+  recepient       String  @db.VarChar(50)
+  recepient_phone String  @db.VarChar(20)
+  country         String  @db.VarChar(100)
+  city            String  @db.VarChar(100)
+  region          String  @db.VarChar(100)
+  address         String  @db.Text
+  owner           Int
+  users           users   @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_deliver_owner_userId")
+
+  @@index([owner], map: "fk_owner_userId_idx")
+}
+
+model users {
+  id            Int           @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  userId        Int?          @unique(map: "userId_UNIQUE")
+  username      String        @db.VarChar(50)
+  email         String?       @unique(map: "email_UNIQUE") @db.VarChar(255)
+  phone         String?       @unique(map: "phone_UNIQUE") @db.VarChar(20)
+  gender        String        @db.VarChar(1)
+  birthday      DateTime?     @db.Date
+  mobile_phone  String?       @db.VarChar(20)
+  from_store    String?       @db.VarChar(45)
+  introduced_by String?       @db.VarChar(50)
+  password_hash String?       @db.VarChar(255)
+  line_id       String?       @db.VarChar(100)
+  credit_card   credit_card[]
+  deliver       deliver[]
+
+  @@index([userId], map: "user_id")
+}
