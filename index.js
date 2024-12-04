@@ -5,7 +5,7 @@ const app = express()
 const cors = require('cors')
 const path = require('path')
 
-const productsRouter = require('./src/routes/products')
+const productsRouter = require('./src/routes/productsList')
 const googleAuthRouter = require('./src/routes/googleAuth')
 
 app.use(cors({
