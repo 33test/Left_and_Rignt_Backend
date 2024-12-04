@@ -43,6 +43,94 @@ INSERT INTO `categories` VALUES (1,'戒指 / Rings','regular',NULL),(2,'熱銷�
 UNLOCK TABLES;
 
 --
+-- Table structure for table `credit_card`
+--
+
+DROP TABLE IF EXISTS `credit_card`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `credit_card` (
+  `id` int NOT NULL,
+  `card_number` varchar(16) NOT NULL,
+  `owner_name` varchar(50) NOT NULL,
+  `expiration_date` varchar(6) NOT NULL,
+  `security_code` varchar(3) NOT NULL,
+  `owner` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId_idx` (`owner`),
+  CONSTRAINT `fk_owner_userId` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `credit_card`
+--
+
+LOCK TABLES `credit_card` WRITE;
+/*!40000 ALTER TABLE `credit_card` DISABLE KEYS */;
+/*!40000 ALTER TABLE `credit_card` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `deliver`
+--
+
+DROP TABLE IF EXISTS `deliver`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `deliver` (
+  `id` int NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `recepient` varchar(50) NOT NULL,
+  `recepient_phone` varchar(20) NOT NULL,
+  `country` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `region` varchar(100) NOT NULL,
+  `address` text NOT NULL,
+  `owner` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_owner_userId_idx` (`owner`),
+  CONSTRAINT `fk_deliver_owner_userId` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `deliver`
+--
+
+LOCK TABLES `deliver` WRITE;
+/*!40000 ALTER TABLE `deliver` DISABLE KEYS */;
+/*!40000 ALTER TABLE `deliver` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `orders_imformation`
+--
+
+DROP TABLE IF EXISTS `orders_imformation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `orders_imformation` (
+  `orders_id` bigint unsigned NOT NULL,
+  `orders_email` varchar(255) DEFAULT NULL,
+  `orders_created_date` datetime NOT NULL,
+  `orders_status` enum('Pending','Completed','Cancelled') NOT NULL,
+  `orders_finished_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`orders_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `orders_imformation`
+--
+
+LOCK TABLES `orders_imformation` WRITE;
+/*!40000 ALTER TABLE `orders_imformation` DISABLE KEYS */;
+INSERT INTO `orders_imformation` VALUES (0,'kkoma@gmail.com','2024-12-01 00:07:11','Pending','2024-12-01 00:07:55');
+/*!40000 ALTER TABLE `orders_imformation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `product_categories`
 --
 
@@ -115,6 +203,8 @@ CREATE TABLE `product_specs` (
   `product_id` int NOT NULL,
   `spec_value` varchar(50) NOT NULL,
   `stock` int unsigned NOT NULL DEFAULT '0',
+  `color_text` varchar(50) DEFAULT NULL,
+  `color_square` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`product_specs_id`),
   KEY `fk_product_spec_product_id_idx` (`product_id`),
   CONSTRAINT `fk_product_spec_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
@@ -127,7 +217,7 @@ CREATE TABLE `product_specs` (
 
 LOCK TABLES `product_specs` WRITE;
 /*!40000 ALTER TABLE `product_specs` DISABLE KEYS */;
-INSERT INTO `product_specs` VALUES (1,1,'內圍直徑 1.8 cm (#14)',30),(2,1,'內圍直徑 1.9 cm (#16)',25),(4,11,'standard',50),(5,12,'內圍直徑 1.6 cm (#11)',28),(6,12,'內圍直徑 1.75 cm (#13)',32),(7,13,'standard',50),(8,14,'standard',50),(9,15,'standard',50),(10,16,'standard',50),(11,17,'standard',50),(12,18,'standard',50),(13,19,'standard',50),(14,20,'standard',50),(15,21,'standard',50),(16,22,'standard',50),(17,23,'standard',50),(18,24,'standard',50),(19,25,'standard',50),(20,26,'standard',50),(21,27,'standard',50),(22,28,'standard',50),(23,29,'standard',50),(24,30,'standard',50),(25,31,'standard',50),(26,32,'standard',50),(27,33,'standard',50),(28,34,'內圍直徑 1.65 cm (#11)',32),(29,34,'內圍直徑 1.75 cm (#13)',5),(30,34,'內圍直徑 1.85 cm (#15)',28),(31,34,'內圍直徑 1.95 cm (#17)',0),(32,35,'standard',50);
+INSERT INTO `product_specs` VALUES (1,1,'內圍直徑 1.8 cm (#14)',30,NULL,NULL),(2,1,'內圍直徑 1.9 cm (#16)',25,NULL,NULL),(4,11,'standard',50,NULL,NULL),(5,12,'內圍直徑 1.6 cm (#11)',28,NULL,NULL),(6,12,'內圍直徑 1.75 cm (#13)',32,NULL,NULL),(7,13,'standard',50,NULL,NULL),(8,14,'standard',50,NULL,NULL),(9,15,'standard',50,NULL,NULL),(10,16,'standard',50,NULL,NULL),(11,17,'standard',50,NULL,NULL),(12,18,'standard',50,NULL,NULL),(13,19,'standard',50,NULL,NULL),(14,20,'standard',50,NULL,NULL),(15,21,'standard',50,NULL,NULL),(16,22,'standard',50,NULL,NULL),(17,23,'standard',50,NULL,NULL),(18,24,'standard',50,NULL,NULL),(19,25,'standard',50,NULL,NULL),(20,26,'standard',50,NULL,NULL),(21,27,'standard',50,NULL,NULL),(22,28,'standard',50,NULL,NULL),(23,29,'standard',50,NULL,NULL),(24,30,'standard',50,NULL,NULL),(25,31,'standard',50,NULL,NULL),(26,32,'standard',50,NULL,NULL),(27,33,'standard',50,NULL,NULL),(28,34,'內圍直徑 1.65 cm (#11)',32,NULL,NULL),(29,34,'內圍直徑 1.75 cm (#13)',5,NULL,NULL),(30,34,'內圍直徑 1.85 cm (#15)',28,NULL,NULL),(31,34,'內圍直徑 1.95 cm (#17)',0,NULL,NULL),(32,35,'standard',50,NULL,NULL);
 /*!40000 ALTER TABLE `product_specs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,15 +256,15 @@ INSERT INTO `products` VALUES (1,'極簡定律戒指 / 男款 / Minimalist Law R
 UNLOCK TABLES;
 
 --
--- Table structure for table `profile`
+-- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `profile`;
+DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `profile` (
+CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `userId` varchar(50) NOT NULL,
+  `userId` int DEFAULT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
@@ -185,26 +275,52 @@ CREATE TABLE `profile` (
   `introduced_by` varchar(50) DEFAULT NULL,
   `password_hash` varchar(255) DEFAULT NULL,
   `line_id` varchar(100) DEFAULT NULL,
-  `google_id` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `userId_UNIQUE` (`userId`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
-  UNIQUE KEY `google_id_UNIQUE` (`google_id`),
-  UNIQUE KEY `line_id_UNIQUE` (`line_id`),
   KEY `user_id` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `profile`
+-- Dumping data for table `users`
 --
 
-LOCK TABLES `profile` WRITE;
-/*!40000 ALTER TABLE `profile` DISABLE KEYS */;
-INSERT INTO `profile` VALUES (1,'10001','Faker','faker@gmail.com','0911222333','m',NULL,NULL,NULL,NULL,'faker',NULL,NULL),(2,'10002','Oner','oner@gmail.com','0922333444','m',NULL,NULL,NULL,NULL,'oner',NULL,NULL),(3,'10003','Doran','doran@gmail.com','0933444555','m',NULL,NULL,NULL,NULL,'doran',NULL,NULL),(4,'10004','Gumayusi','guria@gmail.com','0944555666','m',NULL,NULL,NULL,NULL,'gumayusi',NULL,NULL),(5,'10005','Keria','keria@gmail.com','0955666777','m',NULL,NULL,NULL,NULL,'keria',NULL,NULL),(7,'10006','38_方玟蓉','33justworkplace@gmail.com',NULL,'O',NULL,NULL,NULL,NULL,NULL,NULL,'111669253105106740262');
-/*!40000 ALTER TABLE `profile` ENABLE KEYS */;
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,10001,'Fakerfake','fakerfake@gmail.com','0911222333','m',NULL,NULL,NULL,NULL,'faker',NULL),(2,10002,'Onerfake','onerfake@gmail.com','0922333444','m',NULL,NULL,NULL,NULL,'oner',NULL),(3,10003,'Doranfake','doranfake@gmail.com','0933444555','m',NULL,NULL,NULL,NULL,'doran',NULL),(4,10004,'Gumayusifake','guriafake@gmail.com','0944555666','m',NULL,NULL,NULL,NULL,'gumayusi',NULL),(5,10005,'Keriafake','keriafake@gmail.com','0955666777','m',NULL,NULL,NULL,NULL,'keria',NULL),(6,NULL,'zeusfake','zeusfake@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ZFZMQMwepfnUHz.JYgPgSeX71jB0BBioS7KHl0wtWCe03CHey7mwi',NULL),(7,100051,'kkoma','kkoma@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$tJhE3SV6vuFxa/R1YThmwedwp/Vl3qw4Q66ud8RhdjEQ72cOilpu6',NULL),(8,100052,'faker','faker@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$pybNpRSmSEQVO9z.uvucvuHRfWhh1Z5mWmiQW4gWgSSBoSmZSt1uu',NULL),(9,100053,'oner','oner@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$/cMwlrlvB1jD5bUmt5aHuu1V8v3HVw0/nMa.Qjksp.SdkgfgBa7fq',NULL),(10,100054,'gumayusi','guria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ldw6vpriNTiBOAmWoK0T.ucR1OYos6yNteMJKS6ZRvDRdWv1o6S6C',NULL),(11,100055,'keria','keria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ewZhU83vzRmfBBB4x0yAju.2CcW0YXbA23iSYbiTFH4G4fEighNY2',NULL),(12,100056,'doran','doran@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$a67z9t5m9z7MEf91X6Vz4.DmK1hp9GugBQ99qZJHUAKTfq3KYWPki',NULL),(13,100057,'zeus','zeus@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$itHTBeKLcjj.rAh/QrqiJu2awmTqHuYKSfkj944Xf7wzjDNRHO5NO',NULL);
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `wishlists`
+--
+
+DROP TABLE IF EXISTS `wishlists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `wishlists` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `wishlists_members_id` int NOT NULL,
+  `wishlists_products_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_wishlists_members_idx` (`wishlists_members_id`),
+  KEY `fk_wishlists_products` (`wishlists_products_id`),
+  CONSTRAINT `fk_wishlists_products` FOREIGN KEY (`wishlists_products_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_wishlists_users` FOREIGN KEY (`wishlists_members_id`) REFERENCES `users` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wishlists`
+--
+
+LOCK TABLES `wishlists` WRITE;
+/*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
+INSERT INTO `wishlists` VALUES (2,10001,1),(3,10001,12),(4,10001,12),(5,10003,25);
+/*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -216,4 +332,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-01 19:38:05
+-- Dump completed on 2024-12-04  0:43:19
