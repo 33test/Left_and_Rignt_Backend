@@ -191,8 +191,10 @@ CREATE TABLE `profile` (
   UNIQUE KEY `userId_UNIQUE` (`userId`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
+  UNIQUE KEY `google_id_UNIQUE` (`google_id`),
+  UNIQUE KEY `line_id_UNIQUE` (`line_id`),
   KEY `user_id` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,7 +203,7 @@ CREATE TABLE `profile` (
 
 LOCK TABLES `profile` WRITE;
 /*!40000 ALTER TABLE `profile` DISABLE KEYS */;
-INSERT INTO `profile` VALUES (1,'10001','Faker','faker@gmail.com','0911222333','m',NULL,NULL,NULL,NULL,'faker',NULL,NULL),(2,'10002','Oner','oner@gmail.com','0922333444','m',NULL,NULL,NULL,NULL,'oner',NULL,NULL),(3,'10003','Doran','doran@gmail.com','0933444555','m',NULL,NULL,NULL,NULL,'doran',NULL,NULL),(4,'10004','Gumayusi','guria@gmail.com','0944555666','m',NULL,NULL,NULL,NULL,'gumayusi',NULL,NULL),(5,'10005','Keria','keria@gmail.com','0955666777','m',NULL,NULL,NULL,NULL,'keria',NULL,NULL);
+INSERT INTO `profile` VALUES (1,'10001','Faker','faker@gmail.com','0911222333','m',NULL,NULL,NULL,NULL,'faker',NULL,NULL),(2,'10002','Oner','oner@gmail.com','0922333444','m',NULL,NULL,NULL,NULL,'oner',NULL,NULL),(3,'10003','Doran','doran@gmail.com','0933444555','m',NULL,NULL,NULL,NULL,'doran',NULL,NULL),(4,'10004','Gumayusi','guria@gmail.com','0944555666','m',NULL,NULL,NULL,NULL,'gumayusi',NULL,NULL),(5,'10005','Keria','keria@gmail.com','0955666777','m',NULL,NULL,NULL,NULL,'keria',NULL,NULL),(7,'10006','38_方玟蓉','33justworkplace@gmail.com',NULL,'O',NULL,NULL,NULL,NULL,NULL,NULL,'111669253105106740262');
 /*!40000 ALTER TABLE `profile` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -214,4 +216,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-30 19:26:48
+-- Dump completed on 2024-12-01 19:38:05

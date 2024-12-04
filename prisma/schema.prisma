@@ -82,8 +82,8 @@ model profile {
   from_store    String?   @db.VarChar(45)
   introduced_by String?   @db.VarChar(50)
   password_hash String?   @db.VarChar(255)
-  line_id       String?   @db.VarChar(100)
-  google_id     String?   @db.VarChar(100)
+  line_id       String?   @unique(map: "line_id_UNIQUE") @db.VarChar(100)
+  google_id     String?   @unique(map: "google_id_UNIQUE") @db.VarChar(100)
 
   @@index([userId], map: "user_id")
 }
