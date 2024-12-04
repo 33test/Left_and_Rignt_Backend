@@ -3,6 +3,8 @@ dotenv.config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const path = require('path')
+
 const productsRouter = require('./src/routes/products')
 const googleAuthRouter = require('./src/routes/googleAuth')
 
@@ -18,6 +20,9 @@ app.use((req, res, next) => {
   res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
   next();
 });
+
+// 設定靜態檔案服務，讓前端可以來取後端 images 資料夾ㄉ檔案
+app.use(express.static(path.join(__dirname)))
 
 app.use(express.json())
 app.use('/products', productsRouter)
