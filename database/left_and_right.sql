@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
--- Host: localhost    Database: left_and_right
+-- Host: 127.0.0.1    Database: left_and_right
 -- ------------------------------------------------------
--- Server version	9.0.1
+-- Server version	8.0.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,30 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `cart`
+--
+
+DROP TABLE IF EXISTS `cart`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cart` (
+  `user_id` varchar(50) NOT NULL,
+  `product_id` varchar(50) NOT NULL,
+  `quantity` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cart`
+--
+
+LOCK TABLES `cart` WRITE;
+/*!40000 ALTER TABLE `cart` DISABLE KEYS */;
+INSERT INTO `cart` VALUES ('10001','1',2),('10001','12',3);
+/*!40000 ALTER TABLE `cart` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `categories`
@@ -104,6 +128,29 @@ LOCK TABLES `deliver` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `discount`
+--
+
+DROP TABLE IF EXISTS `discount`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `discount` (
+  `discount_id` varchar(50) NOT NULL,
+  `dicription` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `discount`
+--
+
+LOCK TABLES `discount` WRITE;
+/*!40000 ALTER TABLE `discount` DISABLE KEYS */;
+INSERT INTO `discount` VALUES ('a1','全館 兩件88折/三件85折/四件82折 - 全單 滿 3 件 即享 85 折 再買 1 件 省更多'),('a2','黑五限定！全館滿$1600折$160 再買 NT$530 即享有優惠'),('a3','海外運送 3-7 天到貨 - 滿NT$2999免運 再買 NT$2,059 即享有免運'),('a4','滿四件82折優惠! 再拿 1 件即享有82折');
+/*!40000 ALTER TABLE `discount` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `orders_imformation`
 --
 
@@ -112,11 +159,19 @@ DROP TABLE IF EXISTS `orders_imformation`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders_imformation` (
   `orders_id` bigint unsigned NOT NULL,
-  `orders_email` varchar(255) DEFAULT NULL,
-  `orders_created_date` datetime NOT NULL,
+  `orders_users_id` int DEFAULT NULL,
   `orders_status` enum('Pending','Completed','Cancelled') NOT NULL,
+  `orders_created_date` datetime NOT NULL,
   `orders_finished_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`orders_id`)
+  `orders_deliver_id` int DEFAULT NULL,
+  `orders_payment_id` int DEFAULT NULL,
+  PRIMARY KEY (`orders_id`),
+  KEY `fk_orders_user_idx` (`orders_users_id`),
+  KEY `fk_orders_deliver_idx` (`orders_deliver_id`),
+  KEY `fk_orders_creditcard_idx` (`orders_payment_id`),
+  CONSTRAINT `fk_orders_creditcard` FOREIGN KEY (`orders_payment_id`) REFERENCES `credit_card` (`id`),
+  CONSTRAINT `fk_orders_deliver` FOREIGN KEY (`orders_deliver_id`) REFERENCES `deliver` (`owner`),
+  CONSTRAINT `fk_orders_user` FOREIGN KEY (`orders_users_id`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -126,7 +181,7 @@ CREATE TABLE `orders_imformation` (
 
 LOCK TABLES `orders_imformation` WRITE;
 /*!40000 ALTER TABLE `orders_imformation` DISABLE KEYS */;
-INSERT INTO `orders_imformation` VALUES (0,'kkoma@gmail.com','2024-12-01 00:07:11','Pending','2024-12-01 00:07:55');
+INSERT INTO `orders_imformation` VALUES (0,NULL,'Pending','2024-12-01 00:07:11','2024-12-01 00:07:55',NULL,NULL);
 /*!40000 ALTER TABLE `orders_imformation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,7 +263,7 @@ CREATE TABLE `product_specs` (
   PRIMARY KEY (`product_specs_id`),
   KEY `fk_product_spec_product_id_idx` (`product_id`),
   CONSTRAINT `fk_product_spec_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +272,7 @@ CREATE TABLE `product_specs` (
 
 LOCK TABLES `product_specs` WRITE;
 /*!40000 ALTER TABLE `product_specs` DISABLE KEYS */;
-INSERT INTO `product_specs` VALUES (1,1,'內圍直徑 1.8 cm (#14)',30,NULL,NULL),(2,1,'內圍直徑 1.9 cm (#16)',25,NULL,NULL),(4,11,'standard',50,NULL,NULL),(5,12,'內圍直徑 1.6 cm (#11)',28,NULL,NULL),(6,12,'內圍直徑 1.75 cm (#13)',32,NULL,NULL),(7,13,'standard',50,NULL,NULL),(8,14,'standard',50,NULL,NULL),(9,15,'standard',50,NULL,NULL),(10,16,'standard',50,NULL,NULL),(11,17,'standard',50,NULL,NULL),(12,18,'standard',50,NULL,NULL),(13,19,'standard',50,NULL,NULL),(14,20,'standard',50,NULL,NULL),(15,21,'standard',50,NULL,NULL),(16,22,'standard',50,NULL,NULL),(17,23,'standard',50,NULL,NULL),(18,24,'standard',50,NULL,NULL),(19,25,'standard',50,NULL,NULL),(20,26,'standard',50,NULL,NULL),(21,27,'standard',50,NULL,NULL),(22,28,'standard',50,NULL,NULL),(23,29,'standard',50,NULL,NULL),(24,30,'standard',50,NULL,NULL),(25,31,'standard',50,NULL,NULL),(26,32,'standard',50,NULL,NULL),(27,33,'standard',50,NULL,NULL),(28,34,'內圍直徑 1.65 cm (#11)',32,NULL,NULL),(29,34,'內圍直徑 1.75 cm (#13)',5,NULL,NULL),(30,34,'內圍直徑 1.85 cm (#15)',28,NULL,NULL),(31,34,'內圍直徑 1.95 cm (#17)',0,NULL,NULL),(32,35,'standard',50,NULL,NULL);
+INSERT INTO `product_specs` VALUES (1,1,'內圍直徑 1.8 cm (#14)',30,NULL,NULL),(2,1,'內圍直徑 1.9 cm (#16)',25,NULL,NULL),(4,11,'standard',50,NULL,NULL),(5,12,'內圍直徑 1.6 cm (#11)',28,NULL,NULL),(6,12,'內圍直徑 1.75 cm (#13)',32,NULL,NULL),(7,13,'standard',50,NULL,NULL),(8,14,'standard',50,NULL,NULL),(9,15,'standard',50,NULL,NULL),(10,16,'standard',50,NULL,NULL),(11,17,'standard',50,NULL,NULL),(12,18,'standard',50,NULL,NULL),(13,19,'standard',50,NULL,NULL),(14,20,'standard',50,NULL,NULL),(15,21,'standard',50,NULL,NULL),(16,22,'standard',50,NULL,NULL),(17,23,'standard',50,NULL,NULL),(18,24,'standard',50,NULL,NULL),(19,25,'standard',50,NULL,NULL),(20,26,'standard',50,NULL,NULL),(21,27,'standard',50,NULL,NULL),(22,28,'standard',50,NULL,NULL),(23,29,'standard',50,NULL,NULL),(24,30,'standard',50,NULL,NULL),(25,31,'standard',50,NULL,NULL),(26,32,'standard',50,NULL,NULL),(27,33,'standard',50,NULL,NULL),(28,34,'內圍直徑 1.65 cm (#11)',32,NULL,NULL),(29,34,'內圍直徑 1.75 cm (#13)',5,NULL,NULL),(30,34,'內圍直徑 1.85 cm (#15)',28,NULL,NULL),(31,34,'內圍直徑 1.95 cm (#17)',0,NULL,NULL),(32,35,'standard',50,'Red / 紅色','#ab0505'),(33,35,'standard',50,'Baby Blue / 寶寶藍','#aacdf5');
 /*!40000 ALTER TABLE `product_specs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,6 +308,34 @@ LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
 INSERT INTO `products` VALUES (1,'極簡定律戒指 / 男款 / Minimalist Law Ring',360.00,310.00,'R001',33,1,'2024-11-28 07:36:57','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質： 銅 \n● 戒指內圍直徑SIZE約：1.8 cm, 1.9 cm / 國際戒圍：#14, #16\n● 單件販售','2024-11-28 07:36:57'),(11,'[官網限定] 貓咪愛吃魚戒指 / Cat And Fish Ring',180.00,170.00,'R002',28,1,'2024-11-30 01:53:37','預購商品預計7-15天出貨，待商品到貨與現貨合併寄出\n● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：鋯石 / 白銅＋銀 (保色電鍍)\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12 (可微調)\n● 戒指重量約：1.8 g\n● 單件販售','2024-11-30 01:53:37'),(12,'[預購] 極簡定律戒指 / 女款 / Minimalist Law Ring',360.00,310.00,'R003',28,1,'2024-11-30 02:11:26','預購商品預計15-30天出貨，待商品到貨與現貨合併寄出\n● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀 / 鋯石\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 戒指重量約：1.5 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:11:26'),(13,'[預購] [純銀] 托勒密星團戒指 / Ptolemaic Cluster Ring',280.00,160.00,'R004',28,1,'2024-11-30 02:18:18','預購商品預計15-30天出貨，待商品到貨與現貨合併寄出\n● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀 / 鋯石\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 戒指重量約：1.5 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:18:18'),(14,'[預購] [純銀] 心的波動尾戒/關節戒1.4 / 2色 / Fluctuation Of Heart 1.4 Ring',297.00,160.00,'R005',28,1,'2024-11-30 02:26:34','預購商品預計7-25天出貨，待商品到貨與現貨合併寄出\n● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.4 cm / 國際戒圍：#6\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:26:34'),(15,'[純銀] 簡約之星戒指 / Simple Star Ring',550.00,160.00,'R006',28,1,'2024-11-30 02:28:29','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:28:29'),(16,'[官網限定] 蝴蝶結心願戒指 / Bow Wish Ring',280.00,160.00,'R007',28,1,'2024-11-30 02:30:06','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:30:06'),(17,'[純銀] 國王的愛妃戒指 / King\'s Concubine Ring',352.00,160.00,'R008',28,1,'2024-11-30 02:30:36','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:30:36'),(18,'[採用施華洛世奇水晶/純銀] 悠長愛戀戒指1.7 / 12色 / Crystals from Swarovski / Long Long Love 1.7 Ring',429.00,385.00,'R009',28,1,'2024-11-30 02:31:18','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:31:18'),(19,'[預購] 妳是我的戒指組 / You Are Mine Ring Set',460.00,160.00,'R010',28,1,'2024-11-30 02:38:01','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:38:01'),(20,'夜空星河戒指 / Night Sky Galaxy Ring',270.00,160.00,'R011',28,1,'2024-11-30 02:38:43','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:38:43'),(21,'[天然石] 守護未來鍊戒 / 3色 / Guard The Future Necklace',330.00,160.00,'R012',28,1,'2024-11-30 02:40:30','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:40:30'),(22,'[純銀] 櫻花秘境尾戒 / 2色 / Sakura Secret Ring',330.00,160.00,'R013',28,1,'2024-11-30 02:41:05','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:41:05'),(23,'[純銀] 深情告白情侶戒指組 / Affectionate Confession Ring Set',520.00,330.00,'R014',28,1,'2024-11-30 02:41:36','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:41:36'),(24,'[預購] [純銀] 春之慶典尾戒 / 2 size / Celebration Of Spring Ring',300.00,160.00,'R015',28,1,'2024-11-30 02:41:58','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:41:58'),(25,'[純銀/海藍寶晶石/白貝天然石] 安定如意鍊戒 / Stable And Wishful Ring',352.00,160.00,'R016',28,1,'2024-11-30 02:42:34','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:42:34'),(26,'夢幻蝴蝶結戒指 / Fantasy Bow Ring',300.00,160.00,'R017',28,1,'2024-11-30 02:45:24','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:45:24'),(27,'[預購] [純銀] 星際訊息戒指 / Interstellar Message Ring',520.00,160.00,'R018',28,1,'2024-11-30 02:45:58','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:45:58'),(28,'[郁欣設計款/鋼飾] 自由譜線戒指 / 2色 / 3 size / Free Spectral Line Ring',813.00,650.00,'R019',28,1,'2024-11-30 02:46:31','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:46:31'),(29,'[Nina自訂款] 粉嫩小花戒指 / 2 size / Colorful Flowers Ring',363.00,290.00,'R020',28,1,'2024-11-30 02:47:06','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:47:06'),(30,'[Nina自訂/孩童款] 童趣塗鴉戒指 / 2色 / 2 size / Childlike Graffiti Ring',1.00,850.00,'R021',28,1,'2024-11-30 02:47:23','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:47:23'),(31,'[預購] [Kurt聯名] [鋼飾] Kurt喜Kurt恨戒指組 / 2色 / 3 size / Kurt Gratifying Hateful Ring Set',1.00,1.00,'R022',28,1,'2024-11-30 02:54:39','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:54:39'),(32,'[預購] [Kurt聯名] 愛心Emoji戒指 / 3 size / Love Emoji Ring',1.00,850.00,'R023',28,1,'2024-11-30 02:55:42','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:55:42'),(33,'[預購] [Kurt聯名] [鋼飾] 心Kurt碎了戒指 / 4 size / Kurt Heartbreak Ring',1.00,890.00,'R024',28,1,'2024-11-30 02:56:07','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:56:07'),(34,'[預購] [Kurt聯名] 翻臉如翻書戒指 / 4 size / Kurt Flip Ring',1.00,1.00,'R025',28,1,'2024-11-30 02:56:29','● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:56:29'),(35,'[預購] [Kurt聯名] 和藹Kurt親戒指 / 2色 / Kurt Amiable Ring',1.00,890.00,'R026',28,1,'2024-11-30 02:59:42','● BONNY&READ飾品與Kurt Wu共同開發\n● 提供30日退換貨服務，請詳閱「售後服務」\n● 商品材質：S925低敏純銀\n● 戒指內圍直徑SIZE約：1.7 cm / 國際戒圍：#12\n● 可微調範圍約±0.05cm，超過可能會造成戒指變形或斷裂\n● 純銀重量約：1.9 g\n● 單件販售\n● 純銀飾品若無佩戴時，請先保持乾燥狀態，再放置飾品盒或是夾鏈袋乾燥陰涼處保存，避免氧化發黑。','2024-11-30 02:59:42');
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `reviews_table`
+--
+
+DROP TABLE IF EXISTS `reviews_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reviews_table` (
+  `product_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
+  `sku` int DEFAULT NULL,
+  `comment` text,
+  `comment_time` int DEFAULT NULL,
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `commentId_UNIQUE` (`product_id`),
+  UNIQUE KEY `userId_UNIQUE` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reviews_table`
+--
+
+LOCK TABLES `reviews_table` WRITE;
+/*!40000 ALTER TABLE `reviews_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `reviews_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -332,4 +415,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-04  0:43:19
+-- Dump completed on 2024-12-05 14:12:25
