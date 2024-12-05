@@ -73,7 +73,7 @@ router.post('/register',validateRegister,async(req,res) =>{
       res.status(201).json({message:'註冊成功'})
   }catch(err){
     if(err.code === 'P2002'){
-            return res.status(409).json({message:'使用者已註冊'})
+          return res.status(409).json({message:'使用者已註冊'})
         }
         res.status(500).json({
           message:'伺服器錯誤',
@@ -103,7 +103,7 @@ router.post('/login',async(req,res) => {
       expiresIn:'1h'// 可設置5m,1d...
     })
     res.json({ token })
-    // // 將 token 存入 localStorage
+    // 將 token 存入 localStorage
     // localStorage.setItem('token', token);
   }catch(err){
     res.status(500).json({message:'伺服器錯誤'})
