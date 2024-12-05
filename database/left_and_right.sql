@@ -79,10 +79,10 @@ CREATE TABLE `credit_card` (
   `owner_name` varchar(50) NOT NULL,
   `expiration_date` varchar(6) NOT NULL,
   `security_code` varchar(3) NOT NULL,
-  `owner` int NOT NULL,
+  `owner` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `userId_idx` (`owner`),
-  CONSTRAINT `fk_owner_userId` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`)
+  CONSTRAINT `fk_creditCard_owner_userId` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -111,10 +111,10 @@ CREATE TABLE `deliver` (
   `city` varchar(100) NOT NULL,
   `region` varchar(100) NOT NULL,
   `address` text NOT NULL,
-  `owner` int NOT NULL,
+  `owner` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_owner_userId_idx` (`owner`),
-  CONSTRAINT `fk_deliver_owner_userId` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`)
+  CONSTRAINT `fk_owner_userId` FOREIGN KEY (`owner`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -159,7 +159,7 @@ DROP TABLE IF EXISTS `orders_imformation`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders_imformation` (
   `orders_id` bigint unsigned NOT NULL,
-  `orders_users_id` int DEFAULT NULL,
+  `orders_users_id` varchar(50) DEFAULT NULL,
   `orders_status` enum('Pending','Completed','Cancelled') NOT NULL,
   `orders_created_date` datetime NOT NULL,
   `orders_finished_date` datetime DEFAULT NULL,
@@ -168,9 +168,9 @@ CREATE TABLE `orders_imformation` (
   PRIMARY KEY (`orders_id`),
   KEY `fk_orders_user_idx` (`orders_users_id`),
   KEY `fk_orders_deliver_idx` (`orders_deliver_id`),
-  KEY `fk_orders_creditcard_idx` (`orders_payment_id`),
-  CONSTRAINT `fk_orders_creditcard` FOREIGN KEY (`orders_payment_id`) REFERENCES `credit_card` (`id`),
-  CONSTRAINT `fk_orders_deliver` FOREIGN KEY (`orders_deliver_id`) REFERENCES `deliver` (`owner`),
+  KEY `fk_orders_payment_idx` (`orders_payment_id`),
+  CONSTRAINT `fk_orders_deliver` FOREIGN KEY (`orders_deliver_id`) REFERENCES `deliver` (`id`),
+  CONSTRAINT `fk_orders_payment` FOREIGN KEY (`orders_payment_id`) REFERENCES `credit_card` (`id`),
   CONSTRAINT `fk_orders_user` FOREIGN KEY (`orders_users_id`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -347,7 +347,7 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `userId` int DEFAULT NULL,
+  `userId` varchar(50) NOT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
@@ -373,7 +373,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,10001,'Fakerfake','fakerfake@gmail.com','0911222333','m',NULL,NULL,NULL,NULL,'faker',NULL),(2,10002,'Onerfake','onerfake@gmail.com','0922333444','m',NULL,NULL,NULL,NULL,'oner',NULL),(3,10003,'Doranfake','doranfake@gmail.com','0933444555','m',NULL,NULL,NULL,NULL,'doran',NULL),(4,10004,'Gumayusifake','guriafake@gmail.com','0944555666','m',NULL,NULL,NULL,NULL,'gumayusi',NULL),(5,10005,'Keriafake','keriafake@gmail.com','0955666777','m',NULL,NULL,NULL,NULL,'keria',NULL),(6,NULL,'zeusfake','zeusfake@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ZFZMQMwepfnUHz.JYgPgSeX71jB0BBioS7KHl0wtWCe03CHey7mwi',NULL),(7,100051,'kkoma','kkoma@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$tJhE3SV6vuFxa/R1YThmwedwp/Vl3qw4Q66ud8RhdjEQ72cOilpu6',NULL),(8,100052,'faker','faker@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$pybNpRSmSEQVO9z.uvucvuHRfWhh1Z5mWmiQW4gWgSSBoSmZSt1uu',NULL),(9,100053,'oner','oner@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$/cMwlrlvB1jD5bUmt5aHuu1V8v3HVw0/nMa.Qjksp.SdkgfgBa7fq',NULL),(10,100054,'gumayusi','guria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ldw6vpriNTiBOAmWoK0T.ucR1OYos6yNteMJKS6ZRvDRdWv1o6S6C',NULL),(11,100055,'keria','keria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ewZhU83vzRmfBBB4x0yAju.2CcW0YXbA23iSYbiTFH4G4fEighNY2',NULL),(12,100056,'doran','doran@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$a67z9t5m9z7MEf91X6Vz4.DmK1hp9GugBQ99qZJHUAKTfq3KYWPki',NULL),(13,100057,'zeus','zeus@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$itHTBeKLcjj.rAh/QrqiJu2awmTqHuYKSfkj944Xf7wzjDNRHO5NO',NULL);
+INSERT INTO `users` VALUES (1,'10001','Fakerfake','fakerfake@gmail.com','0911222333','m',NULL,NULL,NULL,NULL,'faker',NULL),(2,'10002','Onerfake','onerfake@gmail.com','0922333444','m',NULL,NULL,NULL,NULL,'oner',NULL),(3,'10003','Doranfake','doranfake@gmail.com','0933444555','m',NULL,NULL,NULL,NULL,'doran',NULL),(4,'10004','Gumayusifake','guriafake@gmail.com','0944555666','m',NULL,NULL,NULL,NULL,'gumayusi',NULL),(5,'10005','Keriafake','keriafake@gmail.com','0955666777','m',NULL,NULL,NULL,NULL,'keria',NULL),(6,'10006','zeusfake','zeusfake@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ZFZMQMwepfnUHz.JYgPgSeX71jB0BBioS7KHl0wtWCe03CHey7mwi',NULL),(7,'100051','kkoma','kkoma@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$tJhE3SV6vuFxa/R1YThmwedwp/Vl3qw4Q66ud8RhdjEQ72cOilpu6',NULL),(8,'100052','faker','faker@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$pybNpRSmSEQVO9z.uvucvuHRfWhh1Z5mWmiQW4gWgSSBoSmZSt1uu',NULL),(9,'100053','oner','oner@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$/cMwlrlvB1jD5bUmt5aHuu1V8v3HVw0/nMa.Qjksp.SdkgfgBa7fq',NULL),(10,'100054','gumayusi','guria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ldw6vpriNTiBOAmWoK0T.ucR1OYos6yNteMJKS6ZRvDRdWv1o6S6C',NULL),(11,'100055','keria','keria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ewZhU83vzRmfBBB4x0yAju.2CcW0YXbA23iSYbiTFH4G4fEighNY2',NULL),(12,'100056','doran','doran@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$a67z9t5m9z7MEf91X6Vz4.DmK1hp9GugBQ99qZJHUAKTfq3KYWPki',NULL),(13,'100057','zeus','zeus@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$itHTBeKLcjj.rAh/QrqiJu2awmTqHuYKSfkj944Xf7wzjDNRHO5NO',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -386,11 +386,11 @@ DROP TABLE IF EXISTS `wishlists`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `wishlists` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `wishlists_members_id` int NOT NULL,
+  `wishlists_members_id` varchar(50) NOT NULL,
   `wishlists_products_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_wishlists_members_idx` (`wishlists_members_id`),
   KEY `fk_wishlists_products` (`wishlists_products_id`),
+  KEY `fk_wishlists_users_idx` (`wishlists_members_id`),
   CONSTRAINT `fk_wishlists_products` FOREIGN KEY (`wishlists_products_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_wishlists_users` FOREIGN KEY (`wishlists_members_id`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -402,7 +402,7 @@ CREATE TABLE `wishlists` (
 
 LOCK TABLES `wishlists` WRITE;
 /*!40000 ALTER TABLE `wishlists` DISABLE KEYS */;
-INSERT INTO `wishlists` VALUES (2,10001,1),(3,10001,12),(4,10001,12),(5,10003,25);
+INSERT INTO `wishlists` VALUES (2,'10001',1),(3,'10001',12),(4,'10001',12),(5,'10003',25);
 /*!40000 ALTER TABLE `wishlists` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -415,4 +415,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-05 14:12:25
+-- Dump completed on 2024-12-05 16:20:24
