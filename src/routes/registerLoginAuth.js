@@ -3,6 +3,7 @@ const express = require('express')
 const bcrypt = require('bcrypt')//加密密碼
 const { PrismaClient } = require('@prisma/client')
 const { z } = require('zod')
+const { v4: uuidv4 } = require('uuid')
 
 const prisma = new PrismaClient()//建立Prisma client
 const router = express.Router()
