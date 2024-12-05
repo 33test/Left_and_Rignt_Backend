@@ -59,13 +59,7 @@ router.post('/register',validateRegister,async(req,res) =>{
       const { username,email,gender,password_hash } = req.body
       const hashPassword = await bcrypt.hash(password_hash,10)//密碼加密處理
 
-      const lastProfile = await prisma.users.findFirst({
-        orderBy: {
-          userId: 'desc' // 根據 userId 進行降序排序，取得最大 userId
-        }
-      });
-      
-      const newUserId = lastProfile ? lastProfile.userId + 1 : 1; // 如果有資料，+1；否則從 1 開始
+      const newUserId = uuidv4()
 
       await prisma.users.create({
         data:{

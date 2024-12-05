@@ -94,10 +94,10 @@ model credit_card {
   owner_name      String @db.VarChar(50)
   expiration_date String @db.VarChar(6)
   security_code   String @db.VarChar(3)
-  owner           Int
+  owner           String @db.VarChar(50)
   users           users  @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_owner_userId")
 
-  @@index([owner], map: "userId_idx")
+  @@index([owner], map: "fk_owner_userId_idx")
 }
 
 model deliver {
@@ -109,7 +109,7 @@ model deliver {
   city            String  @db.VarChar(100)
   region          String  @db.VarChar(100)
   address         String  @db.Text
-  owner           Int
+  owner           String  @db.VarChar(50)
   users           users   @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_deliver_owner_userId")
 
   @@index([owner], map: "fk_owner_userId_idx")
@@ -117,7 +117,7 @@ model deliver {
 
 model users {
   id            Int           @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  userId        Int?          @unique(map: "userId_UNIQUE")
+  userId        String        @unique(map: "userId_UNIQUE") @db.VarChar(50)
   username      String        @db.VarChar(50)
   email         String?       @unique(map: "email_UNIQUE") @db.VarChar(255)
   phone         String?       @unique(map: "phone_UNIQUE") @db.VarChar(20)
