@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 });
 
 // 設定靜態檔案服務，讓前端可以來取後端 images 資料夾ㄉ檔案
-app.use(express.static(path.join(__dirname)))
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use(express.json())
 app.use('/products', productsRouter)
