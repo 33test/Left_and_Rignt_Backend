@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
 app.use(express.json())
-app.use('/products', productsRouter)
+app.use('/categories', productsRouter)
 app.use('/auth', googleAuthRouter)
 
 const PORT = process.env.PORT;

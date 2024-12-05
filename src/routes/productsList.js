@@ -33,7 +33,7 @@ router.get('/:category?', async (req, res) => {
         price: Number(product.sale_price),
         orginalPrice: Number(product.original_price),
         frontImg: `${API_URL}${product.product_images[0]?.image_path}` || '',
-        backImg: `${API_URL}/${product.product_images[1]?.image_path}` || ''
+        backImg: `${API_URL}${product.product_images[1]?.image_path}` || ''
       }))
 
       return res.json({
@@ -85,7 +85,7 @@ router.get('/:category?', async (req, res) => {
       price: Number(product.sale_price),
       orginalPrice: Number(product.original_price),
       frontImg: `${API_URL}${product.product_images[0]?.image_path}` || '',
-      backImg: `${API_URL}/${product.product_images[1]?.image_path}` || ''
+      backImg: `${API_URL}${product.product_images[1]?.image_path}` || ''
     }))
 
     res.json({
