@@ -4,13 +4,32 @@ const prisma = require('../configs/db')
 
 const API_URL = "http://localhost:3300/"
 
+// 因為格式化商品資料用了兩次所以提出來
+const formatProducts = (products) => {
+  return products.map(product => ({
+    id: product.product_id,
+    title: product.product_name,
+    price: Number(product.sale_price),
+    orginalPrice: Number(product.original_price),
+    frontImg: getImageUrl(product.product_images[0]?.image_path),
+    backImg: getImageUrl(product.product_images[1]?.image_path)
+  }))
+}
+
+// 圖片路徑
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return ''
+  return `${API_URL}${imagePath}`
+}
+
 // 路由改為可選的分類參數
-router.get('/:category?', async (req, res) => {
+router.get('/:categoryId?', async (req, res) => {
   try {
-    const category = req.params.category
+    // 確定 ID 是數字（轉一下）
+    const categoryId = req.params.categoryId ? parseInt(req.params.categoryId) : null
 
     // 如果沒有提供分類參數，取得所有商品
-    if (!category) {
+    if (!categoryId) {
       const products = await prisma.products.findMany({
         include: {
           product_images: {
@@ -27,40 +46,33 @@ router.get('/:category?', async (req, res) => {
         }
       })
 
-      const formattedProducts = products.map(product => ({
-        id: product.product_id,
-        title: product.product_name,
-        price: Number(product.sale_price),
-        orginalPrice: Number(product.original_price),
-        frontImg: `${API_URL}${product.product_images[0]?.image_path}` || '',
-        backImg: `${API_URL}${product.product_images[1]?.image_path}` || ''
-      }))
-
       return res.json({
         categoryName: "所有商品",
-        products: formattedProducts
+        products: formatProducts(products)
       })
     }
 
     // 如果有提供分類參數，先查詢分類資訊
-    const categoryData = await prisma.categories.findFirst({
+    const categoryData = await prisma.categories.findUnique({
       where: {
-        category_name: {
-          contains: category
-        }
+        categories_id: categoryId
       }
     })
 
+    // 如果沒有那個分類 ID，船錯誤
+    if (!categoryData) {
+      return res.status(404).json({
+        status: "Error",
+        message: "分類不存在"
+      })
+    }
+
     // 查詢該分類的商品
-    const products = await prisma.products.findMany({
+    const products = await prisma.products.findMany ({
       where: {
         product_categories: {
           some: {
-            categories: {
-              category_name: {
-                contains: category
-              }
-            }
+            category_id: categoryId
           }
         }
       },
@@ -79,18 +91,9 @@ router.get('/:category?', async (req, res) => {
       }
     })
 
-    const formattedProducts = products.map(product => ({
-      id: product.product_id,
-      title: product.product_name,
-      price: Number(product.sale_price),
-      orginalPrice: Number(product.original_price),
-      frontImg: `${API_URL}${product.product_images[0]?.image_path}` || '',
-      backImg: `${API_URL}${product.product_images[1]?.image_path}` || ''
-    }))
-
     res.json({
       categoryName: categoryData?.category_name || "所有商品",
-      products: formattedProducts
+      products: formatProducts(products)
     })
 
   } catch (err) {
