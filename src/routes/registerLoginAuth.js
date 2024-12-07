@@ -60,16 +60,23 @@ router.post('/register',validateRegister,async(req,res) =>{
       const hashPassword = await bcrypt.hash(password_hash,10)//密碼加密處理
 
       const newUserId = uuidv4()
-
-      await prisma.users.create({
-        data:{
-          userId:newUserId,
-          username,
-          email,
-          gender,
-          password_hash:hashPassword
-        }
-      })
+      const existingUser = await prisma.users.findUnique({where:{ email }})
+      if(existingUser){
+        return res.status(409).json({ 
+          message: '用戶已存在' 
+        })
+      }else{
+        await prisma.users.create({
+          data:{
+            userId:newUserId,
+            username,
+            email,
+            gender,
+            password_hash:hashPassword
+          }
+        })
+      }
+      
       res.status(201).json({message:'註冊成功'})
   }catch(err){
     if(err.code === 'P2002'){
