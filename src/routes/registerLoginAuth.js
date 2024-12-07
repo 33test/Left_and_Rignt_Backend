@@ -95,6 +95,10 @@ router.post('/login',async(req,res) => {
   try{
     const {email,password_hash} = req.body
 
+    //看看收到甚麼email
+    console.log('email:',{email});
+    
+
     const user = await prisma.users.findUnique({
       where:{ email }
     })
@@ -113,7 +117,7 @@ router.post('/login',async(req,res) => {
     // 將 token 存入 localStorage
     // localStorage.setItem('token', token);
   }catch(err){
-    res.status(500).json({message:'伺服器錯誤'})
+    res.status(500).json({message:'伺服器錯誤',error: err.message})
   }
   
   
