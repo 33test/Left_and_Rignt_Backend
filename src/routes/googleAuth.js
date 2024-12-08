@@ -61,7 +61,7 @@ router.post('/verify-token', async (req, res) => {
 
       res.json({
         exists: true, 
-        user: existingUser
+        user: existingUser,
         token:token
       });
     } else {
@@ -101,7 +101,7 @@ router.post('/register', async (req, res) => {
 
     res.json({
       exists: true,
-      user: newUser
+      user: newUser,
       token: token
     });
 
