@@ -27,11 +27,11 @@ const listOrderBy = { latest: { listed_at: 'desc' }, oldest: { listed_at: 'asc' 
 
 // API 主戰場!
 router.get('/:categoryId?', async (req, res) => {
-  const { sortBy, itemsPerPage, pageNum } = req.query
+  const { sortBy, pageSize, pageNum } = req.query
 
   // 分頁相關
-const pageStart = (pageNum - 1) * itemsPerPage
-const pageEnd = pageStart + Number(itemsPerPage)
+const pageStart = (pageNum - 1) * pageSize
+const pageEnd = pageStart + Number(pageSize)
 
   try {
     // 確定 ID 是數字（轉一下）
