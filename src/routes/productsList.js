@@ -22,12 +22,17 @@ const getImageUrl = (imagePath) => {
   return `${API_URL}${imagePath}`
 }
 
-const listOrderBy = { latest: { listed_at: 'desc' }, oldest: { listed_at: 'asc'}, expensive: { sale_price: 'desc' }, cheap: { sale_price: 'asc' }, popular: { total_sales: 'desc' }}
+// 排序映射
+const listOrderBy = { latest: { listed_at: 'desc' }, oldest: { listed_at: 'asc' }, expensive: { sale_price: 'desc' }, cheap: { sale_price: 'asc' }, popular: { total_sales: 'desc' } }
 
-// 路由改為可選的分類參數
+// API 主戰場!
 router.get('/:categoryId?', async (req, res) => {
-  const { sortBy, itemsPerPage } = req.query
-  
+  const { sortBy, itemsPerPage, pageNum } = req.query
+
+  // 分頁相關
+const pageStart = (pageNum - 1) * itemsPerPage
+const pageEnd = pageStart + Number(itemsPerPage)
+
   try {
     // 確定 ID 是數字（轉一下）
     const categoryId = req.params.categoryId ? parseInt(req.params.categoryId) : null
@@ -53,7 +58,8 @@ router.get('/:categoryId?', async (req, res) => {
 
       return res.json({
         categoryName: "所有商品",
-        products: formatProducts(products)[itemsPerPage] || formatProducts(products)
+        products: formatProducts(products).slice(pageStart, pageEnd) || formatProducts(products),
+        totalProduct:products.length
       })
     }
 
@@ -99,7 +105,8 @@ router.get('/:categoryId?', async (req, res) => {
 
     res.json({
       categoryName: categoryData?.category_name || "所有商品",
-      products: formatProducts(products)[itemsPerPage] || formatProducts(products)
+      products: formatProducts(products).slice(pageStart, pageEnd) || formatProducts(products),
+      totalProduct:products.length
     })
 
   } catch (err) {
