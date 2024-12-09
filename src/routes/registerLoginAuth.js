@@ -50,9 +50,10 @@ const registerSchema = z.object({
     
     // .regex(/[A-Z]/, '密碼必須包含至少一個大寫英文字母'),
     email: z.string().email('請輸入正確的email'),
-    gender: z.enum(['f', 'm']),
-    password :z.string()
-    // .min(8,'密碼至少需要8個字元')
+    gender:z.enum(['m','f','o'],{
+      errorMap:() => ({message:'請選擇有效性別'})
+    }),
+    password :z.string().min(8,'密碼至少需要8個字元')
     // phone_number: z.string().regex(/^09\d{2}-?\d{3}-?\d{3}$/),
 })
 
