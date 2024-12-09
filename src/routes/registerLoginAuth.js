@@ -97,9 +97,16 @@ router.post('/register',validateRegister,async(req,res) =>{
             gender
           }
         })
+        const token = jwt.sign({
+          userId:user.userId,
+          userEmail:user.email
+        },SECRET_KEY,{
+        //期限
+          expiresIn:'1h'// 可設置5m,1d...
+        })
         res.status(201).json({
           message:'註冊成功',
-          user:user
+          token:token
         })
         // console.log('userId:', user.userId)
       }
@@ -142,10 +149,10 @@ router.post('/login',async(req,res) => {
     //期限
       expiresIn:'1h'// 可設置5m,1d...
     })
-    // res.json({ token })
+    
     res.status(201).json({
       message:'登入成功',
-      user:user
+      token:token
     })
     
   }catch(err){
