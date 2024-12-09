@@ -26,7 +26,7 @@ const listOrderBy = { latest: { listed_at: 'desc' }, oldest: { listed_at: 'asc'}
 
 // 路由改為可選的分類參數
 router.get('/:categoryId?', async (req, res) => {
-  const { sortBy } = req.query
+  const { sortBy, itemsPerPage } = req.query
   
   try {
     // 確定 ID 是數字（轉一下）
@@ -53,7 +53,7 @@ router.get('/:categoryId?', async (req, res) => {
 
       return res.json({
         categoryName: "所有商品",
-        products: formatProducts(products)
+        products: formatProducts(products)[itemsPerPage] || formatProducts(products)
       })
     }
 
@@ -99,7 +99,7 @@ router.get('/:categoryId?', async (req, res) => {
 
     res.json({
       categoryName: categoryData?.category_name || "所有商品",
-      products: formatProducts(products)
+      products: formatProducts(products)[itemsPerPage] || formatProducts(products)
     })
 
   } catch (err) {
