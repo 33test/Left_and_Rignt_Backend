@@ -12,6 +12,7 @@ dotenv.config()
 
 const SECRET_KEY = process.env.SECRET_KEY
 
+
 //get資料
 router.get("/", async (req, res) => {
     try {
@@ -21,6 +22,27 @@ router.get("/", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+//get 個別資料
+router.post("/find",async(req,res) =>{
+  try{
+    //輸入email
+    const { email } = req.body
+    if (!email) {
+      return res.status(400).json({ message: '请提供電子信箱' })
+    }
+    //通過email查找訊息
+    const row = await prisma.users.findUnique({
+      where:{ email:email }
+    })
+    if (!row) {
+      return res.status(404).json({ message: '未找到用户' })
+    }
+
+    res.json(row.userId);
+  }catch(err){
+    res.status(500).json({ error: err.message });
+  }
+})
 
 // zod 定義註冊 schema
 const registerSchema = z.object({
@@ -56,9 +78,9 @@ const validateRegister = (req,res,next) =>{
 //註冊
 router.post('/register',validateRegister,async(req,res) =>{
   try{
-      const { username,email,gender,password_hash } = req.body
+      const { username,email,password_hash,gender } = req.body
       const hashPassword = await bcrypt.hash(password_hash,10)//密碼加密處理
-
+      
       const newUserId = uuidv4()
       const existingUser = await prisma.users.findUnique({where:{ email }})
       if(existingUser){
@@ -66,44 +88,50 @@ router.post('/register',validateRegister,async(req,res) =>{
           message: '用戶已存在' 
         })
       }else{
-        await prisma.users.create({
+        const user = await prisma.users.create({
           data:{
             userId:newUserId,
             username,
             email,
-            gender,
-            password_hash:hashPassword
+            password_hash:hashPassword,
+            gender
           }
         })
+        res.status(201).json({
+          message:'註冊成功',
+          user:user
+        })
+        // console.log('userId:', user.userId)
       }
       
-      res.status(201).json({message:'註冊成功'})
+      
   }catch(err){
     if(err.code === 'P2002'){
           return res.status(409).json({message:'使用者已註冊'})
-        }
-        res.status(500).json({
-          message:'伺服器錯誤',
-          error: err.message, 
-          stack: err.stack    
-        })
     }
+    res.status(500).json({
+        message:'伺服器錯誤',
+        error: err.message, 
+        stack: err.stack    
+      })
+    
+  }
 })
 
 //登入
 router.post('/login',async(req,res) => {
   try{
-    const {email,password_hash} = req.body
+    const {email,password} = req.body
 
     //看看收到甚麼email
     console.log('email:',{email});
     
-
     const user = await prisma.users.findUnique({
       where:{ email }
     })
+    console.log('userId',user.userId);
 
-    if(!user || !(await bcrypt.compare(password_hash,user.password_hash))){
+    if(!user || !(await bcrypt.compare(password,user.password_hash))){
       return res.status(401).json({message:'帳號或密碼錯誤'})
     }
     const token = jwt.sign({
@@ -113,15 +141,13 @@ router.post('/login',async(req,res) => {
     //期限
       expiresIn:'1h'// 可設置5m,1d...
     })
-    res.json({ token })
-    // 將 token 存入 localStorage
-    // localStorage.setItem('token', token);
+    // res.json({ token })
+    res.json(user.userId)
+    
     
   }catch(err){
     res.status(500).json({message:'伺服器錯誤',error: err.message})
   }
-  
-  
 })
 //驗證使用者
 const authenticateToken = (req,res,next) =>{
