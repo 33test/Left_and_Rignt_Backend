@@ -135,15 +135,17 @@ router.post('/login',async(req,res) => {
       return res.status(401).json({message:'帳號或密碼錯誤'})
     }
     const token = jwt.sign({
-      userId:user.id,
+      userId:user.userId,
       userEmail:user.email
     },SECRET_KEY,{
     //期限
       expiresIn:'1h'// 可設置5m,1d...
     })
     // res.json({ token })
-    res.json(user.userId)
-    
+    res.status(201).json({
+      message:'登入成功',
+      user:user
+    })
     
   }catch(err){
     res.status(500).json({message:'伺服器錯誤',error: err.message})
