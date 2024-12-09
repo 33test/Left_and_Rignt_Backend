@@ -124,12 +124,13 @@ router.post('/login',async(req,res) => {
     const {email,password} = req.body
 
     //看看收到甚麼email
-    console.log('email:',{email});
+    // console.log('email:',{email});
     
     const user = await prisma.users.findUnique({
       where:{ email }
     })
-    console.log('userId',user.userId);
+    //測試得到的userId
+    // console.log('userId',user.userId);
 
     if(!user || !(await bcrypt.compare(password,user.password_hash))){
       return res.status(401).json({message:'帳號或密碼錯誤'})
