@@ -51,7 +51,7 @@ const registerSchema = z.object({
     // .regex(/[A-Z]/, '密碼必須包含至少一個大寫英文字母'),
     email: z.string().email('請輸入正確的email'),
     gender: z.enum(['f', 'm']),
-    password_hash :z.string()
+    password :z.string()
     // .min(8,'密碼至少需要8個字元')
     // phone_number: z.string().regex(/^09\d{2}-?\d{3}-?\d{3}$/),
 })
@@ -78,8 +78,8 @@ const validateRegister = (req,res,next) =>{
 //註冊
 router.post('/register',validateRegister,async(req,res) =>{
   try{
-      const { username,email,password_hash,gender } = req.body
-      const hashPassword = await bcrypt.hash(password_hash,10)//密碼加密處理
+      const { username,email,password,gender } = req.body
+      const hashPassword = await bcrypt.hash(password,10)//密碼加密處理
       
       const newUserId = uuidv4()
       const existingUser = await prisma.users.findUnique({where:{ email }})
@@ -106,7 +106,8 @@ router.post('/register',validateRegister,async(req,res) =>{
         })
         res.status(201).json({
           message:'註冊成功',
-          token:token
+          token:token,
+          newUser:user
         })
         // console.log('userId:', user.userId)
       }
@@ -152,7 +153,8 @@ router.post('/login',async(req,res) => {
     
     res.status(201).json({
       message:'登入成功',
-      token:token
+      token:token,
+      user:user
     })
     
   }catch(err){
