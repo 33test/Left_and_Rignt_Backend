@@ -22,33 +22,12 @@ const getImageUrl = (imagePath) => {
   return `${API_URL}${imagePath}`
 }
 
+const listOrderBy = { latest: { listed_at: 'desc' }, oldest: { listed_at: 'asc'}, expensive: { sale_price: 'desc' }, cheap: { sale_price: 'asc' }, popular: { total_sales: 'desc' }}
+
 // 路由改為可選的分類參數
 router.get('/:categoryId?', async (req, res) => {
   const { sortBy } = req.query
-
-  let orderBy = {}
-
-  switch (sortBy) {
-    case "latest":
-      orderBy = { listed_at: 'desc' } // Timestamp 從大到小(越新的越大)
-      break
-    case "oldest":
-      orderBy = { listed_at: 'asc'}
-      break
-    case "expensive":
-      orderBy = { sale_price: 'desc' }
-      break
-    case "cheap":
-      orderBy = { sale_price: 'asc' }
-      break
-    case "popular":
-      orderBy = { total_sales: 'desc' }
-      break
-    default:
-      orderBy = { product_id: 'asc'}
-  }
-
-
+  
   try {
     // 確定 ID 是數字（轉一下）
     const categoryId = req.params.categoryId ? parseInt(req.params.categoryId) : null
@@ -56,7 +35,7 @@ router.get('/:categoryId?', async (req, res) => {
     // 如果沒有提供分類參數，取得所有商品
     if (!categoryId) {
       const products = await prisma.products.findMany({
-        orderBy,
+        orderBy: listOrderBy[sortBy] || { product_id: 'asc' } ,
         include: {
           product_images: {
             where: {
@@ -102,7 +81,7 @@ router.get('/:categoryId?', async (req, res) => {
           }
         }
       },
-      orderBy,
+      orderBy: listOrderBy[sortBy] || { product_id: 'asc' } ,
       include: {
         product_images: {
           where: {
