@@ -7,6 +7,7 @@ const path = require('path')
 
 const productsRouter = require('./src/routes/productsList')
 const googleAuthRouter = require('./src/routes/googleAuth')
+const productDetailRouter = require('./src/routes/productDetailAuth')
 
 app.use(cors({
   origin: 'http://localhost:5173', // 前端網址，之後佈署了要改
@@ -27,6 +28,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')))
 app.use(express.json())
 app.use('/categories', productsRouter)
 app.use('/auth', googleAuthRouter)
+app.use('/findProduct',productDetailRouter)
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
