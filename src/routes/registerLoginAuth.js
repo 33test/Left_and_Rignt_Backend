@@ -152,7 +152,7 @@ router.post('/login',async(req,res) => {
       expiresIn:'1h'// 可設置5m,1d...
     })
     
-    res.status(201).json({
+    res.status(200).json({
       message:'登入成功',
       token:token,
       user:user
