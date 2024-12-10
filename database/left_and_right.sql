@@ -358,42 +358,12 @@ CREATE TABLE `users` (
   `introduced_by` varchar(50) DEFAULT NULL,
   `password_hash` varchar(255) DEFAULT NULL,
   `line_id` varchar(100) DEFAULT NULL,
-  `google_id` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `userId_UNIQUE` (`userId`),
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `phone_UNIQUE` (`phone`),
   KEY `user_id` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `users`
---
-
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'10001','Fakerfake','fakerfake@gmail.com','0911222333','m',NULL,NULL,NULL,NULL,'faker',NULL,NULL),(2,'10002','Onerfake','onerfake@gmail.com','0922333444','m',NULL,NULL,NULL,NULL,'oner',NULL,NULL),(3,'10003','Doranfake','doranfake@gmail.com','0933444555','m',NULL,NULL,NULL,NULL,'doran',NULL,NULL),(4,'10004','Gumayusifake','guriafake@gmail.com','0944555666','m',NULL,NULL,NULL,NULL,'gumayusi',NULL,NULL),(5,'10005','Keriafake','keriafake@gmail.com','0955666777','m',NULL,NULL,NULL,NULL,'keria',NULL,NULL),(6,'10006','zeusfake','zeusfake@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ZFZMQMwepfnUHz.JYgPgSeX71jB0BBioS7KHl0wtWCe03CHey7mwi',NULL,NULL),(7,'100051','kkoma','kkoma@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$tJhE3SV6vuFxa/R1YThmwedwp/Vl3qw4Q66ud8RhdjEQ72cOilpu6',NULL,NULL),(9,'100053','oner','oner@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$/cMwlrlvB1jD5bUmt5aHuu1V8v3HVw0/nMa.Qjksp.SdkgfgBa7fq',NULL,NULL),(10,'100054','gumayusi','guria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ldw6vpriNTiBOAmWoK0T.ucR1OYos6yNteMJKS6ZRvDRdWv1o6S6C',NULL,NULL),(11,'100055','keria','keria@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ewZhU83vzRmfBBB4x0yAju.2CcW0YXbA23iSYbiTFH4G4fEighNY2',NULL,NULL),(12,'100056','doran','doran@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$a67z9t5m9z7MEf91X6Vz4.DmK1hp9GugBQ99qZJHUAKTfq3KYWPki',NULL,NULL),(13,'100057','zeus','zeus@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$itHTBeKLcjj.rAh/QrqiJu2awmTqHuYKSfkj944Xf7wzjDNRHO5NO',NULL,NULL),(14,'e1d80885-8ac8-40ac-95fd-b033155be075','test','test@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$pZH6lAVRqt2ERgm6jvhezeWejKkIWLCfsTtx.x4gjtTjhVzVS7Rca',NULL,NULL),(16,'3c73655b-f764-440b-9253-ac6661ff19f4','tesst','tesst@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$BmxCqMsqROrWKhJwuijQROiBrbXhiruko0r3jGshMrhLiaUPllP9W',NULL,NULL),(18,'46197e77-ebc3-4f52-b697-882831ad9ee5','ttt','ttt@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$iK6mbtOctR2EfrwvlyILUOrYLiEZsLDjC6Ec5Hp46P5o6mPU4L4KK',NULL,NULL),(19,'c6aed49c-5051-48d2-a309-8017bfdb73d6','ffff','fff@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$uO.9BbmB8XBsE1KM8t8tPuJQqYyAzVV9mIOfz/q1sI4zlNjg/MLWC',NULL,NULL),(20,'02c62c46-3f10-407c-adf0-efe611dbea2e','aaa','aaa@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$hiKIFa.BXRb6G7ZDeGx2F.DV0ML1bQHyICkWxQh37Qfp15cWTACHq',NULL,NULL),(21,'10fda6d4-6644-44b7-9f23-a3f99f0e6e85','bbbb','bbbb@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$WbKUTPHvO2527M5zf0oF4OSb.KSWUZrD8PLYvKL6x2cqaT4oG/IOm',NULL,NULL),(22,'18785863-252a-49f9-82a8-1cf6f0019939','ccccccc','ccccc@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$/UBryZInLJ.kriSayYdL6ujZ3j2fejt5Ke.cLR0FJV4AJup3fY.Hq',NULL,NULL),(23,'8335f9d3-3cea-4659-b497-fd265a0c96e4','ccccccccccc','ccc@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$bj8400pZrLNTiCWhYU42Vee7l0lAQin7LcxurGiXUuxuahmCWcFMa',NULL,NULL),(24,'2b832fb0-f38f-4223-a430-6fa3aea55239','gggg','gggg@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$HNghcrPOayHXKCA7aexy.ex4mTq81PaimSPdlLLULaIbZfacCWIxC',NULL,NULL),(25,'393e9c23-4860-43ce-bd15-a01679c162be','sunny','sunny40224@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$1X/hBjrOV9U6PNzpNuqL4.bCAMRtcpWA.9ums7x2lx4C0TwW3MWJa',NULL,NULL),(26,'e04702e3-e0ff-4a0c-b757-053eb35f0139','rrrrrrrrrr','rrrrrrr@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$7SrhYQH1SyFjShGbBTiMfecVrkzpB74gqr8T0GaiKGpOHglzbKgam',NULL,NULL),(27,'c817c637-4b48-4fd1-9f36-a9946268d583','viper','viper@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$83cS9UJ.1gMHGFlmNp02FOwJB.MsYh3HdYD2ZMhcQGImPEn648je.',NULL,NULL),(28,'b5a7f1bc-c381-44e3-aa1c-66ef48ccb205','rara0857','t@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$kMrDGEp8Q8IkegYFXH54bO5HLwS6PBF.nsFToSDc0h98ll0ReLGES',NULL,NULL),(30,'ac822240-f71a-4f60-8aa6-ec83c6286862','ooo','oooo@gmail.com',NULL,'f',NULL,NULL,NULL,NULL,'$2b$10$w.XD9geHAAGkw2uBTyrzMOXeB3ZNBk6Py3Rif4xOjUzgUO5RCGoJC',NULL,NULL),(31,'4271c846-fc71-42a2-a1a1-f5c4dfd6dc8e','chovy','chovy@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$N1fXvtzHxvYgarHHvQpcHudSlnTWmyWI2K2QQ0gnSRz8aFIiuz/Su',NULL,NULL),(32,'c52afb36-045d-4923-a69f-bf266d02b945','faker','faker@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$INZKt/LPaMP0of1WVmAoROBFmumwRy5pZ0janf8RY65kKeK/6gQUu',NULL,NULL),(33,'0c3c3cbe-b908-407b-affc-dadf4d3aac20','off','off@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$zHA.acGlDzLU/tfB9yUkROkG/xwPBqIky1vMBbOYMqzptWZUOPD9S',NULL,NULL),(34,'459b5c53-e0ae-44b3-b23d-a8c8a953fe33','onon','on@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$DGFjIkLyUqIAxb9iy0iynOsCkmH/XlzVaTFkz7xzq3HMDHfDzItjO',NULL,NULL),(35,'a7618651-b723-4c2a-99ff-8bdce752bfb7','peanut','peanut@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$v0.3BzfM1ub9jwji47Q/UOPhcpwVSMXQmkpcBXHIudCiQkGvuvhW.',NULL,NULL),(36,'956751f2-195c-4523-93bf-5847e7cb8e77','ruler','ruler@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$jyJGI5LaeXDsI7gnw3LYru6YaI25aN7a7e3cjvoHFSb7f3z8/3oae',NULL,NULL),(37,'d6a25408-9a0a-4d24-933a-44c1c9764d6b','bang','bang@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$apEhSADqDdvUZpgfiosrgug2npxamGmWUbEYbcz7FXPMoONjAAloS',NULL,NULL),(38,'f46371ee-205b-4c23-ae88-d39d5e8aa57f','bdd','bdd@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$ofO/KFgdVjrhcJKWB6cIE.mN4wMaPdLzWNowEqDj.HmUjE4Xbu9FO',NULL,NULL),(39,'0382aec7-a4c6-4e62-92bb-da1772328406','scout','scout@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$jlhjjq0Ib4bfZmqthhoOXe2ekARn1V28ZlKJPM.dqKvbcVigFAr3.',NULL,NULL),(40,'d2ae3ee1-53de-41a8-a8df-346c73166abf','peyz','peyz@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$uVHaDWyunLv1ZfmITcdFDuU3C2limFS/6IpviOicH7xN07vlWVOtC',NULL,NULL),(41,'c01842a5-5934-4113-a835-2c45573c252d','zeka','zeka@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$DFTxv1QUWpZADUr66R.k4epdV3fbwyhdOBESU4NwNIF/HvTXNNinO',NULL,NULL),(42,'388a6f38-5c50-4f3d-9fbc-fdb37007f71c','delight','delight@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$Ax5zRLlLJo2sDA7SGeoMluJ5Udy3bvDX82RvRaFBwuZQlNSO6v5WG',NULL,NULL),(43,'8b5091b8-d90e-4faf-888f-00593872c1cd','bin','bin@gmail.com',NULL,'m',NULL,NULL,NULL,NULL,'$2b$10$wzNgeeFaQXcVYyy/Qi.9wOcnY70MfkZNDYeSKVWSGvy/Zh.lGx9fC',NULL,NULL);
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `wishlists`
---
-
-DROP TABLE IF EXISTS `wishlists`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `wishlists` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `wishlists_members_id` varchar(50) NOT NULL,
-  `wishlists_products_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_wishlists_products` (`wishlists_products_id`),
-  KEY `fk_wishlists_users_idx` (`wishlists_members_id`),
-  CONSTRAINT `fk_wishlists_products` FOREIGN KEY (`wishlists_products_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_wishlists_users` FOREIGN KEY (`wishlists_members_id`) REFERENCES `users` (`userId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -416,4 +386,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-09 18:14:48
+-- Dump completed on 2024-11-30 19:26:48
