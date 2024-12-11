@@ -39,7 +39,7 @@ router.post("/specs",async(req,res) =>{
       where:{ product_id:product_id }
     })
     if (!productInformation) {
-      return res.status(404).json({ message: '未找到商品/此商品沒有不同款式' })
+      return res.status(404).json({ message: '未找到商品' })
     }
 
     res.status(200).json(productInformation);
@@ -66,7 +66,7 @@ router.post("/mainImages",async(req,res) =>{
         ]
       },
       orderBy: {
-        order_sort: 'asc' // 按升序排列
+        order_sort: 'asc' // 由小到大排列
       }
     })
     if (!productInformation) {
@@ -97,7 +97,7 @@ router.post("/descriptionImages",async(req,res) =>{
         ]
       },
       orderBy: {
-        order_sort: 'asc' // 按升序排列
+        order_sort: 'asc' // 由小到大排列
       }
     })
     if (!productInformation) {
