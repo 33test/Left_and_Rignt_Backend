@@ -73,18 +73,6 @@ model products {
   @@index([status], map: "idx_status")
 }
 
-model credit_card {
-  id                 Int                  @id
-  card_number        String               @db.VarChar(16)
-  owner_name         String               @db.VarChar(50)
-  expiration_date    String               @db.VarChar(6)
-  security_code      String               @db.VarChar(3)
-  owner              String               @db.VarChar(50)
-  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_owner_userId")
-  orders_imformation orders_imformation[]
-
-  @@index([owner], map: "userId_idx")
-}
 
 model deliver {
   id                 Int                  @id
@@ -100,37 +88,6 @@ model deliver {
   orders_imformation orders_imformation[]
 
   @@index([owner], map: "fk_owner_userId_idx")
-}
-
-model users {
-  id                 Int                  @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  userId             String               @unique(map: "userId_UNIQUE") @db.VarChar(50)
-  username           String               @db.VarChar(50)
-  email              String?              @unique(map: "email_UNIQUE") @db.VarChar(255)
-  phone              String?              @unique(map: "phone_UNIQUE") @db.VarChar(20)
-  gender             String               @db.VarChar(1)
-  birthday           DateTime?            @db.Date
-  mobile_phone       String?              @db.VarChar(20)
-  from_store         String?              @db.VarChar(45)
-  introduced_by      String?              @db.VarChar(50)
-  password_hash      String?              @db.VarChar(255)
-  line_id            String?              @db.VarChar(100)
-  google_id          String?              @db.VarChar(100)
-  credit_card        credit_card[]
-  deliver            deliver[]
-  orders_imformation orders_imformation[]
-  wishlists          wishlists[]
-
-  @@index([userId], map: "user_id")
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model cart {
-  user_id    String @db.VarChar(50)
-  product_id String @db.VarChar(50)
-  quantity   Int?
-
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -154,8 +111,8 @@ model orders_imformation {
   users                users?                           @relation(fields: [orders_users_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_user")
 
   @@index([orders_deliver_id], map: "fk_orders_deliver_idx")
-  @@index([orders_payment_id], map: "fk_orders_payment_idx")
   @@index([orders_users_id], map: "fk_orders_user_idx")
+  @@index([orders_payment_id], map: "fk_orders_payment_idx")
 }
 
 model reviews_table {
@@ -164,6 +121,38 @@ model reviews_table {
   sku          Int?
   comment      String? @db.Text
   comment_time Int?
+}
+
+
+model users {
+  id                 Int                  @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  userId             String               @unique(map: "userId_UNIQUE") @db.VarChar(50)
+  username           String               @db.VarChar(50)
+  email              String?              @unique(map: "email_UNIQUE") @db.VarChar(255)
+  phone              String?              @unique(map: "phone_UNIQUE") @db.VarChar(20)
+  gender             String               @db.VarChar(1)
+  birthday           DateTime?            @db.Date
+  mobile_phone       String?              @db.VarChar(20)
+  from_store         String?              @db.VarChar(45)
+  introduced_by      String?              @db.VarChar(50)
+  password_hash      String?              @db.VarChar(255)
+  line_id            String?              @db.VarChar(100
+  google_id          String?              @db.VarChar(100)
+  credit_card        credit_card[]
+  deliver            deliver[]
+  orders_imformation orders_imformation[]
+  wishlists          wishlists[]
+
+  @@index([userId], map: "user_id")
+}
+
+
+model cart {
+  user_id    String @db.VarChar(50)
+  product_id String @db.VarChar(50)
+  quantity   Int?
+
+  @@ignore
 }
 
 model wishlists {
@@ -176,6 +165,21 @@ model wishlists {
   @@index([wishlists_products_id], map: "fk_wishlists_products")
   @@index([wishlists_members_id], map: "fk_wishlists_users_idx")
 }
+
+
+model credit_card {
+  id                 Int                  @id
+  card_number        String               @db.VarChar(16)
+  owner_name         String               @db.VarChar(50)
+  expiration_date    String               @db.VarChar(6)
+  security_code      String               @db.VarChar(3)
+  owner              String               @db.VarChar(50)
+  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_creditCard_owner_userId")
+  orders_imformation orders_imformation[]
+
+  @@index([owner], map: "userId_idx")
+}
+
 
 enum orders_imformation_orders_status {
   Pending
