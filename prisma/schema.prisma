@@ -73,14 +73,6 @@ model products {
   @@index([status], map: "idx_status")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model cart {
-  user_id    String @db.VarChar(50)
-  product_id String @db.VarChar(50)
-  quantity   Int?
-
-  @@ignore
-}
 
 model deliver {
   id                 Int                  @id
@@ -131,6 +123,7 @@ model reviews_table {
   comment_time Int?
 }
 
+
 model users {
   id                 Int                  @id @unique(map: "id_UNIQUE") @default(autoincrement())
   userId             String               @unique(map: "userId_UNIQUE") @db.VarChar(50)
@@ -143,6 +136,7 @@ model users {
   from_store         String?              @db.VarChar(45)
   introduced_by      String?              @db.VarChar(50)
   password_hash      String?              @db.VarChar(255)
+  line_id            String?              @db.VarChar(100
   google_id          String?              @db.VarChar(100)
   credit_card        credit_card[]
   deliver            deliver[]
@@ -150,6 +144,15 @@ model users {
   wishlists          wishlists[]
 
   @@index([userId], map: "user_id")
+}
+
+
+model cart {
+  user_id    String @db.VarChar(50)
+  product_id String @db.VarChar(50)
+  quantity   Int?
+
+  @@ignore
 }
 
 model wishlists {
@@ -163,6 +166,7 @@ model wishlists {
   @@index([wishlists_members_id], map: "fk_wishlists_users_idx")
 }
 
+
 model credit_card {
   id                 Int                  @id
   card_number        String               @db.VarChar(16)
@@ -175,6 +179,7 @@ model credit_card {
 
   @@index([owner], map: "userId_idx")
 }
+
 
 enum orders_imformation_orders_status {
   Pending
