@@ -46,6 +46,8 @@ model product_specs {
   product_id       Int
   spec_value       String   @db.VarChar(50)
   stock            Int      @default(0) @db.UnsignedInt
+  color_text       String?  @db.VarChar(50)
+  color_square     String?  @db.VarChar(50)
   products         products @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_spec_product_id")
 
   @@index([product_id], map: "fk_product_spec_product_id_idx")
@@ -66,24 +68,117 @@ model products {
   product_categories product_categories[]
   product_images     product_images[]
   product_specs      product_specs[]
+  wishlists          wishlists[]
 
   @@index([status], map: "idx_status")
 }
 
-model profile {
-  id            Int       @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  userId        String    @unique(map: "userId_UNIQUE") @db.VarChar(50)
-  username      String    @db.VarChar(50)
-  email         String?   @unique(map: "email_UNIQUE") @db.VarChar(255)
-  phone         String?   @unique(map: "phone_UNIQUE") @db.VarChar(20)
-  gender        String    @db.VarChar(1)
-  birthday      DateTime? @db.Date
-  mobile_phone  String?   @db.VarChar(20)
-  from_store    String?   @db.VarChar(45)
-  introduced_by String?   @db.VarChar(50)
-  password_hash String?   @db.VarChar(255)
-  line_id       String?   @unique(map: "line_id_UNIQUE") @db.VarChar(100)
-  google_id     String?   @unique(map: "google_id_UNIQUE") @db.VarChar(100)
+model credit_card {
+  id                 Int                  @id
+  card_number        String               @db.VarChar(16)
+  owner_name         String               @db.VarChar(50)
+  expiration_date    String               @db.VarChar(6)
+  security_code      String               @db.VarChar(3)
+  owner              String               @db.VarChar(50)
+  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_owner_userId")
+  orders_imformation orders_imformation[]
+
+  @@index([owner], map: "userId_idx")
+}
+
+model deliver {
+  id                 Int                  @id
+  phone              String?              @db.VarChar(20)
+  recepient          String               @db.VarChar(50)
+  recepient_phone    String               @db.VarChar(20)
+  country            String               @db.VarChar(100)
+  city               String               @db.VarChar(100)
+  region             String               @db.VarChar(100)
+  address            String               @db.Text
+  owner              String               @db.VarChar(50)
+  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_deliver_owner_userId")
+  orders_imformation orders_imformation[]
+
+  @@index([owner], map: "fk_owner_userId_idx")
+}
+
+model users {
+  id                 Int                  @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  userId             String               @unique(map: "userId_UNIQUE") @db.VarChar(50)
+  username           String               @db.VarChar(50)
+  email              String?              @unique(map: "email_UNIQUE") @db.VarChar(255)
+  phone              String?              @unique(map: "phone_UNIQUE") @db.VarChar(20)
+  gender             String               @db.VarChar(1)
+  birthday           DateTime?            @db.Date
+  mobile_phone       String?              @db.VarChar(20)
+  from_store         String?              @db.VarChar(45)
+  introduced_by      String?              @db.VarChar(50)
+  password_hash      String?              @db.VarChar(255)
+  line_id            String?              @db.VarChar(100)
+  google_id          String?              @db.VarChar(100)
+  credit_card        credit_card[]
+  deliver            deliver[]
+  orders_imformation orders_imformation[]
+  wishlists          wishlists[]
 
   @@index([userId], map: "user_id")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model cart {
+  user_id    String @db.VarChar(50)
+  product_id String @db.VarChar(50)
+  quantity   Int?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model discount {
+  discount_id String  @db.VarChar(50)
+  dicription  String? @db.Text
+
+  @@ignore
+}
+
+model orders_imformation {
+  orders_id            BigInt                           @id @db.UnsignedBigInt
+  orders_users_id      String?                          @db.VarChar(50)
+  orders_status        orders_imformation_orders_status
+  orders_created_date  DateTime                         @db.DateTime(0)
+  orders_finished_date DateTime?                        @db.DateTime(0)
+  orders_deliver_id    Int?
+  orders_payment_id    Int?
+  deliver              deliver?                         @relation(fields: [orders_deliver_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_deliver")
+  credit_card          credit_card?                     @relation(fields: [orders_payment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_payment")
+  users                users?                           @relation(fields: [orders_users_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_user")
+
+  @@index([orders_deliver_id], map: "fk_orders_deliver_idx")
+  @@index([orders_payment_id], map: "fk_orders_payment_idx")
+  @@index([orders_users_id], map: "fk_orders_user_idx")
+}
+
+model reviews_table {
+  product_id   Int     @id @unique(map: "commentId_UNIQUE") @default(autoincrement())
+  user_id      String  @unique(map: "userId_UNIQUE") @db.VarChar(255)
+  sku          Int?
+  comment      String? @db.Text
+  comment_time Int?
+}
+
+model wishlists {
+  id                    Int      @id @default(autoincrement())
+  wishlists_members_id  String   @db.VarChar(50)
+  wishlists_products_id Int
+  products              products @relation(fields: [wishlists_products_id], references: [product_id], onDelete: Cascade, map: "fk_wishlists_products")
+  users                 users    @relation(fields: [wishlists_members_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_wishlists_users")
+
+  @@index([wishlists_products_id], map: "fk_wishlists_products")
+  @@index([wishlists_members_id], map: "fk_wishlists_users_idx")
+}
+
+enum orders_imformation_orders_status {
+  Pending
+  Completed
+  Cancelled
 }
