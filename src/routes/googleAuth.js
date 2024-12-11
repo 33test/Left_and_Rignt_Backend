@@ -20,7 +20,7 @@ router.post('/verify-token', async (req, res) => {
     const googleId = payload.sub;
 
     // 檢查 Email 是否已存在
-    let existingUser = await prisma.profile.findUnique({  
+    let existingUser = await prisma.users.findUnique({  
       where: {
         email: userEmail,
       }
@@ -29,7 +29,7 @@ router.post('/verify-token', async (req, res) => {
     // 如果 Email 存在，檢查是否有 google_id。如果有的話在該筆資料加上 google_id，這樣使用者可以一般登入也可以 google 登入
     if (existingUser) {
       if (!existingUser.google_id) {
-        existingUser = await prisma.profile.update({  
+        existingUser = await prisma.users.update({  
           where: {
             email: userEmail
           },
@@ -67,7 +67,7 @@ router.post('/register', async (req, res) => {
       // 用 uuidv4
       const newUserId = uuidv4()
 
-      const newUser = await prisma.profile.create({
+      const newUser = await prisma.users.create({
         data: {
           userId: newUserId,
           email,
