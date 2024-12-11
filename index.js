@@ -28,7 +28,7 @@ app.use(express.json())
 app.use('/categories', productsRouter)
 app.use('/users',registerLoginRouter)
 app.use('/auth', googleAuthRouter)
-app.use('/findProduct',productDetailRouter)
+app.use('/products',productDetailRouter)
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
