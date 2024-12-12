@@ -28,7 +28,7 @@ app.use('/categories', productsRouter)
 app.use('/users',registerLoginRouter)
 app.use('/auth', googleAuthRouter)
 
-const PORT = process.env.PORT;
+const PORT = 3300
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
 })
