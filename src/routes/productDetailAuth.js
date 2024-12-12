@@ -2,6 +2,91 @@ const express = require('express');
 const router = express.Router();
 const prisma = require('../configs/db');
 
+const API_URL = "http://localhost:3300/"
+
+// 圖片路徑
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return ''
+  return `${API_URL}${imagePath}`
+}
+
+// const formatProduct = (product) => {
+//   return product.map(productDetail => ({
+//     id: productDetail.profile.product_id,
+//     title: productDetail.profile.product_name,
+//     price: Number(productDetail.profile.sale_price),
+//     originalPrice: Number(productDetail.profile.original_price),
+//     totalSales:Number(productDetail.profile.total_sales),
+//     mainImg: getImageUrl(productDetail.mainImg.product_images),
+//     desImg: getImageUrl(productDetail.desImg.image_path),
+//     status:productDetail.profile.status,
+//     description:productDetail.profile.description
+//   }))
+// }
+// router.get("/:product_id?",async(req,res) => {
+//   try{
+//     const product_id  = req.params.product_id ? parseInt(req.params.product_id) : null
+
+//     if (!product_id) {
+//       return res.status(400).json({ message: '請提供商品序號' })
+//     }
+//     //商品資訊
+//     const product = await prisma.products.findMany({
+//       where:{ 
+//         product_id:product_id },
+//       include:{
+//         product_images:{
+//           where: {
+//             AND: [
+//               { image_type: 'main' },
+//             ]
+//           },
+//           orderBy: {
+//             order_sort: 'asc'
+//           }
+//         },
+//         product_images:{
+//           where: {
+//             AND: [
+//               { image_type: 'des' },
+//             ]
+//           },
+//           orderBy: {
+//             order_sort: 'asc'
+//           }
+//         },
+//         product_specs:{
+//           where:{
+//             AND:[
+
+//             ]
+//           }
+//         }
+//       }
+//     })
+//     const profile = productProfiles.map(profile =>({
+//       productId:profile.product_id,
+//       title:profile.product_name,
+//       originalPrice:profile.original_price,
+//       salePrice:profile.sale_price,
+//       totalSales:profile.total_sales,
+//       status:profile.status,
+//       description:profile.description,
+//     }))
+//     const colors = specs.map(spec => ({
+//       color_text: spec.color_text,
+//       color_square: spec.color_square
+//   }));
+//     res.status(200).json({
+//     })
+
+//   }catch(err){
+//     console.error(err)
+//     res.status(500).json({error:err.message})
+//   }
+  
+// })
+
 
 router.get("/:product_id?",async(req,res) => {
   try{
@@ -11,10 +96,10 @@ router.get("/:product_id?",async(req,res) => {
       return res.status(400).json({ message: '請提供商品序號' })
     }
     //商品資訊
-    const productProfile = await prisma.products.findUnique({
+    const productProfiles = await prisma.products.findUnique({
       where:{ product_id:product_id }
     })
-    if (!productProfile) {
+    if (!productProfiles) {
       return res.status(404).json({ message: '未找到商品資訊' })
     }
     //商品款式
@@ -25,7 +110,7 @@ router.get("/:product_id?",async(req,res) => {
       return res.status(404).json({ message: '未找到款式' })
     }
     //商品主照片
-    const productMainImg = await prisma.product_images.findMany({
+    const productMainImgs = await prisma.product_images.findMany({
       where:{ 
         AND:[
           {product_id:product_id },
@@ -36,11 +121,11 @@ router.get("/:product_id?",async(req,res) => {
         order_sort: 'asc' // 由小到大排列
       }
     })
-    if (!productMainImg) {
+    if (!productMainImgs) {
       return res.status(404).json({ message: '未找到商品主照片' })
     }
     //商品敘述照片
-    const productDesImg = await prisma.product_images.findMany({
+    const productDesImgs = await prisma.product_images.findMany({
       where:{ 
         AND:[
           {product_id:product_id },
@@ -51,14 +136,15 @@ router.get("/:product_id?",async(req,res) => {
         order_sort: 'asc' // 由小到大排列
       }
     })
-    if (!productDesImg) {
+    if (!productDesImgs) {
       return res.status(404).json({ message: '未找到商品敘述照片' })
     }
+    
     res.status(200).json({
-      profile:productProfile,
+      profile:productProfiles,
       specs:productSpecs,
-      mainImg:productMainImg,
-      desImg:productDesImg
+      mainImgs:productMainImgs,
+      desImgs:productDesImgs
     })
 
   }catch(err){
