@@ -10,7 +10,7 @@ const formatProducts = (products) => {
     id: product.product_id,
     title: product.product_name,
     price: Number(product.sale_price),
-    orginalPrice: Number(product.original_price),
+    originalPrice: Number(product.original_price),
     frontImg: getImageUrl(product.product_images[0]?.image_path),
     backImg: getImageUrl(product.product_images[1]?.image_path)
   }))
