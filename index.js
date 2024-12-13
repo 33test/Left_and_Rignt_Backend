@@ -4,7 +4,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const path = require('path')
-
+require('dotenv').config();
 const productsRouter = require('./src/routes/productsList')
 const googleAuthRouter = require('./src/routes/googleAuth')
 
@@ -29,6 +29,6 @@ app.use('/categories', productsRouter)
 app.use('/auth', googleAuthRouter)
 
 const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
+app.listen(3000, () => {
+  console.log(`server running on port 3000`)
 })
