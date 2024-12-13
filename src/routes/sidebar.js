@@ -67,7 +67,14 @@ app.get("/children", (req, res) => {
   });
 });
 
+
+
+
+const PORT = 3300
+app.listen(PORT, () => {
+  console.log(`server running on port ${PORT}`)
+})
 // 啟動伺服器
-app.listen(3000, () => {
-  console.log("伺服器啟動於 http://localhost:3000");
-});
+// app.listen(3000, () => {
+//   console.log("伺服器啟動於 http://localhost:3000");
+// });
