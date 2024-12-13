@@ -1,11 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const { OAuth2Client } = require('google-auth-library');
+const { OAuth2Client, IdTokenClient } = require('google-auth-library');
 const prisma = require('../configs/db');
 const { v4: uuidv4 } = require('uuid')
+const jwt = require('jsonwebtoken')
+
+// 檢查環境變數 
+if (!process.env.SECRET_KEY) {
+  console.error('Missing SECRET_KEY environment variable');
+  process.exit(1);
+}
 
 const CLIENT_ID = "201131820318-om98jaudikrjuraavdmt8o0jlitaf7b1.apps.googleusercontent.com"
 const client = new OAuth2Client(CLIENT_ID);
+
+function createJWT(user) {
+  // 產生 JWT
+  const token = jwt.sign(
+    { userId: user.userId, email: user.email },
+    process.env.SECRET_KEY,
+    { expiresIn: '24h' }
+  );
+
+  return token
+}
 
 router.post('/verify-token', async (req, res) => {
   try {
@@ -18,18 +36,19 @@ router.post('/verify-token', async (req, res) => {
     const payload = ticket.getPayload();
     const userEmail = payload.email;
     const googleId = payload.sub;
-
+    
     // 檢查 Email 是否已存在
-    let existingUser = await prisma.profile.findUnique({  
+    let existingUser = await prisma.users.findUnique({  
       where: {
         email: userEmail,
       }
     });
 
+
     // 如果 Email 存在，檢查是否有 google_id。如果有的話在該筆資料加上 google_id，這樣使用者可以一般登入也可以 google 登入
     if (existingUser) {
       if (!existingUser.google_id) {
-        existingUser = await prisma.profile.update({  
+        existingUser = await prisma.users.update({  
           where: {
             email: userEmail
           },
@@ -37,11 +56,13 @@ router.post('/verify-token', async (req, res) => {
             google_id: googleId
           }
         });
-        console.log('Updated user with Google ID');
       }
+      const token = createJWT(existingUser);
+
       res.json({
         exists: true, 
-        user: existingUser
+        user: existingUser,
+        token:token
       });
     } else {
       // 使用者不存在，詢問是否建立
@@ -55,7 +76,6 @@ router.post('/verify-token', async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error verifying token:', error);
     res.status(401).json({ error: 'Invalid token' });
   }
 });
@@ -67,7 +87,7 @@ router.post('/register', async (req, res) => {
       // 用 uuidv4
       const newUserId = uuidv4()
 
-      const newUser = await prisma.profile.create({
+      const newUser = await prisma.users.create({
         data: {
           userId: newUserId,
           email,
@@ -77,13 +97,15 @@ router.post('/register', async (req, res) => {
         }
       });
 
+    const token = createJWT(newUser);
+
     res.json({
       exists: true,
-      user: newUser
+      user: newUser,
+      token: token
     });
 
   } catch (error) {
-    console.error('Registration error:', error);
     res.status(500).json({ error: 'Failed to register user' });
   }
 });
