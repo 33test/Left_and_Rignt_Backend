@@ -4,107 +4,24 @@ const prisma = require('../configs/db');
 
 const API_URL = "http://localhost:3300/"
 
-// 圖片路徑
-const getImageUrl = (imagePath) => {
-  if (!imagePath) return ''
-  return `${API_URL}${imagePath}`
-}
-
-// const formatProduct = (product) => {
-//   return product.map(productDetail => ({
-//     id: productDetail.profile.product_id,
-//     title: productDetail.profile.product_name,
-//     price: Number(productDetail.profile.sale_price),
-//     originalPrice: Number(productDetail.profile.original_price),
-//     totalSales:Number(productDetail.profile.total_sales),
-//     mainImg: getImageUrl(productDetail.mainImg.product_images),
-//     desImg: getImageUrl(productDetail.desImg.image_path),
-//     status:productDetail.profile.status,
-//     description:productDetail.profile.description
-//   }))
-// }
-// router.get("/:product_id?",async(req,res) => {
-//   try{
-//     const product_id  = req.params.product_id ? parseInt(req.params.product_id) : null
-
-//     if (!product_id) {
-//       return res.status(400).json({ message: '請提供商品序號' })
-//     }
-//     //商品資訊
-//     const product = await prisma.products.findMany({
-//       where:{ 
-//         product_id:product_id },
-//       include:{
-//         product_images:{
-//           where: {
-//             AND: [
-//               { image_type: 'main' },
-//             ]
-//           },
-//           orderBy: {
-//             order_sort: 'asc'
-//           }
-//         },
-//         product_images:{
-//           where: {
-//             AND: [
-//               { image_type: 'des' },
-//             ]
-//           },
-//           orderBy: {
-//             order_sort: 'asc'
-//           }
-//         },
-//         product_specs:{
-//           where:{
-//             AND:[
-
-//             ]
-//           }
-//         }
-//       }
-//     })
-//     const profile = productProfiles.map(profile =>({
-//       productId:profile.product_id,
-//       title:profile.product_name,
-//       originalPrice:profile.original_price,
-//       salePrice:profile.sale_price,
-//       totalSales:profile.total_sales,
-//       status:profile.status,
-//       description:profile.description,
-//     }))
-//     const colors = specs.map(spec => ({
-//       color_text: spec.color_text,
-//       color_square: spec.color_square
-//   }));
-//     res.status(200).json({
-//     })
-
-//   }catch(err){
-//     console.error(err)
-//     res.status(500).json({error:err.message})
-//   }
-  
-// })
-
-
-router.get("/:product_id?",async(req,res) => {
+//一支搞定
+router.get("/:productId?",async(req,res) => {
   try{
-    const product_id  = req.params.product_id ? parseInt(req.params.product_id) : null
+    const productId  = req.params.productId ? parseInt(req.params.productId) : null
 
-    if (!product_id) {
+    if (!productId) {
       return res.status(400).json({ message: '請提供商品序號' })
     }
     //商品資訊
     const productProfiles = await prisma.products.findUnique({
-      where:{ product_id:product_id }
+      where:{ product_id:productId }
     })
     if (!productProfiles) {
       return res.status(404).json({ message: '未找到商品資訊' })
     }
     //商品款式
     const productSpecs = await prisma.product_specs.findMany({
-      where:{ product_id:product_id }
+      where:{ product_id:productId }
     })
     if (!productSpecs) {
       return res.status(404).json({ message: '未找到款式' })
@@ -113,7 +30,7 @@ router.get("/:product_id?",async(req,res) => {
     const productMainImgs = await prisma.product_images.findMany({
       where:{ 
         AND:[
-          {product_id:product_id },
+          {product_id:productId },
           { image_type: 'main' }
         ]
       },
@@ -128,7 +45,7 @@ router.get("/:product_id?",async(req,res) => {
     const productDesImgs = await prisma.product_images.findMany({
       where:{ 
         AND:[
-          {product_id:product_id },
+          { product_id:productId },
           { image_type: 'description' }
         ]
       },
