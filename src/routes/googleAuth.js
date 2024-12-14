@@ -26,12 +26,8 @@ function createJWT(user) {
 }
 
 router.post('/verify-token', async (req, res) => {
-  console.log("here");
-  
   try {
     const { credential } = req.body;
-    console.log("credential",credential);
-    
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: CLIENT_ID
