@@ -68,7 +68,6 @@ model products {
   product_categories product_categories[]
   product_images     product_images[]
   product_specs      product_specs[]
-  shared_carts       shared_carts[]
   wishlists          wishlists[]
 
   @@index([status], map: "idx_status")
@@ -141,7 +140,6 @@ model users {
   deliver            deliver[]
   orders_imformation orders_imformation[]
   shared_cart_users  shared_cart_users[]
-  shared_carts       shared_carts[]
   wishlists          wishlists[]
 
   @@index([userId], map: "user_id")
@@ -238,34 +236,30 @@ model purchase_product {
 }
 
 model shared_cart_users {
-  id             Int          @id @default(autoincrement()) @db.UnsignedInt
-  shared_cart_id Int          @db.UnsignedInt
-  user_id        String       @db.VarChar(50)
-  created_at     DateTime     @default(now()) @db.Timestamp(0)
-  shared_carts   shared_carts @relation(fields: [shared_cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shared_cart_id")
-  users          users        @relation(fields: [user_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_shared_cart_user_id")
+  id                   Int      @id @default(autoincrement()) @db.UnsignedInt
+  shared_cart_group_id Int      @db.UnsignedInt
+  user_id              String   @db.VarChar(50)
+  created_at           DateTime @default(now()) @db.Timestamp(0)
+  users                users    @relation(fields: [user_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_shared_cart_user_id")
 
-  @@index([shared_cart_id], map: "fk_shared_cart_id_idx")
+  @@index([shared_cart_group_id], map: "fk_shared_cart_id_idx")
   @@index([user_id], map: "fk_shared_cart_user_id_idx")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model shared_carts {
-  id                Int                 @id @default(autoincrement()) @db.UnsignedInt
-  name              String?             @db.VarChar(45)
-  product_id        Int
-  quantity          Int
-  created_at        DateTime            @default(now()) @db.Timestamp(0)
-  updated_at        DateTime            @default(now()) @db.Timestamp(0)
-  status            Boolean             @default(false)
-  completed_at      DateTime?           @db.Timestamp(0)
-  completed_by      String?             @db.VarChar(50)
-  shared_cart_users shared_cart_users[]
-  users             users?              @relation(fields: [completed_by], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_completed_by_user_id")
-  products          products            @relation(fields: [product_id], references: [product_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_id")
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  group_id     Int       @db.UnsignedInt
+  name         String?   @db.VarChar(45)
+  product_id   Int
+  quantity     Int
+  created_at   DateTime  @default(now()) @db.Timestamp(0)
+  updated_at   DateTime  @default(now()) @db.Timestamp(0)
+  status       Boolean   @default(false)
+  completed_at DateTime? @db.Timestamp(0)
+  completed_by String?   @db.VarChar(50)
 
-  @@index([completed_by], map: "fk_completed_by_user_id_idx")
-  @@index([product_id], map: "fk_product_id_idx")
+  @@index([group_id], map: "idx_group_id")
 }
 
 enum orders_imformation_orders_status {
