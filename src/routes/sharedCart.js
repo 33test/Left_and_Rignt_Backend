@@ -106,7 +106,7 @@ router.get('/sharedCartItem/:groupId?', async (req, res) => {
             product_id: productIdList[i]
           },
         })
-        const imgPath = await prisma.product_images.findFirst({
+        let imgPath = await prisma.product_images.findFirst({
           where: {
             product_id: productIdList[i],
             image_type: "main",
@@ -116,6 +116,7 @@ router.get('/sharedCartItem/:groupId?', async (req, res) => {
             image_path: true
           }
         })
+        imgPath = `http://localhost:3300/${imgPath.image_path}`
         const productQty = await prisma.shared_carts.findFirst({
           where: {
             product_id: productIdList[i],
@@ -125,7 +126,7 @@ router.get('/sharedCartItem/:groupId?', async (req, res) => {
             quantity: true
           }
         })
-        productDataList.push({ ...productData, ...imgPath, ...productQty })
+        productDataList.push({ ...productData, image_path:imgPath, ...productQty })
       }
       res.json(productDataList)
     } else {
