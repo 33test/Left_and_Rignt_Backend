@@ -1,14 +1,12 @@
 const jwt = require('jsonwebtoken')
 const express = require('express')
+const router = express.Router()
 const bcrypt = require('bcrypt')//加密密碼
 const { PrismaClient } = require('@prisma/client')
 const { z } = require('zod')
 const { v4: uuidv4 } = require('uuid')
 
-const prisma = new PrismaClient()//建立Prisma client
-const router = express.Router()
-const dotenv =  require('dotenv')
-dotenv.config()
+const prisma = require('../configs/prisma')
 
 const SECRET_KEY = process.env.SECRET_KEY
 

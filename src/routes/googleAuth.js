@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { OAuth2Client, IdTokenClient } = require('google-auth-library');
-const prisma = require('../configs/db');
+const { OAuth2Client } = require('google-auth-library');
+const prisma = require('../configs/prisma');
 const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken')
 
@@ -26,8 +26,12 @@ function createJWT(user) {
 }
 
 router.post('/verify-token', async (req, res) => {
+  console.log("here");
+  
   try {
     const { credential } = req.body;
+    console.log("credential",credential);
+    
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: CLIENT_ID
