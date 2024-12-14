@@ -96,6 +96,32 @@ LOCK TABLES `credit_card` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `customer_info`
+--
+
+DROP TABLE IF EXISTS `customer_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `customer_info` (
+  `cuID` varchar(50) DEFAULT NULL,
+  `cuName` varchar(50) DEFAULT NULL,
+  `cuPhone` int DEFAULT NULL,
+  `gender` varchar(1) DEFAULT NULL,
+  `UserID` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customer_info`
+--
+
+LOCK TABLES `customer_info` WRITE;
+/*!40000 ALTER TABLE `customer_info` DISABLE KEYS */;
+INSERT INTO `customer_info` VALUES ('OD1734097003967614','111',11111,'','10001'),('OD1734098800380722','se',1111,'','10001'),('OD1734098880313314','se',1111,'','10001'),('OD1734098882780984','se',1111,'','10001'),('OD1734098969791881','www',111,'','10001'),('OD1734099070875462','www',111,'','10001'),('OD1734099109361948','www',111,'','10001'),('OD1734099589708301','www',111,'','10001'),('OD173409972232421','www',111,'','10001'),('OD1734099810680722','www',111,'','10001'),('OD1734099868126465','www',111,'','10001'),('OD1734099994013454','www',111,'','10001'),('OD1734100181744391','11',111,'','10001'),('OD1734100213514619','11',111,'','10001'),('OD1734101319888901','1111',1111,'','10001'),('OD1734101366855426','1111',1111,'','10001'),('OD1734101665682896','2222',222,'','10001'),('OD1734105869505288','111',111,'','10001');
+/*!40000 ALTER TABLE `customer_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `deliver`
 --
 
@@ -125,6 +151,35 @@ CREATE TABLE `deliver` (
 LOCK TABLES `deliver` WRITE;
 /*!40000 ALTER TABLE `deliver` DISABLE KEYS */;
 /*!40000 ALTER TABLE `deliver` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `deliver_pro_info`
+--
+
+DROP TABLE IF EXISTS `deliver_pro_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `deliver_pro_info` (
+  `acName` varchar(50) DEFAULT NULL,
+  `acPhone` int DEFAULT NULL,
+  `addr` varchar(50) DEFAULT NULL,
+  `city` varchar(10) DEFAULT NULL,
+  `postalCode` int DEFAULT NULL,
+  `site` varchar(50) DEFAULT NULL,
+  `userID` varchar(50) DEFAULT NULL,
+  `delivrID` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `deliver_pro_info`
+--
+
+LOCK TABLES `deliver_pro_info` WRITE;
+/*!40000 ALTER TABLE `deliver_pro_info` DISABLE KEYS */;
+INSERT INTO `deliver_pro_info` VALUES ('1111',1111,'111','111',111,'111','10001','DE1734097003967869'),('111',111,'111','11',11,'1111','10001','DE1734098800380164'),('111',111,'111','11',11,'1111','10001','DE1734098880313130'),('111',111,'111','11',11,'1111','10001','DE1734098882780153'),('www',12223,'11112','222',223,'333','10001','DE1734098969791322'),('www',12223,'11112','222',223,'333','10001','DE1734099070875689'),('www',12223,'11112','222',223,'333','10001','DE1734099109361762'),('www',12223,'11112','222',223,'333','10001','DE1734099589708730'),('www',12223,'11112','222',223,'333','10001','DE1734099722324996'),('www',12223,'11112','222',223,'333','10001','DE1734099810680668'),('www',12223,'11112','222',223,'333','10001','DE1734099868126897'),('www',12223,'11112','222',223,'333','10001','DE1734099994013693'),('11',11,'11','11',11,'111','10001','DE1734100181744549'),('11',11,'11','11',11,'111','10001','DE1734100213514251'),('11111',1111,'111','111',111,'111','10001','DE1734101319888405'),('11111',1111,'111','111',111,'111','10001','DE1734101366855966'),('222',22222,'eeer','eee',1111,'1111','10001','DE17341016656825'),('1222w',111,'111','111',11,'111','10001','DE1734105869505262');
+/*!40000 ALTER TABLE `deliver_pro_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -183,6 +238,31 @@ LOCK TABLES `orders_imformation` WRITE;
 /*!40000 ALTER TABLE `orders_imformation` DISABLE KEYS */;
 INSERT INTO `orders_imformation` VALUES (0,NULL,'Pending','2024-12-01 00:07:11','2024-12-01 00:07:55',NULL,NULL);
 /*!40000 ALTER TABLE `orders_imformation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pay_info_table`
+--
+
+DROP TABLE IF EXISTS `pay_info_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pay_info_table` (
+  `cardID` varchar(50) DEFAULT NULL,
+  `cardName` varchar(50) DEFAULT NULL,
+  `efficentDate` date DEFAULT NULL,
+  `securityCode` int DEFAULT NULL,
+  `PayID` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pay_info_table`
+--
+
+LOCK TABLES `pay_info_table` WRITE;
+/*!40000 ALTER TABLE `pay_info_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pay_info_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -311,6 +391,62 @@ INSERT INTO `products` VALUES (1,'極簡定律戒指 / 男款 / Minimalist Law R
 UNLOCK TABLES;
 
 --
+-- Table structure for table `purchase_order`
+--
+
+DROP TABLE IF EXISTS `purchase_order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `purchase_order` (
+  `purchaseID` varchar(50) NOT NULL,
+  `DeliveryWay` varchar(50) DEFAULT NULL,
+  `DeliverySite` varchar(50) DEFAULT NULL,
+  `payWay` varchar(50) DEFAULT NULL,
+  `note` varchar(50) DEFAULT NULL,
+  `payID` varchar(50) DEFAULT NULL,
+  `cuID` varchar(50) DEFAULT NULL,
+  `DeliverID` varchar(50) DEFAULT NULL,
+  `puID` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`purchaseID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `purchase_order`
+--
+
+LOCK TABLES `purchase_order` WRITE;
+/*!40000 ALTER TABLE `purchase_order` DISABLE KEYS */;
+INSERT INTO `purchase_order` VALUES ('OR1734097003967261','宅配','台灣','貨到付款','1111',NULL,'OD1734097003967614','DE1734097003967869',NULL),('OR1734099589708137','宅配','台灣','貨到付款','wwwww',NULL,'OD1734099589708301','DE1734099589708730','PU1734099589708375'),('OR1734099722324219','宅配','台灣','貨到付款','wwwww',NULL,'OD173409972232421','DE1734099722324996','PU1734099722324494'),('OR1734099810680318','宅配','台灣','貨到付款','wwwww',NULL,'OD1734099810680722','DE1734099810680668','PU1734099810680836'),('OR1734099868126658','宅配','台灣','貨到付款','wwwww',NULL,'OD1734099868126465','DE1734099868126897','PU1734099868126313'),('OR1734099994013264','宅配','台灣','貨到付款','wwwww',NULL,'OD1734099994013454','DE1734099994013693','PU1734099994013655'),('OR1734100181744768','宅配','台灣','貨到付款','1111',NULL,'OD1734100181744391','DE1734100181744549','PU1734100181744128'),('OR1734101319888104','宅配','台灣','貨到付款','111111',NULL,'OD1734101319888901','DE1734101319888405','PU1734101319888458'),('OR1734101366855306','宅配','台灣','貨到付款','111111',NULL,'OD1734101366855426','DE1734101366855966','PU1734101366855998'),('OR1734101665682340','宅配','台灣','貨到付款','122',NULL,'OD1734101665682896','DE17341016656825','PU1734101665682171'),('OR1734105869505501','宅配','台灣','貨到付款','1111',NULL,'OD1734105869505288','DE1734105869505262','PU1734105869505637');
+/*!40000 ALTER TABLE `purchase_order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `purchase_product`
+--
+
+DROP TABLE IF EXISTS `purchase_product`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `purchase_product` (
+  `pu_id` varchar(50) DEFAULT NULL,
+  `user_id` varchar(50) DEFAULT NULL,
+  `product_id` varchar(50) DEFAULT NULL,
+  `quantity` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `purchase_product`
+--
+
+LOCK TABLES `purchase_product` WRITE;
+/*!40000 ALTER TABLE `purchase_product` DISABLE KEYS */;
+INSERT INTO `purchase_product` VALUES ('OR1734099868126658','10001','17',1),('OR1734099994013264','10001','20',3),('OR1734100181744768','10001','18',3),('PU1734101319888458','10001','17',3),('PU1734101319888458','10001','1',3),('PU1734101319888458','10001','18',3),('PU1734101366855998','10001','20',3),('PU1734101366855998','10001','21',3),('PU1734101665682171','10001','21',3),('PU1734101665682171','10001','1',3),('PU1734105869505637','10001','1',3);
+/*!40000 ALTER TABLE `purchase_product` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `reviews_table`
 --
 
@@ -416,4 +552,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-10 15:58:39
+-- Dump completed on 2024-12-14  1:01:49
