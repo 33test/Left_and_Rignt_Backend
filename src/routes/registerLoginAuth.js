@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')//加密密碼
 const { PrismaClient } = require('@prisma/client')
-const { z } = require('zod')
+const { z, object } = require('zod')
 const { v4: uuidv4 } = require('uuid')
 
 const prisma = require('../configs/prisma')
@@ -11,15 +11,22 @@ const prisma = require('../configs/prisma')
 const SECRET_KEY = process.env.SECRET_KEY
 
 
-//get資料
-router.get("/", async (req, res) => {
+//get 使用者 email 資料（共享購物車新增使用者時判斷用）
+router.get("/email", async (req, res) => {
     try {
-        const rows = await prisma.users.findMany()
-        res.json(rows);
+        const rows = await prisma.users.findMany({
+          select:{
+            email:true
+          }
+        })
+        const userEmailList = rows.map((object) => object.email)
+        res.json(userEmailList)
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
+
+
 //get 個別資料
 router.post("/find",async(req,res) =>{
   try{

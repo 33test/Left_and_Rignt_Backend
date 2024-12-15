@@ -237,7 +237,7 @@ model purchase_product {
 
 model shared_cart_users {
   id                   Int      @id @default(autoincrement()) @db.UnsignedInt
-  shared_cart_group_id Int      @db.UnsignedInt
+  shared_cart_group_id String   @db.VarChar(100)
   user_id              String   @db.VarChar(50)
   created_at           DateTime @default(now()) @db.Timestamp(0)
   users                users    @relation(fields: [user_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_shared_cart_user_id")
@@ -249,10 +249,10 @@ model shared_cart_users {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model shared_carts {
   id           Int       @id @default(autoincrement()) @db.UnsignedInt
-  group_id     Int       @db.UnsignedInt
+  group_id     String    @db.VarChar(100)
   name         String?   @db.VarChar(45)
-  product_id   Int
-  quantity     Int
+  product_id   Int?
+  quantity     Int?
   created_at   DateTime  @default(now()) @db.Timestamp(0)
   updated_at   DateTime  @default(now()) @db.Timestamp(0)
   status       Boolean   @default(false)

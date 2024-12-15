@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const prisma = require('../configs/prisma');
+const { v4: uuidv4 } = require('uuid')
 
 // 取得共享購物車列表
 router.get('/sharedCartList', async (req, res) => {
@@ -78,7 +79,7 @@ router.get('/sharedCartItem/:groupId?', async (req, res) => {
   try {
     const belongBy = await prisma.shared_cart_users.findMany({
       where: {
-        shared_cart_group_id: parseFloat(groupId)
+        shared_cart_group_id: groupId
       },
       select: {
         user_id: true
@@ -92,50 +93,102 @@ router.get('/sharedCartItem/:groupId?', async (req, res) => {
     if (found) {
       let productIdList = await prisma.shared_carts.findMany({
         where: {
-          group_id: parseFloat(groupId)
+          group_id: groupId
         },
         select: {
           product_id: true
         }
       })
-      productIdList = productIdList.map((object) => object["product_id"])
-      const productDataList = []
-      for (let i = 0; i < productIdList.length; i++) {
-        const productData = await prisma.products.findUnique({
-          where: {
-            product_id: productIdList[i]
-          },
-        })
-        let imgPath = await prisma.product_images.findFirst({
-          where: {
-            product_id: productIdList[i],
-            image_type: "main",
-            order_sort: 1
-          },
-          select: {
-            image_path: true
-          }
-        })
-        imgPath = `http://localhost:3300/${imgPath.image_path}`
-        const productQty = await prisma.shared_carts.findFirst({
-          where: {
-            product_id: productIdList[i],
-            group_id: parseFloat(groupId)
-          },
-          select: {
-            quantity: true
-          }
-        })
-        productDataList.push({ ...productData, image_path:imgPath, ...productQty })
+      
+      productIdList = productIdList.map((object) => object["product_id"])      
+      console.log(productIdList[0]);
+      if (productIdList[0] === null) {
+        res.json([])
+      } else {
+        const productDataList = []
+        for (let i = 0; i < productIdList.length; i++) {
+          const productData = await prisma.products.findUnique({
+            where: {
+              product_id: productIdList[i]
+            },
+          })
+          let imgPath = await prisma.product_images.findFirst({
+            where: {
+              product_id: productIdList[i],
+              image_type: "main",
+              order_sort: 1
+            },
+            select: {
+              image_path: true
+            }
+          })
+          imgPath = `http://localhost:3300/${imgPath.image_path}`
+          const productQty = await prisma.shared_carts.findFirst({
+            where: {
+              product_id: productIdList[i],
+              group_id: groupId
+            },
+            select: {
+              quantity: true
+            }
+          })
+          productDataList.push({ ...productData, image_path: imgPath, ...productQty })
+        }
+        res.json(productDataList)
       }
-      res.json(productDataList)
     } else {
       res.status(403).json({ message: "用戶沒有訪問這個共享購物車的權限" })
     }
-  } catch (err){
+  } catch (err) {
     res.status(500).json("伺服器怪怪了")
   }
 })
 
+// 創建共享購物車
+router.post('/sharedCart', async (req, res) => {
+  const { sharedCartName, creatorUID, memberEmail } = req.body
+  const sharedCartGroupId = uuidv4()
+
+  try {
+    const memberUserId = await prisma.users.findUnique({
+      where: {
+        email: memberEmail
+      },
+      select: {
+        userId: true
+      }
+    })
+
+    // 使用事務確保所有操作都成功或都失敗
+    await prisma.$transaction([
+      prisma.shared_cart_users.createMany({
+        data: [
+          {
+            shared_cart_group_id: sharedCartGroupId,
+            user_id: memberUserId.userId
+          },
+          {
+            shared_cart_group_id: sharedCartGroupId,
+            user_id: creatorUID,
+          }
+        ]
+      }),
+
+      prisma.shared_carts.create({
+        data: {
+          group_id: sharedCartGroupId,
+          name: sharedCartName
+        }
+      })
+    ])
+
+    res.json({ message: "創建共享購物車成功", groupId: sharedCartGroupId })
+  } catch (err) {
+    res.status(500).json({
+      message: "創建共享購物車失敗",
+      err: err.message
+    })
+  }
+})
 
 module.exports = router
