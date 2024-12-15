@@ -115,11 +115,14 @@ model orders_imformation {
 }
 
 model reviews_table {
-  product_id   Int     @id @unique(map: "commentId_UNIQUE") @default(autoincrement())
-  user_id      String  @unique(map: "userId_UNIQUE") @db.VarChar(255)
+  id           Int     @id @default(autoincrement())
   sku          Int?
   comment      String? @db.Text
   comment_time Int?
+  purchase_id  String? @db.VarChar(50)
+  product_id   Int?
+  user_id      String? @db.VarChar(50)
+  username     String? @db.VarChar(50)
 }
 
 model users {
@@ -139,7 +142,6 @@ model users {
   credit_card        credit_card[]
   deliver            deliver[]
   orders_imformation orders_imformation[]
-  shared_cart_users  shared_cart_users[]
   wishlists          wishlists[]
 
   @@index([userId], map: "user_id")
@@ -231,35 +233,7 @@ model purchase_product {
   user_id    String? @db.VarChar(50)
   product_id String? @db.VarChar(50)
   quantity   Int?
-
-  @@ignore
-}
-
-model shared_cart_users {
-  id                   Int      @id @default(autoincrement()) @db.UnsignedInt
-  shared_cart_group_id Int      @db.UnsignedInt
-  user_id              String   @db.VarChar(50)
-  created_at           DateTime @default(now()) @db.Timestamp(0)
-  users                users    @relation(fields: [user_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_shared_cart_user_id")
-
-  @@index([shared_cart_group_id], map: "fk_shared_cart_id_idx")
-  @@index([user_id], map: "fk_shared_cart_user_id_idx")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model shared_carts {
-  id           Int       @id @default(autoincrement()) @db.UnsignedInt
-  group_id     Int       @db.UnsignedInt
-  name         String?   @db.VarChar(45)
-  product_id   Int
-  quantity     Int
-  created_at   DateTime  @default(now()) @db.Timestamp(0)
-  updated_at   DateTime  @default(now()) @db.Timestamp(0)
-  status       Boolean   @default(false)
-  completed_at DateTime? @db.Timestamp(0)
-  completed_by String?   @db.VarChar(50)
-
-  @@index([group_id], map: "idx_group_id")
+  temp_id    Int     @id @default(autoincrement())
 }
 
 enum orders_imformation_orders_status {

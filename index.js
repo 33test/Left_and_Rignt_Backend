@@ -10,6 +10,7 @@ const googleAuthRouter = require('./src/routes/googleAuth')
 const cartRouter = require('./src/routes/cart')
 const couponRouter = require('./src/routes/coupon')
 const debitRouter = require('./src/routes/debit')
+const commentRouter = require('./src/routes/productComment')
 const sharedCart = require('./src/routes/sharedCart')
 
 app.use(cors({
@@ -34,6 +35,7 @@ app.use('/auth', googleAuthRouter)
 app.use('/cart', cartRouter)
 app.use('/coupon', couponRouter)
 app.use('/debit', debitRouter)
+app.use('/comment',commentRouter)
 app.use('/', sharedCart)
 
 const PORT = 3300
