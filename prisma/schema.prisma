@@ -186,8 +186,7 @@ model customer_info {
   cuPhone Int?
   gender  String? @db.VarChar(1)
   UserID  String? @db.VarChar(50)
-
-  @@ignore
+  temp_id Int     @id @default(autoincrement())
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -200,8 +199,7 @@ model deliver_pro_info {
   site       String? @db.VarChar(50)
   userID     String? @db.VarChar(50)
   delivrID   String? @db.VarChar(50)
-
-  @@ignore
+  temp_id    Int     @id @default(autoincrement())
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -211,8 +209,7 @@ model pay_info_table {
   efficentDate DateTime? @db.Date
   securityCode Int?
   PayID        String?   @db.VarChar(50)
-
-  @@ignore
+  temp_id      Int       @id @default(autoincrement())
 }
 
 model purchase_order {
@@ -231,7 +228,7 @@ model purchase_order {
 model purchase_product {
   pu_id      String? @db.VarChar(50)
   user_id    String? @db.VarChar(50)
-  product_id String? @db.VarChar(50)
+  product_id Int?
   quantity   Int?
   temp_id    Int     @id @default(autoincrement())
 }
