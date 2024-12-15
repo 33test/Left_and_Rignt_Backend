@@ -101,7 +101,6 @@ router.get('/sharedCartItem/:groupId?', async (req, res) => {
       })
       
       productIdList = productIdList.map((object) => object["product_id"])      
-      console.log(productIdList[0]);
       if (productIdList[0] === null) {
         res.json([])
       } else {
