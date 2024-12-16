@@ -1,8 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const { PrismaClient } = require("@prisma/client");
+const express = require('express')
+const router = express.Router()
+const prisma = require('../configs/prisma')
 
-const prisma = new PrismaClient();
+const API_URL = "http://localhost:3300";
+
 
 // 查詢訂單詳情 API
 router.get("/details/:purchaseID", async (req, res) => {
@@ -61,14 +62,12 @@ router.get("/details/:purchaseID", async (req, res) => {
                     where: { product_id: product.product_id },
                     select: { image_path: true },
                 });
+                
+                const fullImagePath = image?.image_path
+                ? `${API_URL}${image.image_path.replace(/^\.\//, "/")}`
+                : null;
 
-                //這東西超醜==
-                let correctedImagePath = image?.image_path || null;
-                if (correctedImagePath) {
-                    if (!correctedImagePath.startsWith("/")) {
-                        correctedImagePath = "/" + correctedImagePath.replace(/^\.?\//, ""); 
-                    }
-                }
+                
 
                 return {
                     product_id: product.product_id,
@@ -76,7 +75,7 @@ router.get("/details/:purchaseID", async (req, res) => {
                     product_name: productDetails?.product_name || null,
                     original_price: productDetails?.original_price || null,
                     sale_price: productDetails?.sale_price || null,
-                    image_path: correctedImagePath || null,
+                    image_path: fullImagePath || null,
                 };
             })
         );

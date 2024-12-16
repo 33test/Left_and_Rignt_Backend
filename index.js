@@ -13,6 +13,7 @@ const debitRouter = require('./src/routes/debit')
 const commentRouter = require('./src/routes/productComment')
 const sharedCart = require('./src/routes/sharedCart')
 const orderRouter = require('./src/routes/order')
+const wishlistsRouter = require('./src/routes/wishlists')
 
 app.use(cors({
   origin: 'http://localhost:5173', // 前端網址，之後佈署了要改
@@ -38,6 +39,7 @@ app.use('/coupon', couponRouter)
 app.use('/debit', debitRouter)
 app.use('/comment',commentRouter)
 app.use('/order',orderRouter)
+app.use('/wishlist',wishlistsRouter)
 app.use('/', sharedCart)
 
 const PORT = 3300
