@@ -22,8 +22,17 @@ const getImageUrl = (imagePath) => {
   return `${API_URL}${imagePath}`
 }
 
-// 路由改為可選的分類參數
+// 排序映射
+const listOrderBy = { latest: { listed_at: 'desc' }, oldest: { listed_at: 'asc' }, expensive: { sale_price: 'desc' }, cheap: { sale_price: 'asc' }, popular: { total_sales: 'desc' } }
+
+// API 主戰場!
 router.get('/:categoryId?', async (req, res) => {
+  const { sortBy, pageSize, pageNum } = req.query
+
+  // 分頁相關
+const pageStart = (pageNum - 1) * pageSize
+const pageEnd = pageStart + Number(pageSize)
+
   try {
     // 確定 ID 是數字（轉一下）
     const categoryId = req.params.categoryId ? parseInt(req.params.categoryId) : null
@@ -31,6 +40,7 @@ router.get('/:categoryId?', async (req, res) => {
     // 如果沒有提供分類參數，取得所有商品
     if (!categoryId) {
       const products = await prisma.products.findMany({
+        orderBy: listOrderBy[sortBy] || { product_id: 'asc' } ,
         include: {
           product_images: {
             where: {
@@ -48,7 +58,8 @@ router.get('/:categoryId?', async (req, res) => {
 
       return res.json({
         categoryName: "所有商品",
-        products: formatProducts(products)
+        products: formatProducts(products).slice(pageStart, pageEnd) || formatProducts(products),
+        totalProduct:products.length
       })
     }
 
@@ -76,6 +87,7 @@ router.get('/:categoryId?', async (req, res) => {
           }
         }
       },
+      orderBy: listOrderBy[sortBy] || { product_id: 'asc' } ,
       include: {
         product_images: {
           where: {
@@ -93,7 +105,8 @@ router.get('/:categoryId?', async (req, res) => {
 
     res.json({
       categoryName: categoryData?.category_name || "所有商品",
-      products: formatProducts(products)
+      products: formatProducts(products).slice(pageStart, pageEnd) || formatProducts(products),
+      totalProduct:products.length
     })
 
   } catch (err) {
