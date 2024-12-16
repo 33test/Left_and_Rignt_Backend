@@ -4,14 +4,16 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const path = require('path')
-require('dotenv').config();
 const productsRouter = require('./src/routes/productsList')
 const registerLoginRouter = require('./src/routes/registerLoginAuth')
 const googleAuthRouter = require('./src/routes/googleAuth')
+const cartRouter = require('./src/routes/cart')
+const couponRouter = require('./src/routes/coupon')
+const debitRouter = require('./src/routes/debit')
 
 app.use(cors({
   origin: 'http://localhost:5173', // 前端網址，之後佈署了要改
-  methods: ['POST', 'GET', 'OPTIONS'],
+  methods: ['POST', 'GET', 'OPTIONS' ,'DELETE', 'PUT'],
   credentials: true
 }));
 
@@ -28,7 +30,9 @@ app.use(express.json())
 app.use('/categories', productsRouter)
 app.use('/users',registerLoginRouter)
 app.use('/auth', googleAuthRouter)
-
+app.use('/cart', cartRouter)
+app.use('/coupon', couponRouter)
+app.use('/debit', debitRouter)
 
 const PORT = 3300
 app.listen(PORT, () => {
