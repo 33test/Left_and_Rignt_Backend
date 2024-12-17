@@ -139,6 +139,7 @@ model users {
   credit_card        credit_card[]
   deliver            deliver[]
   orders_imformation orders_imformation[]
+  shared_cart_users  shared_cart_users[]
   wishlists          wishlists[]
 
   @@index([userId], map: "user_id")
@@ -174,6 +175,91 @@ model credit_card {
   orders_imformation orders_imformation[]
 
   @@index([owner], map: "userId_idx")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model customer_info {
+  cuID    String? @db.VarChar(50)
+  cuName  String? @db.VarChar(50)
+  cuPhone Int?
+  gender  String? @db.VarChar(1)
+  UserID  String? @db.VarChar(50)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model deliver_pro_info {
+  acName     String? @db.VarChar(50)
+  acPhone    Int?
+  addr       String? @db.VarChar(50)
+  city       String? @db.VarChar(10)
+  postalCode Int?
+  site       String? @db.VarChar(50)
+  userID     String? @db.VarChar(50)
+  delivrID   String? @db.VarChar(50)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model pay_info_table {
+  cardID       String?   @db.VarChar(50)
+  cardName     String?   @db.VarChar(50)
+  efficentDate DateTime? @db.Date
+  securityCode Int?
+  PayID        String?   @db.VarChar(50)
+
+  @@ignore
+}
+
+model purchase_order {
+  purchaseID   String  @id @db.VarChar(50)
+  DeliveryWay  String? @db.VarChar(50)
+  DeliverySite String? @db.VarChar(50)
+  payWay       String? @db.VarChar(50)
+  note         String? @db.VarChar(50)
+  payID        String? @db.VarChar(50)
+  cuID         String? @db.VarChar(50)
+  DeliverID    String? @db.VarChar(50)
+  puID         String? @db.VarChar(50)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model purchase_product {
+  pu_id      String? @db.VarChar(50)
+  user_id    String? @db.VarChar(50)
+  product_id String? @db.VarChar(50)
+  quantity   Int?
+
+  @@ignore
+}
+
+model shared_cart_users {
+  id                   Int      @id @default(autoincrement()) @db.UnsignedInt
+  shared_cart_group_id String   @db.VarChar(100)
+  user_id              String   @db.VarChar(50)
+  created_at           DateTime @default(now()) @db.Timestamp(0)
+  users                users    @relation(fields: [user_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_shared_cart_user_id")
+
+  @@index([shared_cart_group_id], map: "fk_shared_cart_id_idx")
+  @@index([user_id], map: "fk_shared_cart_user_id_idx")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model shared_carts {
+  id           Int       @id @default(autoincrement()) @db.UnsignedInt
+  group_id     String    @db.VarChar(100)
+  name         String?   @db.VarChar(45)
+  product_id   Int?
+  quantity     Int?
+  created_at   DateTime  @default(now()) @db.Timestamp(0)
+  updated_at   DateTime  @default(now()) @db.Timestamp(0)
+  status       Boolean   @default(false)
+  completed_at DateTime? @db.Timestamp(0)
+  completed_by String?   @db.VarChar(50)
+
+  @@index([group_id], map: "idx_group_id")
 }
 
 enum orders_imformation_orders_status {
