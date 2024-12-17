@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const prisma = require('../configs/db');
+const prisma = require('../configs/prisma');
 
 const API_URL = "http://localhost:3300/"
 
