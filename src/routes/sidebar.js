@@ -2,10 +2,10 @@ const express = require("express");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+const router = express.Router();
+// const app = express();
+// app.use(cors());
+// app.use(bodyParser.json());
 
 // 資料庫連線配置
 const db = mysql.createConnection({
@@ -26,7 +26,7 @@ db.connect((err) => {
 
 // 查詢父項目 API
 // 查詢父項目 API（帶 hasChildren 判斷）
-app.get("/parents", (req, res) => {
+router.get("/parents", (req, res) => {
   const query = `
     SELECT 
       c.*, 
@@ -50,7 +50,7 @@ app.get("/parents", (req, res) => {
 
 
 // 查詢子項目 API
-app.get("/children", (req, res) => {
+router.get("/children", (req, res) => {
   const parentId = req.query.parent_id;
   // 確保 parent_id 有提供
   if (!parentId) {
@@ -68,10 +68,11 @@ app.get("/children", (req, res) => {
 });
 
 
-const PORT = 3300
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
-})
+// const PORT = 3300
+// app.listen(PORT, () => {
+  // console.log(`server running on port ${PORT}`)
+// })
+module.exports = router;
 // 啟動伺服器
 // app.listen(3000, () => {
 //   console.log("伺服器啟動於 http://localhost:3000");

@@ -10,9 +10,9 @@ const googleAuthRouter = require('./src/routes/googleAuth')
 const cartRouter = require('./src/routes/cart')
 const couponRouter = require('./src/routes/coupon')
 const debitRouter = require('./src/routes/debit')
-
+const sidebarRouter = require('./src/routes/sidebar')
 app.use(cors({
-  origin: 'http://localhost:5173', // 前端網址，之後佈署了要改
+  origin: ['http://localhost:5174', 'http://localhost:5173'], // 前端網址，之後佈署了要改
   methods: ['POST', 'GET', 'OPTIONS' ,'DELETE', 'PUT'],
   credentials: true
 }));
@@ -33,7 +33,7 @@ app.use('/auth', googleAuthRouter)
 app.use('/cart', cartRouter)
 app.use('/coupon', couponRouter)
 app.use('/debit', debitRouter)
-
+app.use('/sidebar',sidebarRouter)
 const PORT = 3300
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
