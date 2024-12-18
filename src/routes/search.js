@@ -1,53 +1,48 @@
 const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-require('dotenv').config(); // 載入 .env 檔案
+const { PrismaClient } = require('@prisma/client'); // 引入
+const router = express.Router();
+require('dotenv').config();
 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+const prisma = new PrismaClient(); // 初始化
 
-// 資料庫連線配置//每人server不同需修改,或是創建相同account或是password
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-});
-
-app.get('/search', (req, res) => {
+router.get('/', async (req, res) => {
   const keyWord = req.query.q;
-  // console.log(keyWord)
-  const values = [`%${keyWord}%`];
-  const query = `
-    SELECT 
-      p.product_name, 
-      p.sale_price, 
-      p.original_price, 
-      CONCAT('http://localhost:3001', i.image_path) AS image_path
-    FROM products p
-    LEFT JOIN product_images i ON p.product_id = i.product_id
-    WHERE p.product_name LIKE ?
-    ORDER BY i.order_sort ASC`;
 
-  db.query(query, values, (err, results) => {
-    if (err) {
-      console.error('查詢失敗:', err);
-      res.status(500).send('伺服器錯誤');
-    } else if (!results || results.length === 0) {
+  try {
+    const results = await prisma.products.findMany({
+      where: {
+        product_name: {
+          contains: keyWord,
+          // Prisma 的 `insensitive` 在 `contains` 中不需要使用 `mode`默認是不區分大小寫
+        },
+      },
+      include: {
+        product_images: {
+          orderBy: {
+            order_sort: 'asc',
+          },
+        },
+      },
+    });
+
+    if (results.length === 0) {
       console.log('查詢結果為空');
-      res.status(404).send('沒有找到資料');
-    } else {
-      console.log('查詢成功:', results);
-      res.json(results);
+      return res.status(200).json({ message: '查無資料', data: [] });
     }
-  });
+
+    const formattedResults = results.map(product => ({
+      product_id: product.product_id,
+      product_name: product.product_name,
+      sale_price: product.sale_price,
+      original_price: product.original_price,
+      image_path: product.product_images.length > 0 ? `http://localhost:3300/${product.product_images[0].image_path}` : null,
+    }));
+
+    res.json(formattedResults);
+  } catch (error) {
+    console.error('查詢失敗:', error);
+    res.status(500).send('伺服器錯誤');
+  }
 });
 
-
-// 啟動伺服器
-app.listen(3001, () => {
-  console.log('伺服器啟動於 http://localhost:3001');
-});
+module.exports = router;
