@@ -13,6 +13,7 @@ router.get("/sharedCartList", async (req, res) => {
       let groupIdList = await prisma.shared_cart_users.findMany({
         where: {
           user_id: userId,
+          is_deleted: false,
         },
         select: {
           shared_cart_group_id: true,
@@ -73,7 +74,7 @@ router.get("/sharedCartList", async (req, res) => {
   }
 })
 
-// 取得特定共享購物車的產品列表
+// 取得共享購物車的列表
 router.get("/sharedCartItem/:groupId?", async (req, res) => {
   const { groupId } = req.params
   // const userId = req.headers
@@ -192,6 +193,40 @@ router.post("/sharedCart", async (req, res) => {
     res.status(500).json({
       message: "創建共享購物車失敗",
       err: err.message,
+    })
+  }
+})
+
+// 刪除共享購物車
+router.delete("/deleteSharedCart/:groupId?", async (req, res) => {
+  const { groupId } = req.params
+  try {
+    await prisma.$transaction([
+      prisma.shared_cart_users.updateMany({
+        where: {
+          shared_cart_group_id: groupId,
+          is_deleted: false,
+        },
+        data: {
+          is_deleted: true,
+        },
+      }),
+
+      prisma.shared_carts.updateMany({
+        where: {
+          group_id: groupId,
+          is_deleted: false,
+        },
+        data: {
+          is_deleted: true,
+        },
+      }),
+    ])
+    res.json({ message: "刪除成功" })
+  } catch (err) {
+    res.status(500).json({
+      message: "刪除共享購物車失敗",
+      err: err,
     })
   }
 })
