@@ -6,8 +6,8 @@ import path from "path"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
 import productsRouter from "./src/routes/productsList.js"
-import registerLoginRouter from "./src/routes/registerLoginAuth.js"
-import productDetailRouter from "./src/routes/productDetailAuth.js"
+import registerLoginRouter from "./src/routes/registerLogin.js"
+import productDetailRouter from "./src/routes/productDetail.js"
 import googleAuthRouter from "./src/routes/googleAuth.js"
 import cartRouter from "./src/routes/cart.js"
 import couponRouter from "./src/routes/coupon.js"
@@ -19,18 +19,18 @@ const app = express()
 const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
 
 app.use(
-	cors({
-		origin: allowedOrigins,
-		methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
-		credentials: true,
-	})
+  cors({
+    origin: allowedOrigins,
+    methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
+    credentials: true,
+  })
 )
 
 // 加入這些安全標頭，嘗試解決 CORS 問題
 app.use((_req, res, next) => {
-	res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups")
-	res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
-	next()
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups")
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
+  next()
 })
 
 // 設定 __dirname
@@ -51,5 +51,5 @@ app.use("/", sharedCart)
 
 const PORT = 3300
 app.listen(PORT, () => {
-	console.log(`server running on port ${PORT}`)
+  console.log(`server running on port ${PORT}`)
 })
