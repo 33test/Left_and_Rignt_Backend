@@ -1,40 +1,40 @@
 {
-  "name": "lr_backend",
-  "version": "1.0.0",
-  "description": "Backend of Left & Right project",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "scrape": "nodemon web_scraping.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/33test/Left_and_Rignt_Backend.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/33test/Left_and_Rignt_Backend/issues"
-  },
-  "homepage": "https://github.com/33test/Left_and_Rignt_Backend#readme",
-  "devDependencies": {
-    "nodemon": "^3.1.7",
-    "prisma": "^6.0.0"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.0.0",
-    "axios": "^1.7.8",
-    "bcrypt": "^5.1.1",
-    "cheerio": "^1.0.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "google-auth-library": "^9.15.0",
-    "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.11.5",
-    "punycode": "^2.3.1",
-    "uuid": "^11.0.3",
-    "zod": "^3.23.8"
-  }
+	"name": "lr_backend",
+	"version": "1.0.0",
+	"description": "Backend of Left & Right project",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"dev": "nodemon index.js",
+		"scrape": "nodemon web_scraping.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/33test/Left_and_Rignt_Backend.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/33test/Left_and_Rignt_Backend/issues"
+	},
+	"homepage": "https://github.com/33test/Left_and_Rignt_Backend#readme",
+	"devDependencies": {
+		"nodemon": "^3.1.7",
+		"prisma": "^6.0.0",
+		"dotenv": "^16.4.5"
+	},
+	"dependencies": {
+		"@prisma/client": "^6.0.0",
+		"axios": "^1.7.8",
+		"bcrypt": "^5.1.1",
+		"cheerio": "^1.0.0",
+		"cors": "^2.8.5",
+		"express": "^4.21.1",
+		"google-auth-library": "^9.15.0",
+		"jsonwebtoken": "^9.0.2",
+		"mysql2": "^3.11.5",
+		"punycode": "^2.3.1",
+		"uuid": "^11.0.3",
+		"zod": "^3.23.8"
+	}
 }
