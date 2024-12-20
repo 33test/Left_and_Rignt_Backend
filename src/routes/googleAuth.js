@@ -1,113 +1,112 @@
-const express = require('express');
-const router = express.Router();
-const { OAuth2Client } = require('google-auth-library');
-const prisma = require('../configs/prisma');
-const { v4: uuidv4 } = require('uuid')
-const jwt = require('jsonwebtoken')
+import express from "express"
+import jwt from "jsonwebtoken"
+import prisma from "../configs/prisma.js"
+import { OAuth2Client } from "google-auth-library"
+import { v4 as uuidv4 } from "uuid"
 
-// 檢查環境變數 
+const router = express.Router()
+
+// 檢查環境變數
 if (!process.env.SECRET_KEY) {
-  console.error('Missing SECRET_KEY environment variable');
-  process.exit(1);
+	console.error("Missing SECRET_KEY environment variable")
+	process.exit(1)
 }
 
-const CLIENT_ID = "201131820318-om98jaudikrjuraavdmt8o0jlitaf7b1.apps.googleusercontent.com"
-const client = new OAuth2Client(CLIENT_ID);
+const CLIENT_ID =
+	"201131820318-om98jaudikrjuraavdmt8o0jlitaf7b1.apps.googleusercontent.com"
+const client = new OAuth2Client(CLIENT_ID)
 
 function createJWT(user) {
-  // 產生 JWT
-  const token = jwt.sign(
-    { userId: user.userId, email: user.email },
-    process.env.SECRET_KEY,
-    { expiresIn: '24h' }
-  );
-
-  return token
+	// 產生 JWT
+	const token = jwt.sign(
+		{ userId: user.userId, email: user.email },
+		process.env.SECRET_KEY,
+		{ expiresIn: "24h" }
+	)
+	return token
 }
 
-router.post('/verify-token', async (req, res) => {
-  try {
-    const { credential } = req.body;
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: CLIENT_ID
-    });
-    
-    const payload = ticket.getPayload();
-    const userEmail = payload.email;
-    const googleId = payload.sub;
-    
-    // 檢查 Email 是否已存在
-    let existingUser = await prisma.users.findUnique({  
-      where: {
-        email: userEmail,
-      }
-    });
+router.post("/verify-token", async (req, res) => {
+	try {
+		const { credential } = req.body
+		const ticket = await client.verifyIdToken({
+			idToken: credential,
+			audience: CLIENT_ID,
+		})
 
+		const payload = ticket.getPayload()
+		const userEmail = payload.email
+		const googleId = payload.sub
 
-    // 如果 Email 存在，檢查是否有 google_id。如果有的話在該筆資料加上 google_id，這樣使用者可以一般登入也可以 google 登入
-    if (existingUser) {
-      if (!existingUser.google_id) {
-        existingUser = await prisma.users.update({  
-          where: {
-            email: userEmail
-          },
-          data: {
-            google_id: googleId
-          }
-        });
-      }
-      const token = createJWT(existingUser);
+		// 檢查 Email 是否已存在
+		let existingUser = await prisma.users.findUnique({
+			where: {
+				email: userEmail,
+			},
+		})
 
-      res.json({
-        exists: true, 
-        user: existingUser,
-        token:token
-      });
-    } else {
-      // 使用者不存在，詢問是否建立
-      res.json({
-        exists: false,  
-        googleData: {
-          email: userEmail,
-          name: payload.name,
-          google_id: googleId
-        }
-      });
-    }
-  } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
-  }
-});
+		// 如果 Email 存在，檢查是否有 google_id。如果有的話在該筆資料加上 google_id，這樣使用者可以一般登入也可以 google 登入
+		if (existingUser) {
+			if (!existingUser.google_id) {
+				existingUser = await prisma.users.update({
+					where: {
+						email: userEmail,
+					},
+					data: {
+						google_id: googleId,
+					},
+				})
+			}
+			const token = createJWT(existingUser)
 
-router.post('/register', async (req, res) => {
-  try {
-    const { email, name, google_id } = req.body;
+			res.json({
+				exists: true,
+				user: existingUser,
+				token: token,
+			})
+		} else {
+			// 使用者不存在，詢問是否建立
+			res.json({
+				exists: false,
+				googleData: {
+					email: userEmail,
+					name: payload.name,
+					google_id: googleId,
+				},
+			})
+		}
+	} catch (error) {
+		res.status(401).json({ error: "Invalid token" })
+	}
+})
 
-      // 用 uuidv4
-      const newUserId = uuidv4()
+router.post("/register", async (req, res) => {
+	try {
+		const { email, name, google_id } = req.body
 
-      const newUser = await prisma.users.create({
-        data: {
-          userId: newUserId,
-          email,
-          username: name,
-          google_id,
-          gender: "O" // Other，因為 google 不能輕易取到 gender
-        }
-      });
+		// 用 uuidv4
+		const newUserId = uuidv4()
 
-    const token = createJWT(newUser);
+		const newUser = await prisma.users.create({
+			data: {
+				userId: newUserId,
+				email,
+				username: name,
+				google_id,
+				gender: "o", // Other，因為 google 不能輕易取到 gender
+			},
+		})
 
-    res.json({
-      exists: true,
-      user: newUser,
-      token: token
-    });
+		const token = createJWT(newUser)
 
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to register user' });
-  }
-});
+		res.json({
+			exists: true,
+			user: newUser,
+			token: token,
+		})
+	} catch (error) {
+		res.status(500).json({ error: "Failed to register user" })
+	}
+})
 
-module.exports = router;
+export default router
