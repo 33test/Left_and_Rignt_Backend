@@ -12,6 +12,7 @@ const couponRouter = require('./src/routes/coupon')
 const debitRouter = require('./src/routes/debit')
 const sidebarRouter = require('./src/routes/sidebar')
 const sharedCart = require('./src/routes/sharedCart')
+const memberInformationRouter = require('./src/routes/memberInformation')
 
 app.use(cors({
   origin: ['http://localhost:5174', 'http://localhost:5173'], // 前端網址，之後佈署了要改
@@ -37,7 +38,7 @@ app.use('/coupon', couponRouter)
 app.use('/debit', debitRouter)
 app.use('/sidebar',sidebarRouter)
 app.use('/', sharedCart)
-
+app.use('/memberInformation',memberInformationRouter)
 const PORT = 3300
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)

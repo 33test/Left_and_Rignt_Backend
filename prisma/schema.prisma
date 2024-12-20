@@ -8,7 +8,7 @@ datasource db {
 }
 
 model categories {
-  categories_id      Int                  @id @default(autoincrement())
+  categories_id      Int                  @id @unique(map: "categories_id") @default(autoincrement())
   category_name      String               @unique(map: "category_name_UNIQUE") @db.VarChar(50)
   category_type      String               @default("regular") @db.VarChar(50)
   parent_id          Int?
