@@ -1,79 +1,51 @@
-const express = require("express");
-const mysql = require("mysql2");
-// const bodyParser = require("body-parser");
-// const cors = require("cors");
-const router = express.Router();
-// const app = express();
-// app.use(cors());
-// app.use(bodyParser.json());
-
-// 資料庫連線配置
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "38173438",
-  database: "left_and_right",
-  port: 3306,
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error("資料庫連線失敗:", err);
-    return;
-  }
-  console.log("資料庫連線成功");
-});
-
+import express from "express"
+import prisma from "../configs/prisma.js"
+const router = express.Router()
 // 查詢父項目 API
-// 查詢父項目 API（帶 hasChildren 判斷）
-router.get("/parents", (req, res) => {
-  const query = `
-    SELECT 
-      c.*, 
-      EXISTS (
-        SELECT 1 
-        FROM categories 
-        WHERE parent_id = c.categories_id
-      ) AS hasChildren
-    FROM categories c
-    WHERE c.parent_id IS NULL;
-  `;
-  
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("查詢失敗:", err);
-      return res.status(500).send("伺服器錯誤");
-    }
-    res.json(results); // 返回父項目資料，帶 hasChildren 屬性
-  });
-});
+router.get("/parents", async (req, res) => {
+  try {
+    const parents = await prisma.categories.findMany({
+      where: {
+        parent_id: null,
+      },
+      include: {
+        children: true, // 查詢有子項目的父項目
+      },
+    })
 
+    // 轉換資料，將 hasChildren 屬性加到每個父項目中
+    const result = parents.map((parent) => ({
+      ...parent,
+      hasChildren: parent.children.length > 0,
+    }))
+
+    res.json(result) // 返回父項目資料，帶 hasChildren 屬性
+  } catch (err) {
+    console.error("查詢失敗:", err)
+    return res.status(500).send("伺服器錯誤")
+  }
+})
 
 // 查詢子項目 API
-router.get("/children", (req, res) => {
-  const parentId = req.query.parent_id;
-  // 確保 parent_id 有提供
+router.get("/children", async (req, res) => {
+  const parentId = req.query.parent_id
+
   if (!parentId) {
-    return res.status(400).send("缺少 parent_id");
+    return res.status(400).send("缺少 parent_id")
   }
-  const query = "SELECT * FROM categories WHERE parent_id = ?";
-  
-  db.query(query, [parentId], (err, results) => {
-    if (err) {
-      console.error("查詢失敗:", err);
-      return res.status(500).send("伺服器錯誤");
-    }
-    res.json(results); // 返回子項目資料
-  });
-});
 
+  try {
+    const children = await prisma.categories.findMany({
+      where: {
+        parent_id: Number(parentId),
+      },
+    })
 
-// const PORT = 3300
-// app.listen(PORT, () => {
-  // console.log(`server running on port ${PORT}`)
-// })
-module.exports = router;
-// 啟動伺服器
-// app.listen(3000, () => {
-//   console.log("伺服器啟動於 http://localhost:3000");
-// });
+    res.json(children) // 返回子項目資料
+  } catch (err) {
+    console.error("查詢失敗:", err)
+    return res.status(500).send("伺服器錯誤")
+  }
+})
+
+export default router

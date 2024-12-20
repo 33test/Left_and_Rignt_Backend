@@ -8,11 +8,14 @@ datasource db {
 }
 
 model categories {
-  categories_id      Int                  @id @unique(map: "categories_id") @default(autoincrement())
-  category_name      String               @unique(map: "category_name_UNIQUE") @db.VarChar(50)
-  category_type      String               @default("regular") @db.VarChar(50)
+  categories_id      Int          @id @unique(map: "categories_id") @default(autoincrement())
+  category_name      String       @unique(map: "category_name_UNIQUE") @db.VarChar(50)
+  category_type      String       @default("regular") @db.VarChar(50)
   parent_id          Int?
   product_categories product_categories[]
+  // 添加自關聯
+  children          categories[] @relation("ParentChild")
+  parent            categories? @relation("ParentChild", fields: [parent_id], references: [categories_id])
 }
 
 model product_categories {
