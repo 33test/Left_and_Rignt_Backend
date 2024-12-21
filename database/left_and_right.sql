@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: left_and_right
 -- ------------------------------------------------------
--- Server version	9.0.1
+-- Server version	8.0.40
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -447,6 +447,34 @@ INSERT INTO `purchase_product` VALUES ('OR1734099868126658','10001','17',1),('OR
 UNLOCK TABLES;
 
 --
+-- Table structure for table `rates`
+--
+
+DROP TABLE IF EXISTS `rates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rates` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `currency` varchar(45) NOT NULL,
+  `rate` decimal(10,5) DEFAULT NULL,
+  `latestUpdateTime` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `currency_UNIQUE` (`currency`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rates`
+--
+
+LOCK TABLES `rates` WRITE;
+/*!40000 ALTER TABLE `rates` DISABLE KEYS */;
+INSERT INTO `rates` VALUES (1,'TWD',1.00000,'2024-12-21 05:30:01'),(2,'HKD',0.23780,'2024-12-21 05:30:01'),(3,'MOP',0.24530,'2024-12-21 05:30:01'),(4,'CNY',0.22370,'2024-12-21 05:30:01'),(5,'USD',0.03066,'2024-12-21 05:30:01'),(6,'SGD',0.04157,'2024-12-21 05:30:01'),(7,'EUR',0.02944,'2024-12-21 05:30:01'),(8,'AUD',0.04909,'2024-12-21 05:30:01'),(9,'GBP',0.02434,'2024-12-21 05:30:01'),(10,'PHP',1.80770,'2024-12-21 05:30:01'),(11,'MYR',0.13780,'2024-12-21 05:30:01'),(12,'THB',1.05900,'2024-12-21 05:30:01'),(13,'AED',0.11260,'2024-12-21 05:30:01'),(14,'JPY',4.78900,'2024-12-21 05:30:01'),(15,'BND',0.04157,'2024-12-21 05:30:01'),(16,'KRW',44.31250,'2024-12-21 05:30:01'),(17,'IDR',497.18820,'2024-12-21 05:30:01'),(18,'VND',783.85360,'2024-12-21 05:30:01'),(19,'CAD',0.04399,'2024-12-21 05:30:01');
+/*!40000 ALTER TABLE `rates` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `reviews_table`
 --
 
@@ -614,4 +642,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-15 21:16:55
+-- Dump completed on 2024-12-21 13:32:52
