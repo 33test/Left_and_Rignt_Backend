@@ -83,8 +83,8 @@ const scheduleRateUpdate = () => {
     }
   })
 }
-
-router.get("/", async (_req, res) => {
+//手動更新資料庫
+router.get("/update", async (_req, res) => {
   try {
     //拿到API匯率
     const rateData = await getRate()
@@ -95,6 +95,30 @@ router.get("/", async (_req, res) => {
     res.status(200).json({
       message: "更新完成",
       counts,
+    })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+//查找特定匯率
+router.get("/:currency?", async (req, res) => {
+  try {
+    const currency = req.params.currency
+
+    if (!currency) {
+      return res.status(400).json({ message: "請提供幣種" })
+    }
+    //匯率資訊
+    const rate = await prisma.rates.findUnique({
+      where: { currency: currency },
+    })
+    if (!rate) {
+      return res.status(404).json({ message: "資料庫沒有此幣種" })
+    }
+    res.status(200).json({
+      currency: rate.currency,
+      rate: rate.rate,
     })
   } catch (err) {
     res.status(500).json({ error: err.message })
