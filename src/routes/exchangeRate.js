@@ -58,7 +58,7 @@ const ratesUpdate = async (rateData) => {
 //定時更新資料庫匯率資料
 const scheduleRateUpdate = () => {
   //每5分鐘更新一次
-  scheduleJob("*/5 * * * *", async () => {
+  scheduleJob("1 0 * * *", async () => {
     try {
       console.log("開始執行定時更新", new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" }))
 
