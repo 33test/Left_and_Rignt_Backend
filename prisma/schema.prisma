@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("API_URL")
 }
 
 model categories {
@@ -93,6 +93,7 @@ model deliver {
 model discount {
   discount_id String  @db.VarChar(50)
   dicription  String? @db.Text
+  id          Int     @id @default(autoincrement())
 
   @@ignore
 }
@@ -260,6 +261,33 @@ model shared_carts {
   completed_by String?   @db.VarChar(50)
 
   @@index([group_id], map: "idx_group_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cart_coupang {
+  id                Int     @id @default(autoincrement())
+  user_id           Int
+  coupang_id        String? @db.VarChar(45)
+  coupang_status_id String? @db.VarChar(45)
+  discount          String? @db.VarChar(255)
+}
+
+model profile {
+  id            Int       @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  userId        String    @unique(map: "userId_UNIQUE") @db.VarChar(50)
+  username      String    @db.VarChar(50)
+  email         String?   @unique(map: "email_UNIQUE") @db.VarChar(255)
+  phone         String?   @unique(map: "phone_UNIQUE") @db.VarChar(20)
+  gender        String    @db.VarChar(1)
+  birthday      DateTime? @db.Date
+  mobile_phone  String?   @db.VarChar(20)
+  from_store    String?   @db.VarChar(45)
+  introduced_by String?   @db.VarChar(50)
+  password_hash String?   @db.VarChar(255)
+  line_id       String?   @db.VarChar(100)
+  google_id     String?   @db.VarChar(100)
+
+  @@index([userId], map: "user_id")
 }
 
 enum orders_imformation_orders_status {

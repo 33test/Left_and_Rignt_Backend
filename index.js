@@ -13,6 +13,7 @@ import cartRouter from "./src/routes/cart.js"
 import couponRouter from "./src/routes/coupon.js"
 import debitRouter from "./src/routes/debit.js"
 import sharedCart from "./src/routes/sharedCart.js"
+import searchRouter from "./src/routes/search.js";
 
 const app = express()
 
@@ -48,6 +49,7 @@ app.use("/cart", cartRouter)
 app.use("/coupon", couponRouter)
 app.use("/debit", debitRouter)
 app.use("/", sharedCart)
+app.use("/search", searchRouter)
 
 const PORT = 3300
 app.listen(PORT, () => {
