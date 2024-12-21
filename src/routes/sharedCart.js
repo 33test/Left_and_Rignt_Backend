@@ -74,12 +74,13 @@ router.get("/sharedCartList", async (req, res) => {
   }
 })
 
-// 取得共享購物車的列表
+// 取得特定共享購物車資訊
 router.get("/sharedCartItem/:groupId?", async (req, res) => {
   const { groupId } = req.params
   // const userId = req.headers
   const userId = "d9ee8caa-3dd2-4ca3-b72b-e0edfd19ae22"
   try {
+    // 先找到這個共享購物車的成員
     const belongBy = await prisma.shared_cart_users.findMany({
       where: {
         shared_cart_group_id: groupId,
@@ -93,7 +94,32 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
       belongByUserlist.push(belongBy[i]["user_id"])
     }
     const found = belongByUserlist.find((user) => user == userId)
+    // 如果這個使用者有權限，取資訊
     if (found) {
+      // 共享購物車資訊
+      const cartName = await prisma.shared_carts.findFirst({
+        where: {
+          group_id: groupId,
+        },
+        select: {
+          name: true,
+        },
+      })
+
+      const memberName = []
+      for (let i = 0; i < belongByUserlist.length; i++) {
+        const username = await prisma.users.findUnique({
+          where: {
+            userId: belongByUserlist[i],
+          },
+          select: {
+            username: true,
+          },
+        })
+        memberName.push(username["username"])
+      }
+
+      // 產品資訊
       let productIdList = await prisma.shared_carts.findMany({
         where: {
           group_id: groupId,
@@ -104,6 +130,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
       })
 
       productIdList = productIdList.map((object) => object["product_id"])
+      // 如果這個共享購物車裡面沒有商品
       if (productIdList[0] === null) {
         res.json([])
       } else {
@@ -124,7 +151,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
               image_path: true,
             },
           })
-          imgPath = `${API_URL}${imgPath.image_path}`
+          imgPath = `${process.env.API_URL}${imgPath.image_path}`
           const productQty = await prisma.shared_carts.findFirst({
             where: {
               product_id: productIdList[i],
@@ -140,13 +167,14 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
             ...productQty,
           })
         }
-        res.json(productDataList)
+        res.json({ info: { cartName: cartName["name"], memberName }, productDataList })
       }
     } else {
       res.status(403).json({ message: "用戶沒有訪問這個共享購物車的權限" })
     }
   } catch (err) {
-    res.status(500).json("伺服器怪怪了")
+    res.status(500).json({ message: err.message })
+    console.log(err.message)
   }
 })
 
@@ -227,6 +255,64 @@ router.delete("/deleteSharedCart/:groupId?", async (req, res) => {
     res.status(500).json({
       message: "刪除共享購物車失敗",
       err: err,
+    })
+  }
+})
+
+// 新增好友到共享購物車
+router.post("/addMemberToSharedCart", async (req, res) => {
+  const { groupId, memberEmails } = req.body
+  try {
+    const memberUserId = await Promise.all(
+      // 將 memberEmail 轉換成 userId
+      memberEmails.map(async (email) => {
+        const user = await prisma.users.findUnique({
+          where: {
+            email,
+          },
+          select: {
+            userId: true,
+          },
+        })
+        return user?.userId
+      })
+    )
+    // 過濾掉已存在的成員再新增
+    const memberNeedToAdd = await Promise.all(
+      memberUserId.map(async (userId) => {
+        const found = await prisma.shared_cart_users.findFirst({
+          where: {
+            shared_cart_group_id: groupId,
+            user_id: userId,
+          },
+        })
+        return found ? null : userId // 如果找到就返回 null，否則返回 userId
+      })
+    )
+
+    // 過濾掉 null 值
+    const filteredMembers = memberNeedToAdd.filter((userId) => userId !== null)
+    console.log(filteredMembers)
+
+    // 新增成員
+    if (filteredMembers.length === 0) {
+      return res.json({ message: "沒有新增任何好友" })
+    }
+    await Promise.all(
+      filteredMembers.map((userId) =>
+        prisma.shared_cart_users.create({
+          data: {
+            shared_cart_group_id: groupId,
+            user_id: userId,
+          },
+        })
+      )
+    )
+    res.json({ message: "新增好友成功", newMembers: filteredMembers })
+  } catch (err) {
+    res.status(500).json({
+      message: "新增好友失敗",
+      err: err.message,
     })
   }
 })
