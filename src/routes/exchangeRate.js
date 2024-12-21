@@ -6,13 +6,11 @@ import { scheduleJob } from "node-schedule"
 const router = express.Router()
 const baseCurrency = "TWD"
 const API_KEY = process.env.EXCHANGE_RATE_API_KEY
-let counts = 10
 
 //從API取得匯率
 const getRate = async () => {
   try {
     const response = await axios.get(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${baseCurrency}`)
-    counts++
     return response.data.conversion_rates
   } catch (err) {
     throw new Error("資料拿取失敗")
@@ -57,7 +55,7 @@ const ratesUpdate = async (rateData) => {
 }
 //定時更新資料庫匯率資料
 const scheduleRateUpdate = () => {
-  //每5分鐘更新一次
+  //每天00:01更新
   scheduleJob("1 0 * * *", async () => {
     try {
       console.log("開始執行定時更新", new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" }))
@@ -71,14 +69,12 @@ const scheduleRateUpdate = () => {
       console.log({
         message: "定時更新成功",
         date: new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" }),
-        counts,
       })
     } catch (err) {
       console.log({
         message: "定時更新失敗",
         date: new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" }),
         error: err.message,
-        counts,
       })
     }
   })
@@ -94,7 +90,6 @@ router.get("/update", async (_req, res) => {
 
     res.status(200).json({
       message: "更新完成",
-      counts,
     })
   } catch (err) {
     res.status(500).json({ error: err.message })
