@@ -19,9 +19,9 @@
 	},
 	"homepage": "https://github.com/33test/Left_and_Rignt_Backend#readme",
 	"devDependencies": {
+		"dotenv": "^16.4.5",
 		"nodemon": "^3.1.7",
-		"prisma": "^6.0.0",
-		"dotenv": "^16.4.5"
+		"prisma": "^6.0.0"
 	},
 	"dependencies": {
 		"@prisma/client": "^6.0.0",
@@ -33,6 +33,7 @@
 		"google-auth-library": "^9.15.0",
 		"jsonwebtoken": "^9.0.2",
 		"mysql2": "^3.11.5",
+		"node-schedule": "^2.1.1",
 		"punycode": "^2.3.1",
 		"uuid": "^11.0.3",
 		"zod": "^3.23.8"

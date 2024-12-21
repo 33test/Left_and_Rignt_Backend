@@ -264,6 +264,13 @@ model shared_carts {
   @@index([group_id], map: "idx_group_id")
 }
 
+model rates {
+  id               Int       @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  currency         String    @unique(map: "currency_UNIQUE") @db.VarChar(45)
+  rate             Decimal?  @db.Decimal(10, 5)
+  latestUpdateTime DateTime? @default(now()) @db.DateTime(0)
+}
+
 enum orders_imformation_orders_status {
   Pending
   Completed
