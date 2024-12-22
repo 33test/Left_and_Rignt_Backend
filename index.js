@@ -6,8 +6,8 @@ import path from "path"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
 import productsRouter from "./src/routes/productsList.js"
-import registerLoginRouter from "./src/routes/registerLoginAuth.js"
-import productDetailRouter from "./src/routes/productDetailAuth.js"
+import registerLoginRouter from "./src/routes/registerLogin.js"
+import productDetailRouter from "./src/routes/productDetail.js"
 import googleAuthRouter from "./src/routes/googleAuth.js"
 import cartRouter from "./src/routes/cart.js"
 import couponRouter from "./src/routes/coupon.js"
@@ -15,6 +15,9 @@ import debitRouter from "./src/routes/debit.js"
 import sharedCart from "./src/routes/sharedCart.js"
 import sidebarRouter from "./src/routes/sidebar.js"
 import memberInformationRouter from "./src/routes/memberInformation.js"
+import exchangeRate from "./src/routes/exchangeRate.js"
+import searchRouter from "./src/routes/search.js"
+
 const app = express()
 
 const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
@@ -51,6 +54,9 @@ app.use("/debit", debitRouter)
 app.use("/", sharedCart)
 app.use("/", sidebarRouter)
 app.use("/", memberInformationRouter)
+app.use("/exchangeRate", exchangeRate)
+app.use("/search", searchRouter)
+
 const PORT = 3300
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
