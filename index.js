@@ -14,24 +14,25 @@ import couponRouter from "./src/routes/coupon.js"
 import debitRouter from "./src/routes/debit.js"
 import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
+import searchRouter from "./src/routes/search.js"
 
 const app = express()
 
 const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
 
 app.use(
-  cors({
-    origin: allowedOrigins,
-    methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
-    credentials: true,
-  })
+	cors({
+		origin: allowedOrigins,
+		methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
+		credentials: true,
+	})
 )
 
 // 加入這些安全標頭，嘗試解決 CORS 問題
 app.use((_req, res, next) => {
-  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups")
-  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
-  next()
+	res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups")
+	res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
+	next()
 })
 
 // 設定 __dirname
@@ -50,8 +51,9 @@ app.use("/coupon", couponRouter)
 app.use("/debit", debitRouter)
 app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
+app.use("/search", searchRouter)
 
 const PORT = 3300
 app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
+	console.log(`server running on port ${PORT}`)
 })
