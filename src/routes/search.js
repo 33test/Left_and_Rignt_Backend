@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
 			original_price: product.original_price,
 			image_path:
 				product.product_images.length > 0
-					? `${process.env.BASE_URL}/${product.product_images[0].image_path}`
+					? `${process.env.API_URL}/${product.product_images[0].image_path}`
 					: null,
 		}))
 		console.log("Formatted results:", formattedResults) // 输出格式化后的结果
