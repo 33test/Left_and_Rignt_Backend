@@ -78,7 +78,8 @@ router.get("/sharedCartList", async (req, res) => {
 router.get("/sharedCartItem/:groupId?", async (req, res) => {
   const { groupId } = req.params
   // const userId = req.headers
-  const userId = "d9ee8caa-3dd2-4ca3-b72b-e0edfd19ae22"
+  const userId = req.headers.userid
+
   try {
     // 先找到這個共享購物車的成員
     const belongBy = await prisma.shared_cart_users.findMany({
