@@ -5,7 +5,7 @@ const router = express.Router()
 
 // 取得共享購物車列表
 router.get("/sharedCartList", async (req, res) => {
-  const userId = "d9ee8caa-3dd2-4ca3-b72b-e0edfd19ae22" // 先用固定資料測試
+  const userId = req.headers.userid
   try {
     // 如果有這個使用者
     if (userId) {
@@ -293,7 +293,6 @@ router.post("/addMemberToSharedCart", async (req, res) => {
 
     // 過濾掉 null 值
     const filteredMembers = memberNeedToAdd.filter((userId) => userId !== null)
-    console.log(filteredMembers)
 
     // 新增成員
     if (filteredMembers.length === 0) {
