@@ -97,7 +97,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
     // 如果這個使用者有權限，取資訊
     if (found) {
       // 共享購物車資訊
-      const cartName = await prisma.shared_carts.findFirst({
+      let cartName = await prisma.shared_carts.findFirst({
         where: {
           group_id: groupId,
         },
@@ -132,7 +132,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
       productIdList = productIdList.map((object) => object["product_id"])
       // 如果這個共享購物車裡面沒有商品
       if (productIdList[0] === null) {
-        res.json([])
+        res.json({ info: { cartName: cartName["name"], memberName }, productDataList: [] })
       } else {
         const productDataList = []
         for (let i = 0; i < productIdList.length; i++) {
@@ -167,6 +167,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
             ...productQty,
           })
         }
+
         res.json({ info: { cartName: cartName["name"], memberName }, productDataList })
       }
     } else {
