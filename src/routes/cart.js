@@ -69,7 +69,6 @@ router.post("/cartInsert", (req, res) => {
 // 刪除資料
 router.delete("/cartDelete/:id", (req, res) => {
   const { id } = req.params // 確保從路由參數中提取 id
-  const userId = req.headers.userid
   console.log("id:", id, "userId:", userId)
 
   const query = "DELETE FROM cart WHERE product_id = ? AND user_id = ?" // 使用佔位符
