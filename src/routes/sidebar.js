@@ -4,7 +4,7 @@ const router = express.Router()
 // 查詢父項目 API
 router.get("/parents", async (req, res) => {
   try {
-    const parents = await prisma.categories.findMany({
+    const parents = await prisma.category.findMany({
       where: {
         parent_id: null,
       },
@@ -35,7 +35,7 @@ router.get("/children", async (req, res) => {
   }
 
   try {
-    const children = await prisma.categories.findMany({
+    const children = await prisma.category.findMany({
       where: {
         parent_id: Number(parentId),
       },
