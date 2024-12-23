@@ -4,10 +4,10 @@ import db from "../configs/db.js"
 
 // 建立 API 端點
 router.get("/cartQuery", (req, res) => {
-  const userId = "10001"
+  const userId = req.headers.userid
   const query =
-    'SELECT p.*,pi.image_path,c.quantity FROM products p JOIN cart c ON p.product_id = c.product_id LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.order_sort = 1 AND image_type="main" WHERE  c.user_id = ?;'
-  db.query(query, [userId], (err, results) => {
+    'SELECT p.*,CONCAT(?, pi.image_path) as image_path,c.quantity FROM products p JOIN cart c ON p.product_id = c.product_id LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.order_sort = 1 AND image_type="main" WHERE  c.user_id = ?;'
+  db.query(query, [process.env.API_URL, userId], (err, results) => {
     if (err) {
       console.error("查詢失敗:", err) // 檢查錯誤內容
       res.status(500).send("伺服器錯誤")
@@ -69,9 +69,12 @@ router.post("/cartInsert", (req, res) => {
 // 刪除資料
 router.delete("/cartDelete/:id", (req, res) => {
   const { id } = req.params // 確保從路由參數中提取 id
-  const query = "DELETE FROM cart WHERE product_id = ?" // 使用佔位符
+  const userId = req.headers.userid
+  console.log("id:", id, "userId:", userId)
 
-  db.query(query, [id], (err, results) => {
+  const query = "DELETE FROM cart WHERE product_id = ? AND user_id = ?" // 使用佔位符
+
+  db.query(query, [id, userId], (err, results) => {
     if (err) {
       console.error("刪除失敗:", err) // 紀錄錯誤
       res.status(500).send("伺服器錯誤") // 返回錯誤狀態
@@ -86,20 +89,22 @@ router.delete("/cartDelete/:id", (req, res) => {
 // 更新商品數量的 API 路由
 router.put("/update-quantity", (req, res) => {
   const { product_id, quantity } = req.body
-
+  const userId = req.headers.userid
   if (!product_id || !quantity) {
     return res.status(400).json({ success: false, message: "缺少必要參數" })
   }
 
-  const query = "UPDATE cart SET quantity = ? WHERE product_id = ?"
-  db.query(query, [quantity, product_id], (err, result) => {
+  const query = "UPDATE cart SET quantity = ? WHERE product_id = ? AND user_id = ?"
+  db.query(query, [quantity, product_id, userId], (err, result) => {
     if (err) {
       console.error("更新數量時出錯:", err)
       return res.status(500).json({ success: false, message: "更新失敗" })
     }
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "找不到該產品" })
+      console.log({ id: product_id, userId: userId })
+
+      return res.status(404).json({ success: false, message: "找不到該產品", data: { id: product_id, userId: userId } })
     }
 
     res.json({ success: true, message: "數量更新成功" })
