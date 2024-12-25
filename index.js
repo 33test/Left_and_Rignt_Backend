@@ -19,11 +19,11 @@ import categoryRouter from "./src/routes/category.js"
 
 const app = express()
 
-const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
+// const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: process.env.CORS_ALLOW_HOST,
     methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
     credentials: true,
   })
