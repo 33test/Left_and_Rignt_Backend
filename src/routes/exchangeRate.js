@@ -95,6 +95,21 @@ router.get("/update", async (_req, res) => {
     res.status(500).json({ error: err.message })
   }
 })
+//得到所有匯率
+router.get("/", async (_req, res) => {
+  try {
+    //匯率資訊
+    const rates = await prisma.rates.findMany()
+    res.status(200).json(
+      rates.map((rate) => ({
+        currency: rate.currency,
+        rate: rate.rate,
+      }))
+    )
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
 
 //查找特定匯率
 router.get("/:currency?", async (req, res) => {
