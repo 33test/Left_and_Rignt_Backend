@@ -77,7 +77,6 @@ router.get("/sharedCartList", async (req, res) => {
 // 取得特定共享購物車資訊
 router.get("/sharedCartItem/:groupId?", async (req, res) => {
   const { groupId } = req.params
-  // const userId = req.headers
   const userId = req.headers.userid
 
   try {
@@ -98,7 +97,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
     // 如果這個使用者有權限，取資訊
     if (found) {
       // 共享購物車資訊
-      let cartName = await prisma.shared_carts.findFirst({
+      const cartName = await prisma.shared_carts.findFirst({
         where: {
           group_id: groupId,
         },
@@ -129,8 +128,9 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
           product_id: true,
         },
       })
+      // 移除 null 並取出 product_id
+      productIdList = productIdList.filter((productId) => productId["product_id"] !== null).map((object) => object["product_id"])
 
-      productIdList = productIdList.map((object) => object["product_id"])
       // 如果這個共享購物車裡面沒有商品
       if (productIdList[0] === null) {
         res.json({ info: { cartName: cartName["name"], memberName }, productDataList: [] })
@@ -172,7 +172,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
         res.json({ info: { cartName: cartName["name"], memberName }, productDataList })
       }
     } else {
-      res.status(403).json({ message: "用戶沒有訪問這個共享購物車的權限" })
+      res.status(403).json({ message: "用戶沒有訪問這個共享購物車的權限", belongByUserlist })
     }
   } catch (err) {
     res.status(500).json({ message: err.message })
@@ -313,6 +313,62 @@ router.post("/addMemberToSharedCart", async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "新增好友失敗",
+      err: err.message,
+    })
+  }
+})
+
+// 將商品新增到共享購物車、更改購物車商品數量
+router.post("/sharedCart/addProduct/:groupId", async (req, res) => {
+  const { groupId } = req.params
+  const productId = parseInt(req.body.productId)
+  const { quantity } = req.body
+
+  try {
+    // 檢查共享購物車是否存在
+    const sharedCartExist = await prisma.shared_carts.findFirst({
+      where: {
+        group_id: groupId,
+      },
+    })
+    if (!sharedCartExist) {
+      res.status(404).json({ message: "找不到共享購物車" })
+    }
+    // 檢查商品是否存在，存在的話更新數量，不存在的話新增
+    const productExist = await prisma.shared_carts.findFirst({
+      where: {
+        group_id: groupId,
+        product_id: productId,
+      },
+      select: { id: true, quantity: true },
+    })
+    // 如果商品已存在，更新數量
+    if (productExist) {
+      // 取得現有數量
+      const currentQty = productExist.quantity
+      await prisma.shared_carts.update({
+        where: {
+          id: productExist.id,
+        },
+        data: {
+          quantity: currentQty + quantity,
+        },
+      })
+      res.json({ message: "更新商品成功", data: { groupId, productId, quantity: currentQty + quantity } })
+    } else {
+      await prisma.shared_carts.create({
+        data: {
+          group_id: groupId,
+          name: sharedCartExist.name,
+          product_id: productId,
+          quantity,
+        },
+      })
+      res.json({ message: "新增商品成功", data: { groupId, productId, quantity } })
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "新增商品失敗",
       err: err.message,
     })
   }
