@@ -21,20 +21,19 @@ const app = express()
 
 // const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
 
-app.use(
-  cors({
-    origin: process.env.CORS_ALLOW_HOST,
-    methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
-    credentials: true,
-  })
-)
+app.use(cors())
+// {
+//   origin: process.env.CORS_ALLOW_HOST,
+//   methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
+//   credentials: true,
+// }
 
 // 加入這些安全標頭，嘗試解決 CORS 問題
-app.use((_req, res, next) => {
-  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups")
-  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
-  next()
-})
+// app.use((_req, res, next) => {
+//   res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups")
+//   res.setHeader("Cross-Origin-Embedder-Policy", "require-corp")
+//   next()
+// })
 
 // 設定 __dirname
 const __filename = fileURLToPath(import.meta.url)
