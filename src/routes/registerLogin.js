@@ -29,7 +29,7 @@ router.post("/find", async (req, res) => {
     //輸入email
     const { email } = req.body
     if (!email) {
-      return res.status(400).json({ message: "请提供電子信箱" })
+      return res.status(400).json({ message: "請提供電子信箱" })
     }
     //通過email查找訊息
     const row = await prisma.users.findUnique({

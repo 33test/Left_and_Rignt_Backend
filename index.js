@@ -14,6 +14,8 @@ import couponRouter from "./src/routes/coupon.js"
 import debitRouter from "./src/routes/debit.js"
 import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
+import searchRouter from "./src/routes/search.js"
+import categoryRouter from "./src/routes/category.js"
 
 const app = express()
 
@@ -50,6 +52,8 @@ app.use("/coupon", couponRouter)
 app.use("/debit", debitRouter)
 app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
+app.use("/search", searchRouter)
+app.use("/sidebarCategory", categoryRouter)
 
 const PORT = 3300
 app.listen(PORT, () => {
