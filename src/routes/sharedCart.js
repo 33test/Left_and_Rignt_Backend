@@ -128,8 +128,9 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
           product_id: true,
         },
       })
+      // 移除 null 並取出 product_id
+      productIdList = productIdList.filter((productId) => productId["product_id"] !== null).map((object) => object["product_id"])
 
-      productIdList = productIdList.map((object) => object["product_id"])
       // 如果這個共享購物車裡面沒有商品
       if (productIdList[0] === null) {
         res.json({ info: { cartName: cartName["name"], memberName }, productDataList: [] })
