@@ -115,11 +115,14 @@ model orders_imformation {
 }
 
 model reviews_table {
-  product_id   Int     @id @unique(map: "commentId_UNIQUE") @default(autoincrement())
-  user_id      String  @unique(map: "userId_UNIQUE") @db.VarChar(255)
+  id           Int     @id @default(autoincrement())
+  product_id   Int
+  user_id      String  @db.VarChar(255)
   sku          Int?
   comment      String? @db.Text
   comment_time Int?
+  username     String? @db.VarChar(50)
+  purchase_id  String? @db.VarChar(50)
 }
 
 model users {
@@ -184,8 +187,8 @@ model customer_info {
   cuPhone Int?
   gender  String? @db.VarChar(1)
   UserID  String? @db.VarChar(50)
+  temp_id Int     @id @default(autoincrement())
 
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -198,8 +201,8 @@ model deliver_pro_info {
   site       String? @db.VarChar(50)
   userID     String? @db.VarChar(50)
   delivrID   String? @db.VarChar(50)
+  temp_id    Int     @id @default(autoincrement())
 
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -209,8 +212,8 @@ model pay_info_table {
   efficentDate DateTime? @db.Date
   securityCode Int?
   PayID        String?   @db.VarChar(50)
+  temp_id      Int       @id @default(autoincrement())
 
-  @@ignore
 }
 
 model purchase_order {
@@ -231,8 +234,8 @@ model purchase_product {
   user_id    String? @db.VarChar(50)
   product_id String? @db.VarChar(50)
   quantity   Int?
+  temp_id    Int     @id @default(autoincrement())
 
-  @@ignore
 }
 
 model shared_cart_users {
