@@ -318,7 +318,7 @@ router.post("/addMemberToSharedCart", async (req, res) => {
   }
 })
 
-// 將商品新增到共享購物車、更改購物車商品數量
+// 將商品新增到共享購物車、如果已經有了就增加購物車商品數量
 router.post("/sharedCart/addProduct/:groupId", async (req, res) => {
   const { groupId } = req.params
   const productId = parseInt(req.body.productId)
@@ -371,6 +371,41 @@ router.post("/sharedCart/addProduct/:groupId", async (req, res) => {
       message: "新增商品失敗",
       err: err.message,
     })
+  }
+})
+
+// 更新共享購物車內商品數量
+router.put("/sharedCart/updateProductQty/:groupId", async (req, res) => {
+  const { groupId } = req.params
+  const { productId, totalQty } = req.body
+  try {
+    const productNeedToUpdatedId = await prisma.shared_carts.findFirst({
+      where: {
+        AND: {
+          group_id: groupId,
+          product_id: productId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    })
+
+    if (!productNeedToUpdatedId) {
+      res.status(404).json({ message: "共享購物車內沒有此商品" })
+    } else {
+      const updatedData = await prisma.shared_carts.update({
+        where: {
+          id: productNeedToUpdatedId.id,
+        },
+        data: {
+          quantity: totalQty,
+        },
+      })
+      res.json({ message: "更新共享購物車數量成功", updatedData })
+    }
+  } catch (err) {
+    res.status(500).json({ message: "更新共享購物車商品數量失敗", err })
   }
 })
 
