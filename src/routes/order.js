@@ -46,7 +46,7 @@ router.get("/details/:purchaseID", async (req, res) => {
 		const productInfo = await Promise.all(
 			products.map(async (product) => {
 				const productDetails = await prisma.products.findUnique({
-					where: { product_id: product.product_id },
+					where: { product_id: parseInt(product.product_id, 10) },
 					select: {
 						product_name: true,
 						original_price: true,
@@ -56,11 +56,9 @@ router.get("/details/:purchaseID", async (req, res) => {
 
 				// 查詢商品圖片
 				const image = await prisma.product_images.findFirst({
-					where: { product_id: product.product_id },
+					where: { product_id: parseInt(product.product_id, 10) },
 					select: { image_path: true },
 				})
-				//很醜的圖片路徑，記得要改
-				const fullImagePath = image?.image_path ? `${API_URL}${image.image_path.replace(/^\.\//, "/")}` : null
 
 				return {
 					product_id: product.product_id,
@@ -68,7 +66,7 @@ router.get("/details/:purchaseID", async (req, res) => {
 					product_name: productDetails?.product_name || null,
 					original_price: productDetails?.original_price || null,
 					sale_price: productDetails?.sale_price || null,
-					image_path: fullImagePath || null,
+					image_path: image || null,
 				}
 			})
 		)
