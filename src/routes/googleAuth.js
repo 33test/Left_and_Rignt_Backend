@@ -6,12 +6,6 @@ import { v4 as uuidv4 } from "uuid"
 
 const router = express.Router()
 
-// 檢查環境變數
-if (!process.env.SECRET_KEY) {
-  console.error("Missing SECRET_KEY environment variable")
-  process.exit(1)
-}
-
 const CLIENT_ID = "201131820318-om98jaudikrjuraavdmt8o0jlitaf7b1.apps.googleusercontent.com"
 const client = new OAuth2Client(CLIENT_ID)
 
