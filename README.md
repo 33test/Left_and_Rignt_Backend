@@ -3,7 +3,7 @@
 這是 Left & Right 電商網站的後端專案。使用 Node.js 搭配 Express 框架開發，採用 Prisma ORM 連接 MySQL 資料庫，提供 RESTful API 服務。
 
 - [Left & Right 網站](https://left-and-right-accessory.up.railway.app/)
-- [Left & Right 前端專案](https://github.com/33test/clone-bonny)
+- [Left & Right 前端專案](https://github.com/groupLR/Left_and_Right.git)
 
 ## 系統架構
 
