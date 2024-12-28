@@ -9,9 +9,9 @@ router.get("/details/:purchaseID", async (req, res) => {
 
 	try {
 		// 1. 查詢訂單資訊
-		const orderInfo = await prisma.purchase_order.findUnique({
+		const orderInfo = await prisma.purchase_order.findMany({
 			where: { purchaseID },
-			select: { purchaseID: true },
+			select: { purchaseID: true , puID: true  },
 		})
 
 		if (!orderInfo) {
