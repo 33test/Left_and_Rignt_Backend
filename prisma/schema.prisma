@@ -115,14 +115,14 @@ model orders_imformation {
 }
 
 model reviews_table {
-  id           Int     @id @default(autoincrement())
   product_id   Int
   user_id      String  @db.VarChar(255)
   sku          Int?
   comment      String? @db.Text
   comment_time Int?
-  username     String? @db.VarChar(50)
+  id           Int     @id @default(autoincrement())
   purchase_id  String? @db.VarChar(50)
+  username     String? @db.VarChar(50)
 }
 
 model users {
@@ -160,6 +160,7 @@ model wishlists {
   id                    Int      @id @default(autoincrement())
   wishlists_members_id  String   @db.VarChar(50)
   wishlists_products_id Int
+  wishlists_specs       Int?
   products              products @relation(fields: [wishlists_products_id], references: [product_id], onDelete: Cascade, map: "fk_wishlists_products")
   users                 users    @relation(fields: [wishlists_members_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_wishlists_users")
 
@@ -188,7 +189,6 @@ model customer_info {
   gender  String? @db.VarChar(1)
   UserID  String? @db.VarChar(50)
   temp_id Int     @id @default(autoincrement())
-
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -202,7 +202,6 @@ model deliver_pro_info {
   userID     String? @db.VarChar(50)
   delivrID   String? @db.VarChar(50)
   temp_id    Int     @id @default(autoincrement())
-
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -213,7 +212,6 @@ model pay_info_table {
   securityCode Int?
   PayID        String?   @db.VarChar(50)
   temp_id      Int       @id @default(autoincrement())
-
 }
 
 model purchase_order {
@@ -235,7 +233,6 @@ model purchase_product {
   product_id String? @db.VarChar(50)
   quantity   Int?
   temp_id    Int     @id @default(autoincrement())
-
 }
 
 model shared_cart_users {
