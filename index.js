@@ -5,6 +5,8 @@ import cors from "cors"
 import path from "path"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
+import http from "http"
+import { WebSocketServer, WebSocket } from "ws"
 import productsRouter from "./src/routes/productsList.js"
 import registerLoginRouter from "./src/routes/registerLogin.js"
 import productDetailRouter from "./src/routes/productDetail.js"
@@ -18,6 +20,10 @@ import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
 
 const app = express()
+// 修改 server 設定，不直接用 app.listen(自己創建 HTTP server)
+const server = http.createServer(app)
+const wss = new WebSocketServer({ server })
+const clients = new Set()
 
 app.use(cors())
 
@@ -40,7 +46,59 @@ app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
 
+// WebSocket 連接處理
+wss.on("connection", (ws) => {
+  console.log("新的 WebSocket 連接")
+  clients.add(ws)
+
+  ws.on("message", async (message) => {
+    try {
+      const parsedMessage = JSON.parse(message)
+      console.log("收到消息:", parsedMessage)
+
+      switch (parsedMessage.type) {
+        case "cartUpdate":
+          // 廣播給同一個購物車的其他用戶
+          const { groupId } = parsedMessage.data
+          clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "cartUpdate",
+                  data: parsedMessage.data,
+                })
+              )
+            }
+          })
+          break
+
+        case "cartDelete":
+          // 同樣根據 groupId 廣播
+          clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "cartDelete",
+                  data: parsedMessage.data,
+                })
+              )
+            }
+          })
+          break
+      }
+    } catch (error) {
+      console.error("處理消息時出錯:", error)
+    }
+  })
+
+  ws.on("close", () => {
+    console.log("連接關閉")
+    clients.delete(ws)
+  })
+})
+
 const PORT = 3300
-app.listen(PORT, () => {
+// 改用 server.listen
+server.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
 })
