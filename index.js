@@ -16,6 +16,7 @@ import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
 import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
+import wishlistRouter from "./src/routes/wishlists.js"
 
 const app = express()
 
@@ -39,6 +40,7 @@ app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
+app.use("/wishlist", wishlistRouter)
 
 const PORT = 3300
 app.listen(PORT, () => {
