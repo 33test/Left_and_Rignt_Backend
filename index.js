@@ -58,8 +58,6 @@ wss.on("connection", (ws) => {
 
       switch (parsedMessage.type) {
         case "cartUpdate":
-          // 廣播給同一個購物車的其他用戶
-          const { groupId } = parsedMessage.data
           clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
               client.send(
@@ -73,7 +71,6 @@ wss.on("connection", (ws) => {
           break
 
         case "cartDelete":
-          // 同樣根據 groupId 廣播
           clients.forEach((client) => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
               client.send(
