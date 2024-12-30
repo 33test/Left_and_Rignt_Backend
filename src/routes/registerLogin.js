@@ -9,7 +9,7 @@ const router = express.Router()
 const SECRET_KEY = process.env.SECRET_KEY
 
 //get 使用者 email 資料（共享購物車新增使用者時判斷用）
-router.get("/email", async (req, res) => {
+router.get("/email", async (_req, res) => {
   try {
     const rows = await prisma.users.findMany({
       select: {
@@ -18,6 +18,21 @@ router.get("/email", async (req, res) => {
     })
     const userEmailList = rows.map((object) => object.email)
     res.json(userEmailList)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// get 使用者資料
+router.get("/singleUserData", async (req, res) => {
+  const { userId } = req.query
+  try {
+    const userData = await prisma.users.findUnique({
+      where: {
+        userId,
+      },
+    })
+    res.json(userData)
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
