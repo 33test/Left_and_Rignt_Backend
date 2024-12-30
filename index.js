@@ -82,6 +82,19 @@ wss.on("connection", (ws) => {
             }
           })
           break
+
+        case "addProduct":
+          clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "addProduct",
+                  data: parsedMessage.data,
+                })
+              )
+            }
+          })
+          break
       }
     } catch (error) {
       console.error("處理消息時出錯:", error)
