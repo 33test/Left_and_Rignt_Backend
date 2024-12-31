@@ -53,65 +53,65 @@ app.use("/comment", commentRouter)
 
 // WebSocket 連接處理
 wss.on("connection", (ws) => {
-	console.log("新的 WebSocket 連接")
-	clients.add(ws)
+  console.log("新的 WebSocket 連接")
+  clients.add(ws)
 
-	ws.on("message", async (message) => {
-		try {
-			const parsedMessage = JSON.parse(message)
-			switch (parsedMessage.type) {
-				case "cartUpdate":
-					clients.forEach((client) => {
-						if (client !== ws && client.readyState === WebSocket.OPEN) {
-							client.send(
-								JSON.stringify({
-									type: "cartUpdate",
-									data: parsedMessage.data,
-								})
-							)
-						}
-					})
-					break
+  ws.on("message", async (message) => {
+    try {
+      const parsedMessage = JSON.parse(message)
+      switch (parsedMessage.type) {
+        case "cartUpdate":
+          clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "cartUpdate",
+                  data: parsedMessage.data,
+                })
+              )
+            }
+          })
+          break
 
-				case "cartDelete":
-					clients.forEach((client) => {
-						if (client !== ws && client.readyState === WebSocket.OPEN) {
-							client.send(
-								JSON.stringify({
-									type: "cartDelete",
-									data: parsedMessage.data,
-								})
-							)
-						}
-					})
-					break
+        case "cartDelete":
+          clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "cartDelete",
+                  data: parsedMessage.data,
+                })
+              )
+            }
+          })
+          break
 
-				case "addProduct":
-					clients.forEach((client) => {
-						if (client !== ws && client.readyState === WebSocket.OPEN) {
-							client.send(
-								JSON.stringify({
-									type: "addProduct",
-									data: parsedMessage.data,
-								})
-							)
-						}
-					})
-					break
-			}
-		} catch (error) {
-			console.error("處理消息時出錯:", error)
-		}
-	})
+        case "addProduct":
+          clients.forEach((client) => {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  type: "addProduct",
+                  data: parsedMessage.data,
+                })
+              )
+            }
+          })
+          break
+      }
+    } catch (error) {
+      console.error("處理消息時出錯:", error)
+    }
+  })
 
-	ws.on("close", () => {
-		console.log("連接關閉")
-		clients.delete(ws)
-	})
+  ws.on("close", () => {
+    console.log("連接關閉")
+    clients.delete(ws)
+  })
 })
 
 const PORT = 3300
 // 改用 server.listen
 server.listen(PORT, () => {
-	console.log(`server running on port ${PORT}`)
+  console.log(`server running on port ${PORT}`)
 })
