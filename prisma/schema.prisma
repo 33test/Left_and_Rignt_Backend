@@ -115,14 +115,14 @@ model orders_imformation {
 }
 
 model reviews_table {
+  id           Int     @id @default(autoincrement())
   product_id   Int
   user_id      String  @db.VarChar(255)
   sku          Int?
   comment      String? @db.Text
   comment_time Int?
-  id           Int     @id @default(autoincrement())
-  purchase_id  String? @db.VarChar(50)
   username     String? @db.VarChar(50)
+  purchase_id  String? @db.VarChar(50)
 }
 
 model users {
@@ -268,6 +268,7 @@ model rates {
   id               Int       @id @unique(map: "id_UNIQUE") @default(autoincrement())
   currency         String    @unique(map: "currency_UNIQUE") @db.VarChar(45)
   rate             Decimal?  @db.Decimal(10, 5)
+  symbol           String?   @db.VarChar(45)
   latestUpdateTime DateTime? @default(now()) @db.DateTime(0)
 }
 
