@@ -7,7 +7,7 @@ router.get("/cartQuery", (req, res) => {
   const userId = req.headers.userid
   const query =
     'SELECT p.*,CONCAT(?, pi.image_path) as image_path,c.quantity FROM products p JOIN cart c ON p.product_id = c.product_id LEFT JOIN product_images pi ON p.product_id = pi.product_id AND pi.order_sort = 1 AND image_type="main" WHERE  c.user_id = ?;'
-  db.query(query, [process.env.API_URL, userId], (err, results) => {
+  db.query(query, [process.env.API_URL + "/", userId], (err, results) => {
     if (err) {
       console.error("查詢失敗:", err) // 檢查錯誤內容
       res.status(500).send("伺服器錯誤")

@@ -14,6 +14,9 @@ router.get("/", async (req, res) => {
       },
       include: {
         product_images: {
+          where: {
+            AND: [{ image_type: "main" }, { order_sort: { in: [1, 2] } }],
+          },
           orderBy: {
             order_sort: "asc", // 會根據order_sort 會從後端根據升序排列
           },
@@ -31,9 +34,9 @@ router.get("/", async (req, res) => {
       product_name: product.product_name,
       sale_price: product.sale_price,
       original_price: product.original_price,
-      image_path: product.product_images.length > 0 ? `${process.env.API_URL}/${product.product_images[0].image_path}` : null,
+      front_image_path: product.product_images.length > 0 ? `${process.env.API_URL}/${product.product_images[0].image_path}` : null,
+      back_image_path: product.product_images.length > 0 ? `${process.env.API_URL}/${product.product_images[1].image_path}` : null,
     }))
-    console.log("Formatted results:", formattedResults) // 输出格式化后的结果
     res.json(formattedResults)
   } catch (error) {
     console.error("查詢失敗:", error)
