@@ -10,18 +10,35 @@
 - **框架**：Express.js 4.21.1
 - **資料庫**：MySQL 8.0
 - **ORM**：Prisma 6.0.0
+- **即時共編**：WebSocket (ws)
 - **身份驗證**：JWT, Google OAuth
 - **主要套件**：
   - dotenv：環境變數管理
   - cors：跨域資源共享
   - axios：HTTP 請求
   - bcrypt：密碼加密
-  - cheerio：網頁爬蟲
   - uuid：唯一識別碼生成
   - zod：資料驗證
   - jsonwebtoken：JWT 身份驗證
   - mysql2：MySQL 驅動程式
   - node-schedule：排程任務
+  - ws：WebSocket 功能實現
+
+## 主要功能
+
+- 會員系統（登入、註冊、Google OAuth）
+- 商品管理
+  - 搜尋
+  - 篩選
+  - 排序
+  - 分頁
+- 匯率轉換系統
+- 購物車系統
+- 訂單管理
+- 共享購物車（即時同步）
+  - 多人共同編輯
+  - 即時資料同步
+  - 購物車群組管理
 
 ## 團隊成員
 
@@ -100,13 +117,14 @@
 - Node.js 16.x 以上
 - MySQL 8.0 以上
 - npm 8.x 以上
+- WebSocket 支援
 
 ## 開始使用
 
 1. 克隆專案
 
 ```bash
-git clone https://github.com/your-username/Left_and_Right_Backend.git
+git clone https://github.com/groupLR/Left_and_Rignt_Backend.git
 cd Left_and_Right_Backend
 ```
 
@@ -127,6 +145,7 @@ CORS_ALLOW_HOST=http://localhost:5173
 SECRET_KEYT="your-jwt-secret"
 GOOGLE_CLIENT_ID="your-google-client-id"
 EXCHANGE_RATE_URL=https://v6.exchangerate-api.com/v6/
+WEBSOCKET_PORT=3300 # WebSocket 服務端口
 ```
 
 4. 資料庫設定
@@ -144,14 +163,6 @@ npx prisma db seed
 ```
 npm run dev
 ```
-
-## 主要功能
-
-- 會員系統（登入、註冊、Google OAuth）
-- 商品管理
-- 購物車系統
-- 訂單管理
-- 共享購物車
 
 ## 開發指南
 
