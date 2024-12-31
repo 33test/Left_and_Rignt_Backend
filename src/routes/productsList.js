@@ -15,7 +15,7 @@ const formatProducts = (products) => {
 }
 
 // 圖片路徑
-const getImageUrl = (imagePath) => `${process.env.API_URL}${imagePath}`
+const getImageUrl = (imagePath) => `${process.env.API_URL}/${imagePath}`
 
 // 排序映射
 const listOrderBy = {

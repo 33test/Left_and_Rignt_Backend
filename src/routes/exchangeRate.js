@@ -104,6 +104,7 @@ router.get("/", async (_req, res) => {
       rates.map((rate) => ({
         currency: rate.currency,
         rate: rate.rate,
+        symbol: rate.symbol,
       }))
     )
   } catch (err) {
