@@ -16,7 +16,8 @@ import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
 import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
-
+import orderRouter from "./src/routes/order.js"
+import commentRouter from "./src/routes/productComment.js"
 const app = express()
 
 app.use(cors())
@@ -39,8 +40,10 @@ app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
+app.use("/order", orderRouter)
+app.use("/comment", commentRouter)
 
 const PORT = 3300
 app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
+	console.log(`server running on port ${PORT}`)
 })
