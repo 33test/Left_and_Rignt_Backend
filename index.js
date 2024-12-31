@@ -54,8 +54,6 @@ wss.on("connection", (ws) => {
   ws.on("message", async (message) => {
     try {
       const parsedMessage = JSON.parse(message)
-      console.log("收到消息:", parsedMessage)
-
       switch (parsedMessage.type) {
         case "cartUpdate":
           clients.forEach((client) => {
