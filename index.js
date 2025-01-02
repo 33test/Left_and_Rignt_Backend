@@ -16,10 +16,21 @@ import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
 import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
+import memberInformationRouter from "./src/routes/memberInformation.js"
+import updateUserInformation from "./src/routes/updateUserInformation.js"
+import deliverInfoRouter from "./src/routes/deliverInfo.js"
+import updateDeliverInfo from "./src/routes/updateDeliverInfomation.js"
 
 const app = express()
+const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
 
-app.use(cors())
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["POST", "GET", "OPTIONS", "DELETE", "PUT"],
+    credentials: true,
+  })
+)
 
 // 設定 __dirname
 const __filename = fileURLToPath(import.meta.url)
@@ -39,7 +50,10 @@ app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
-
+app.use("/", memberInformationRouter)
+app.use("/", updateUserInformation)
+app.use("/", deliverInfoRouter)
+app.use("/", updateDeliverInfo)
 const PORT = 3300
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)

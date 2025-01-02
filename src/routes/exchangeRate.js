@@ -10,7 +10,9 @@ const API_KEY = process.env.EXCHANGE_RATE_API_KEY
 //從API取得匯率
 const getRate = async () => {
   try {
-    const response = await axios.get(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${baseCurrency}`)
+    const response = await axios.get(
+      `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${baseCurrency}`
+    )
     return response.data.conversion_rates
   } catch (err) {
     throw new Error("資料拿取失敗")
@@ -58,7 +60,10 @@ const scheduleRateUpdate = () => {
   //每天00:01更新
   scheduleJob("1 0 * * *", async () => {
     try {
-      console.log("開始執行定時更新", new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" }))
+      console.log(
+        "開始執行定時更新",
+        new Date().toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })
+      )
 
       //拿到API匯率
       const rateData = await getRate()

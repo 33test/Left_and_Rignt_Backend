@@ -164,19 +164,6 @@ model wishlists {
   @@index([wishlists_members_id], map: "fk_wishlists_users_idx")
 }
 
-model credit_card {
-  id                 Int                  @id
-  card_number        String               @db.VarChar(16)
-  owner_name         String               @db.VarChar(50)
-  expiration_date    String               @db.VarChar(6)
-  security_code      String               @db.VarChar(3)
-  owner              String               @db.VarChar(50)
-  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_creditCard_owner_userId")
-  orders_imformation orders_imformation[]
-
-  @@index([owner], map: "userId_idx")
-}
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model customer_info {
   cuID    String? @db.VarChar(50)
@@ -269,6 +256,19 @@ model rates {
   currency         String    @unique(map: "currency_UNIQUE") @db.VarChar(45)
   rate             Decimal?  @db.Decimal(10, 5)
   latestUpdateTime DateTime? @default(now()) @db.DateTime(0)
+}
+
+model credit_card {
+  id                 Int                  @id
+  card_number        String               @db.VarChar(16)
+  owner_name         String               @db.VarChar(50)
+  expiration_date    String               @db.VarChar(6)
+  security_code      String               @db.VarChar(3)
+  owner              String               @db.VarChar(50)
+  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_creditCard_owner_userId")
+  orders_imformation orders_imformation[]
+
+  @@index([owner], map: "userId_idx")
 }
 
 enum orders_imformation_orders_status {
