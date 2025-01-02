@@ -155,7 +155,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
               image_path: true,
             },
           })
-          imgPath = `${process.env.API_URL}${imgPath.image_path}`
+          imgPath = `${process.env.API_URL}/${imgPath.image_path}`
           const productQty = await prisma.shared_carts.findFirst({
             where: {
               product_id: productIdList[i],
