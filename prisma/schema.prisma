@@ -74,14 +74,14 @@ model products {
 }
 
 model deliver {
-  id                 Int                  @id
+  id                 Int                  @id @default(autoincrement())
   phone              String?              @db.VarChar(20)
-  recepient          String               @db.VarChar(50)
-  recepient_phone    String               @db.VarChar(20)
-  country            String               @db.VarChar(100)
-  city               String               @db.VarChar(100)
-  region             String               @db.VarChar(100)
-  address            String               @db.Text
+  recipient          String?              @db.VarChar(20)
+  recipient_phone    String?              @db.VarChar(20)
+  country            String?              @db.VarChar(100)
+  city               String?              @db.VarChar(100)
+  region             String?              @db.VarChar(100)
+  address            String?              @db.VarChar(100)
   owner              String               @db.VarChar(50)
   users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_deliver_owner_userId")
   orders_imformation orders_imformation[]

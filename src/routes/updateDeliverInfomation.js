@@ -4,64 +4,65 @@ import prisma from "../configs/prisma.js"
 const router = express.Router()
 
 router.put("/updateDeliverInfo", async (req, res) => {
-  const { uid } = req.body // 從請求主體中取得 uid
-  const { phone, recipient, recipient_phone, country, city, region, address } =
-    req.body // 從請求主體中取得更新資料
-  console.log("接收到的資料:", req.body)
+  const {
+    uid,
+    phone,
+    recipient,
+    recipient_phone,
+    country,
+    city,
+    region,
+    address,
+  } = req.body
+
+  const updateData = {}
+
+  if (!phone) {
+    updateData.phone = null
+  } else {
+    updateData.phone = phone.toString()
+  }
+  if (!recipient) {
+    updateData.recipient = null
+  }
+  if (!recipient_phone) {
+    updateData.recipient_phone = null
+  } else {
+    updateData.recipient_phone = recipient_phone.toString()
+  }
+  if (!country) {
+    updateData.country = null
+  }
+  if (!city) {
+    updateData.city = null
+  }
+  if (!region) {
+    updateData.region = null
+  }
+  if (!address) {
+    updateData.address = null
+  }
 
   try {
-    // 查找該用戶是否存在，並獲取整數型 id
-    const user = await prisma.users.findUnique({
-      where: { userId: uid }, // 使用 uid 查找用戶
-      select: { id: true }, // 只選擇 id 欄位
-    })
-
-    if (!user) {
-      return res.status(404).json({ error: "用戶不存在" }) // 如果用戶不存在，返回錯誤訊息
-    }
-
-    const userId = user.id // 使用整數型的 id 進行後續操作
-
-    // 檢查是否已存在該用戶的送貨資料
+    // 直接使用 uid 查詢 deliver 表中的紀錄
     const existingDeliverInfo = await prisma.deliver.findFirst({
-      where: { owner: userId }, // 使用整數型 user_id
+      where: { owner: uid }, // 假設 deliver.owner 存的是 uid
     })
 
-    let result
-    if (existingDeliverInfo) {
-      // 如果已存在，執行更新操作
-      result = await prisma.deliver.update({
-        where: { id: existingDeliverInfo.id }, // 使用送貨資料的主鍵 id
-        data: {
-          phone,
-          recipient,
-          recipient_phone,
-          country,
-          city,
-          region,
-          address,
-        },
-      })
-      res.status(200).json({ message: "送貨資料已成功更新", data: result })
-    } else {
-      // 如果不存在，執行新增操作
-      result = await prisma.deliver.create({
-        data: {
-          owner: userId, // 傳遞整數型 userId
-          phone,
-          recipient,
-          recipient_phone,
-          country,
-          city,
-          region,
-          address,
-        },
-      })
-      res.status(201).json({ message: "送貨資料已成功新增", data: result })
+    if (!existingDeliverInfo) {
+      return res.status(404).json({ error: "送貨資料不存在，請聯絡客服" })
     }
+
+    // 更新已存在的送貨資料
+    const result = await prisma.deliver.update({
+      where: { id: existingDeliverInfo.id },
+      data: updateData,
+    })
+
+    res.status(200).json({ message: "送貨資料已成功更新", data: result })
   } catch (error) {
-    console.error("更新或新增送貨資料失敗:", error) // 捕捉錯誤並打印
-    res.status(500).json({ error: "更新或新增送貨資料時發生錯誤" }) // 返回內部錯誤訊息
+    console.error("更新送貨資料失敗:", error)
+    res.status(500).json({ error: "伺服器錯誤" })
   }
 })
 

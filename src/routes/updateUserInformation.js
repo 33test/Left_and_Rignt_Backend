@@ -22,46 +22,55 @@ router.put("/updateInformation", async (req, res) => {
   const emailRegex =
     /^[\w-]+(\.[\w-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/
 
-  if (username !== "" && username !== null && username !== "null") {
-    updateData.username = username // 更新 username
+  // 更新 username
+  if (username && username !== "null") {
+    updateData.username = username
   }
-  if (email !== "" && email !== null && email !== "null") {
-    // 檢查 email 格式是否有效
+
+  // 更新 email
+  if (email && email !== "null") {
     if (emailRegex.test(email)) {
-      updateData.email = email // 更新 email
+      updateData.email = email
     } else {
-      return res.status(400).send("Email 格式無效") // 如果 email 格式錯誤，返回錯誤
+      return res.status(400).send("Email 格式無效")
     }
   }
-  if (phone === "" || phone === null || phone === "null") {
-    updateData.phone = null // 如果是空字串或 null 或 'null'，設為 null
-  } else if (phone !== undefined) {
-    updateData.phone = phone.toString() // 確保電話號碼是字串型別
+
+  // 更新 phone
+  if (!phone) {
+    updateData.phone = null
+  } else {
+    updateData.phone = phone.toString()
   }
-  if (birthday === "" || birthday === null || birthday === "null") {
-    updateData.birthday = null // 如果是空字串或 null 或 'null'，設為 null
-  } else if (birthday !== undefined) {
-    updateData.birthday = new Date(birthday) // 將生日轉換為日期型別
+
+  // 更新 birthday
+  if (!birthday) {
+    updateData.birthday = null
+  } else {
+    updateData.birthday = new Date(birthday)
   }
-  if (mobile_phone === "" || mobile_phone === null || mobile_phone === "null") {
-    updateData.mobile_phone = null // 如果是空字串或 null 或 'null'，設為 null
-  } else if (mobile_phone !== undefined) {
-    updateData.mobile_phone = mobile_phone.toString() // 確保手機號碼是字串型別
+
+  // 更新 mobile_phone
+  if (!mobile_phone) {
+    updateData.mobile_phone = null
+  } else {
+    updateData.mobile_phone = mobile_phone.toString()
   }
-  if (from_store === "" || from_store === null || from_store === "null") {
-    updateData.from_store = null // 如果是空字串或 null 或 'null'，設為 null
-  } else if (from_store !== undefined) {
-    updateData.from_store = from_store // 更新 from_store
+
+  // 更新 from_store
+  if (!from_store) {
+    updateData.from_store = null
+  } else {
+    updateData.from_store = from_store
   }
-  if (
-    introduced_by === "" ||
-    introduced_by === null ||
-    introduced_by === "null"
-  ) {
-    updateData.introduced_by = null // 如果是空字串或 null 或 'null'，設為 null
-  } else if (introduced_by !== undefined) {
-    updateData.introduced_by = introduced_by // 更新 introducer_by
+
+  // 更新 introduced_by
+  if (!introduced_by) {
+    updateData.introduced_by = null
+  } else {
+    updateData.introduced_by = introduced_by
   }
+
   console.log("更新資料:", updateData)
 
   try {
