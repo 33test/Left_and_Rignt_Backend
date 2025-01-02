@@ -18,6 +18,7 @@ import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
 import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
+import sendMail from "./src/routes/sendMail.js"
 
 const app = express()
 // 修改 server 設定，不直接用 app.listen(自己創建 HTTP server)
@@ -45,6 +46,7 @@ app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
+app.use("/sendmail", sendMail)
 
 // WebSocket 連接處理
 wss.on("connection", (ws) => {
