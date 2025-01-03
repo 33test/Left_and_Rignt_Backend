@@ -18,6 +18,8 @@ import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
 import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
+import sendMail from "./src/routes/sendMail.js"
+
 import orderRouter from "./src/routes/order.js"
 import commentRouter from "./src/routes/productComment.js"
 import wishlistRouter from "./src/routes/wishlists.js"
@@ -47,6 +49,7 @@ app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
+app.use("/sendmail", sendMail)
 app.use("/wishlist", wishlistRouter)
 app.use("/order", orderRouter)
 app.use("/comment", commentRouter)
