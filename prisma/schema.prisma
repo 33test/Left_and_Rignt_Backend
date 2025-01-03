@@ -176,6 +176,8 @@ model customer_info {
   gender  String? @db.VarChar(1)
   UserID  String? @db.VarChar(50)
   temp_id Int     @id @default(autoincrement())
+
+  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -189,6 +191,8 @@ model deliver_pro_info {
   userID     String? @db.VarChar(50)
   delivrID   String? @db.VarChar(50)
   temp_id    Int     @id @default(autoincrement())
+
+  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -199,6 +203,8 @@ model pay_info_table {
   securityCode Int?
   PayID        String?   @db.VarChar(50)
   temp_id      Int       @id @default(autoincrement())
+
+  @@ignore
 }
 
 model purchase_order {
@@ -220,6 +226,8 @@ model purchase_product {
   product_id String? @db.VarChar(50)
   quantity   Int?
   temp_id    Int     @id @default(autoincrement())
+
+  @@ignore
 }
 
 model shared_cart_users {
