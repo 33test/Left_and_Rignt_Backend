@@ -22,6 +22,7 @@ import sendMail from "./src/routes/sendMail.js"
 
 import orderRouter from "./src/routes/order.js"
 import commentRouter from "./src/routes/productComment.js"
+import wishlistRouter from "./src/routes/wishlists.js"
 const app = express()
 // 修改 server 設定，不直接用 app.listen(自己創建 HTTP server)
 const server = http.createServer(app)
@@ -49,6 +50,7 @@ app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
 app.use("/sendmail", sendMail)
+app.use("/wishlist", wishlistRouter)
 app.use("/order", orderRouter)
 app.use("/comment", commentRouter)
 

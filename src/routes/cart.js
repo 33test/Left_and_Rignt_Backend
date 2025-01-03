@@ -12,10 +12,9 @@ router.get("/cartQuery", (req, res) => {
       console.error("查詢失敗:", err) // 檢查錯誤內容
       res.status(500).send("伺服器錯誤")
     } else if (!results || results.length === 0) {
-      console.log("查詢結果為空")
-      res.status(404).send("沒有找到資料")
+      // 購物車沒有商品傳空陣列
+      res.json([])
     } else {
-      console.log("查詢成功:", results)
       res.json(results)
     }
   })
@@ -24,7 +23,6 @@ router.get("/cartQuery", (req, res) => {
 // 新增或更新資料
 router.post("/cartInsert", (req, res) => {
   const { user_id, product_id, quantity } = req.body
-
   if (!user_id || !product_id || !quantity) {
     res.status(400).send("缺少必要參數")
     return
@@ -35,7 +33,7 @@ router.post("/cartInsert", (req, res) => {
   db.query(checkQuery, [user_id, product_id], (err, results) => {
     if (err) {
       console.error("檢查失敗:", err)
-      res.status(500).send("伺服器錯誤")
+      res.status(500).json("伺服器錯誤", err)
       return
     }
 
@@ -45,7 +43,8 @@ router.post("/cartInsert", (req, res) => {
       db.query(updateQuery, [quantity, user_id, product_id], (err, updateResults) => {
         if (err) {
           console.error("更新失敗:", err)
-          res.status(500).send("伺服器錯誤")
+
+          res.status(500).json("伺服器錯誤", err)
         } else {
           console.log("更新成功:", updateResults)
           res.status(200).send("數量更新成功")
@@ -57,7 +56,7 @@ router.post("/cartInsert", (req, res) => {
       db.query(insertQuery, [user_id, product_id, quantity], (err, insertResults) => {
         if (err) {
           console.error("新增失敗:", err)
-          res.status(500).send("伺服器錯誤")
+          res.status(500).send("伺服器錯誤", err)
         } else {
           console.log("新增成功:", insertResults)
           res.status(201).send("新增成功")
