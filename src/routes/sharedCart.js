@@ -155,7 +155,7 @@ router.get("/sharedCartItem/:groupId?", async (req, res) => {
               image_path: true,
             },
           })
-          imgPath = `${process.env.API_URL}${imgPath.image_path}`
+          imgPath = `${process.env.API_URL}/${imgPath.image_path}`
           const productQty = await prisma.shared_carts.findFirst({
             where: {
               product_id: productIdList[i],
@@ -335,13 +335,14 @@ router.post("/sharedCart/addProduct/:groupId", async (req, res) => {
       },
     })
     if (!sharedCartExist) {
-      res.status(404).json({ message: "找不到共享購物車" })
+      return res.status(404).json({ message: "找不到共享購物車" })
     }
     // 檢查商品是否存在，存在的話更新數量，不存在的話新增
     const productExist = await prisma.shared_carts.findFirst({
       where: {
         group_id: groupId,
         product_id: productId,
+        is_deleted: false,
       },
       select: { id: true, quantity: true },
     })
@@ -359,15 +360,38 @@ router.post("/sharedCart/addProduct/:groupId", async (req, res) => {
       })
       res.json({ message: "更新商品成功", data: { groupId, productId, quantity: currentQty + quantity } })
     } else {
-      await prisma.shared_carts.create({
-        data: {
+      // 商品是否曾經被刪除過
+      const deletedProduct = await prisma.shared_carts.findFirst({
+        where: {
           group_id: groupId,
-          name: sharedCartExist.name,
           product_id: productId,
-          quantity,
+          is_deleted: true,
         },
       })
-      res.json({ message: "新增商品成功", data: { groupId, productId, quantity } })
+      // 如果刪除過，更新他
+      if (deletedProduct) {
+        await prisma.shared_carts.update({
+          where: {
+            id: deletedProduct.id,
+          },
+          data: {
+            quantity,
+            is_deleted: false,
+          },
+        })
+        res.json({ message: "商品新增成功", data: { groupId, productId, quantity } })
+      } else {
+        // 表內完全沒有這筆資料，創建一筆
+        await prisma.shared_carts.create({
+          data: {
+            group_id: groupId,
+            name: sharedCartExist.name,
+            product_id: productId,
+            quantity,
+          },
+        })
+        res.json({ message: "商品新增成功", data: { groupId, productId, quantity } })
+      }
     }
   } catch (err) {
     res.status(500).json({

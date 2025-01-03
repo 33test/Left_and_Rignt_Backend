@@ -115,11 +115,14 @@ model orders_imformation {
 }
 
 model reviews_table {
-  product_id   Int     @id @unique(map: "commentId_UNIQUE") @default(autoincrement())
-  user_id      String  @unique(map: "userId_UNIQUE") @db.VarChar(255)
+  id           Int     @id @default(autoincrement())
+  product_id   Int
+  user_id      String  @db.VarChar(255)
   sku          Int?
   comment      String? @db.Text
   comment_time Int?
+  username     String? @db.VarChar(50)
+  purchase_id  String? @db.VarChar(50)
 }
 
 model users {
@@ -157,6 +160,7 @@ model wishlists {
   id                    Int      @id @default(autoincrement())
   wishlists_members_id  String   @db.VarChar(50)
   wishlists_products_id Int
+  wishlists_specs       Int?
   products              products @relation(fields: [wishlists_products_id], references: [product_id], onDelete: Cascade, map: "fk_wishlists_products")
   users                 users    @relation(fields: [wishlists_members_id], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_wishlists_users")
 
@@ -171,8 +175,7 @@ model customer_info {
   cuPhone Int?
   gender  String? @db.VarChar(1)
   UserID  String? @db.VarChar(50)
-
-  @@ignore
+  temp_id Int     @id @default(autoincrement())
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -185,8 +188,7 @@ model deliver_pro_info {
   site       String? @db.VarChar(50)
   userID     String? @db.VarChar(50)
   delivrID   String? @db.VarChar(50)
-
-  @@ignore
+  temp_id    Int     @id @default(autoincrement())
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -196,8 +198,7 @@ model pay_info_table {
   efficentDate DateTime? @db.Date
   securityCode Int?
   PayID        String?   @db.VarChar(50)
-
-  @@ignore
+  temp_id      Int       @id @default(autoincrement())
 }
 
 model purchase_order {
@@ -218,8 +219,7 @@ model purchase_product {
   user_id    String? @db.VarChar(50)
   product_id String? @db.VarChar(50)
   quantity   Int?
-
-  @@ignore
+  temp_id    Int     @id @default(autoincrement())
 }
 
 model shared_cart_users {
@@ -255,6 +255,7 @@ model rates {
   id               Int       @id @unique(map: "id_UNIQUE") @default(autoincrement())
   currency         String    @unique(map: "currency_UNIQUE") @db.VarChar(45)
   rate             Decimal?  @db.Decimal(10, 5)
+  symbol           String?   @db.VarChar(45)
   latestUpdateTime DateTime? @default(now()) @db.DateTime(0)
 }
 

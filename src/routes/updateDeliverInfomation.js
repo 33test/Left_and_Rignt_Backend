@@ -4,17 +4,9 @@ import prisma from "../configs/prisma.js"
 const router = express.Router()
 
 router.put("/updateDeliverInfo", async (req, res) => {
-  const {
-    uid,
-    phone,
-    recipient,
-    recipient_phone,
-    country,
-    city,
-    region,
-    address,
-  } = req.body
-
+  const { uid, phone, recipient, recipient_phone, country, city, region } =
+    req.body
+  console.log("接收到的資料:", req.body)
   const updateData = {}
 
   if (!phone) {
@@ -24,6 +16,8 @@ router.put("/updateDeliverInfo", async (req, res) => {
   }
   if (!recipient) {
     updateData.recipient = null
+  } else {
+    updateData.recipient = recipient
   }
   if (!recipient_phone) {
     updateData.recipient_phone = null
@@ -32,15 +26,18 @@ router.put("/updateDeliverInfo", async (req, res) => {
   }
   if (!country) {
     updateData.country = null
+  } else {
+    updateData.country = country
   }
   if (!city) {
     updateData.city = null
+  } else {
+    updateData.city = city
   }
   if (!region) {
     updateData.region = null
-  }
-  if (!address) {
-    updateData.address = null
+  } else {
+    updateData.region = region
   }
 
   try {

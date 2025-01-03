@@ -40,7 +40,6 @@ router.get("/getDeliverInfo", async (req, res) => {
           country: null,
           city: null,
           region: null,
-          address: null,
         },
       })
 

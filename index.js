@@ -5,6 +5,8 @@ import cors from "cors"
 import path from "path"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
+import http from "http"
+import { WebSocketServer, WebSocket } from "ws"
 import productsRouter from "./src/routes/productsList.js"
 import registerLoginRouter from "./src/routes/registerLogin.js"
 import productDetailRouter from "./src/routes/productDetail.js"
@@ -16,13 +18,11 @@ import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
 import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
-import memberInformationRouter from "./src/routes/memberInformation.js"
-import updateUserInformation from "./src/routes/updateUserInformation.js"
-import deliverInfoRouter from "./src/routes/deliverInfo.js"
-import updateDeliverInfo from "./src/routes/updateDeliverInfomation.js"
 
+import orderRouter from "./src/routes/order.js"
+import commentRouter from "./src/routes/productComment.js"
+import wishlistRouter from "./src/routes/wishlists.js"
 const app = express()
-const allowedOrigins = process.env.CORS_ALLOW_HOST.split(",")
 
 app.use(
   cors({
@@ -50,11 +50,9 @@ app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
-app.use("/", memberInformationRouter)
-app.use("/", updateUserInformation)
-app.use("/", deliverInfoRouter)
-app.use("/", updateDeliverInfo)
+
 const PORT = 3300
-app.listen(PORT, () => {
+// 改用 server.listen
+server.listen(PORT, () => {
   console.log(`server running on port ${PORT}`)
 })
