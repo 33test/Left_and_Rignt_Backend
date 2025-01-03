@@ -74,14 +74,14 @@ model products {
 }
 
 model deliver {
-  id                 Int                  @id
+  id                 Int                  @id @default(autoincrement())
   phone              String?              @db.VarChar(20)
-  recepient          String               @db.VarChar(50)
-  recepient_phone    String               @db.VarChar(20)
-  country            String               @db.VarChar(100)
-  city               String               @db.VarChar(100)
-  region             String               @db.VarChar(100)
-  address            String               @db.Text
+  recipient          String?              @db.VarChar(20)
+  recipient_phone    String?              @db.VarChar(20)
+  country            String?              @db.VarChar(100)
+  city               String?              @db.VarChar(100)
+  region             String?              @db.VarChar(100)
+  address            String?              @db.VarChar(100)
   owner              String               @db.VarChar(50)
   users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_deliver_owner_userId")
   orders_imformation orders_imformation[]
@@ -168,19 +168,6 @@ model wishlists {
   @@index([wishlists_members_id], map: "fk_wishlists_users_idx")
 }
 
-model credit_card {
-  id                 Int                  @id
-  card_number        String               @db.VarChar(16)
-  owner_name         String               @db.VarChar(50)
-  expiration_date    String               @db.VarChar(6)
-  security_code      String               @db.VarChar(3)
-  owner              String               @db.VarChar(50)
-  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_creditCard_owner_userId")
-  orders_imformation orders_imformation[]
-
-  @@index([owner], map: "userId_idx")
-}
-
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model customer_info {
   cuID    String? @db.VarChar(50)
@@ -189,6 +176,8 @@ model customer_info {
   gender  String? @db.VarChar(1)
   UserID  String? @db.VarChar(50)
   temp_id Int     @id @default(autoincrement())
+
+  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -202,6 +191,8 @@ model deliver_pro_info {
   userID     String? @db.VarChar(50)
   delivrID   String? @db.VarChar(50)
   temp_id    Int     @id @default(autoincrement())
+
+  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -212,6 +203,8 @@ model pay_info_table {
   securityCode Int?
   PayID        String?   @db.VarChar(50)
   temp_id      Int       @id @default(autoincrement())
+
+  @@ignore
 }
 
 model purchase_order {
@@ -233,6 +226,8 @@ model purchase_product {
   product_id String? @db.VarChar(50)
   quantity   Int?
   temp_id    Int     @id @default(autoincrement())
+
+  @@ignore
 }
 
 model shared_cart_users {
@@ -270,6 +265,19 @@ model rates {
   rate             Decimal?  @db.Decimal(10, 5)
   symbol           String?   @db.VarChar(45)
   latestUpdateTime DateTime? @default(now()) @db.DateTime(0)
+}
+
+model credit_card {
+  id                 Int                  @id
+  card_number        String               @db.VarChar(16)
+  owner_name         String               @db.VarChar(50)
+  expiration_date    String               @db.VarChar(6)
+  security_code      String               @db.VarChar(3)
+  owner              String               @db.VarChar(50)
+  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_creditCard_owner_userId")
+  orders_imformation orders_imformation[]
+
+  @@index([owner], map: "userId_idx")
 }
 
 enum orders_imformation_orders_status {
