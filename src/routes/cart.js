@@ -12,7 +12,7 @@ router.get("/cartQuery", (req, res) => {
       console.error("查詢失敗:", err) // 檢查錯誤內容
       res.status(500).send("伺服器錯誤")
     } else if (!results || results.length === 0) {
-      // 購物車沒有商品傳陣列
+      // 購物車沒有商品傳空陣列
       res.json([])
     } else {
       res.json(results)
