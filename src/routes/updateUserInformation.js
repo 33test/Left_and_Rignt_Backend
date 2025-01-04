@@ -14,8 +14,6 @@ router.put("/updateInformation", async (req, res) => {
     introduced_by,
   } = req.body
 
-  console.log("接收到的資料:", req.body)
-
   // 構建一個空的更新資料對象
   const updateData = {}
   // 定義 email 的正則表達式
@@ -70,8 +68,6 @@ router.put("/updateInformation", async (req, res) => {
   } else {
     updateData.introduced_by = introduced_by
   }
-
-  console.log("更新資料:", updateData)
 
   try {
     const user = await prisma.users.update({

@@ -47,7 +47,7 @@ router.get("/getDeliverInfo", async (req, res) => {
       deliveryInfo = [newDeliver]
     }
 
-    return res.json(deliveryInfo) // 返回 deliver 資料表中的紀錄
+    return res.json(deliveryInfo)
   } catch (err) {
     console.error("查詢或插入失敗:", err)
     return res.status(500).send("伺服器錯誤")

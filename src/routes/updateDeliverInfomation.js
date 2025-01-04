@@ -6,7 +6,6 @@ const router = express.Router()
 router.put("/updateDeliverInfo", async (req, res) => {
   const { uid, phone, recipient, recipient_phone, country, city, region } =
     req.body
-  console.log("接收到的資料:", req.body)
   const updateData = {}
 
   if (!phone) {
