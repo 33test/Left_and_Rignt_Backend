@@ -6,8 +6,8 @@ import ECPay from "ecpay-payment" // 綠界金流 SDK
 const router = express.Router()
 
 router.post("/orderInsert", (req, res) => {
-  const { customerInfo, orderNote, deliveryInfo, amount } = req.body
-  const userID = "10001"
+  const { customerInfo, orderNote, deliveryInfo, DeliverySite, DeliveryWay, payWay, isSharedCart, groupId } = req.body
+  const userID = req.headers.userid
 
   // 生成 UUID
   const deID = uuidv4()
@@ -103,7 +103,7 @@ router.post("/orderInsert", (req, res) => {
 
                     // 插入訂單資料
                     const orInsertQuery = `INSERT INTO purchase_order(purchaseID, puID, DeliveryWay, DeliverySite, payWay, note, cuID, DeliverID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-                    db.query(orInsertQuery, [orID, uuidv4(), "宅配", "台灣", "貨到付款", orderNote, cuID, deID], (err) => {
+                    db.query(orInsertQuery, [orID, uuidv4(), DeliveryWay, DeliverySite, payWay, orderNote, cuID, deID], (err) => {
                       if (err) {
                         return db.rollback(() => {
                           console.error("訂單資料插入錯誤:", err.message)
@@ -112,10 +112,6 @@ router.post("/orderInsert", (req, res) => {
                       }
 
                       // 插入訂單完成後，處理綠界支付
-
-                      // const totalAmount = cartResults.reduce((sum, item) => sum + item.price * item.quantity, 0);
-                      //console.log(totalAmount);21
-
                       const baseParams = {
                         MerchantTradeNo: orID, // 訂單編號 (需唯一)
                         MerchantTradeDate: new Date()
@@ -131,14 +127,10 @@ router.post("/orderInsert", (req, res) => {
                           .replace(/\//g, "/"), // 格式: YYYY/MM/DD HH:mm:ss
                         TotalAmount: "1000", // 要改成計算總金額
                         TradeDesc: "購物網站商品訂購", // 訂單描述
-                        // ItemName: itemNames,
-                        ItemName: "XX商城商品一批X1#123",
-                        ReturnURL: "https://localhost:5173/Debit", // 支付結果通知 URL
-                        OrderResultURL: "https://localhost:5173/Debit", // 訂單完成通知 URL
-                        ClientBackURL: "https://left-and-right-accessory.up.railway.app/",
-                        // PaymentType: 'aio',
-                        // ChoosePayment: 'ALL',
-                        // EncryptType: 1,
+                        ItemName: "XX商城商品一批X1#123", // 綠界金流建議不要改，容易在測試環境中出錯，故寫死
+                        ReturnURL: `${process.env.CORS_ALLOW_HOST}/Debit`, // 支付結果通知 URL
+                        OrderResultURL: `${process.env.CORS_ALLOW_HOST}/Debit`, // 訂單完成通知 URL
+                        ClientBackURL: `${process.env.CORS_ALLOW_HOST}/MemberOrder`, // 返回商店網址
                       }
 
                       let ecpay = new ECPay({
