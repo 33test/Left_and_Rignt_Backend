@@ -184,11 +184,15 @@ router.post("/orderInsert", async (req, res) => {
       // 創建訂單
       await createOrder({ orID, DeliveryWay, DeliverySite, payWay, orderNote, cuID, deID })
 
-      // 生成支付連結
-      const paymentForm = createECPayment(orID)
+      if (payWay !== "貨到付款") {
+        // 生成支付連結
+        const paymentForm = createECPayment(orID)
 
-      // 回傳支付連結 HTML
-      res.status(200).send(paymentForm)
+        // 回傳支付連結 HTML
+        res.status(200).send(paymentForm)
+      } else {
+        res.status(200).json({ message: "訂單建立成功" })
+      }
     })
   } catch (error) {
     console.error("訂單處理錯誤:", error)
