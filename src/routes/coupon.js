@@ -16,12 +16,10 @@ router.get("/", async (_req, res) => {
 // 取得單一優惠券
 router.get("/user/:user_id", async (req, res) => {
 	const { user_id } = req.params
-	console.log("Received ID:", user_id)
 	try {
 		const discount = await prisma.discount_2.findMany({
 			where: { user_id: user_id },
 		})
-		console.log("Database query result:", discount) // 输出查询结果
 
 		if (!discount) {
 			return res.status(404).send("沒有找到資料")
@@ -36,7 +34,7 @@ router.get("/user/:user_id", async (req, res) => {
 // 新增優惠券
 router.post("/:user_id", async (req, res) => {
 	const { name, minSpend, discountAmount, startDate, endDate } = req.body
-	const userId = req.params.user_id // 直接從路由參數中獲取 userId
+	const userId = req.params.user_id
 
 	// 檢查是否所有必要的字都提供
 	if (!userId || !name || minSpend === undefined || discountAmount === undefined || !startDate || !endDate) {
@@ -71,7 +69,7 @@ router.post("/:user_id", async (req, res) => {
 		})
 
 		if (existingDiscount) {
-			return res.status(409).send("優惠券名稱已存在") // 返回 409 表示冲突
+			return res.status(409).send("優惠券名稱已存在")
 		}
 
 		const newDiscount = await prisma.discount_2.create({
@@ -88,31 +86,6 @@ router.post("/:user_id", async (req, res) => {
 	} catch (error) {
 		console.error("新增失敗:", error.message)
 		res.status(500).send("伺服器錯誤")
-	}
-})
-
-// 通過優惠券代碼查詢優惠券
-router.post("/coupon/code-to-id", async (req, res) => {
-	const { code } = req.body
-
-	if (!code) {
-		return res.status(400).json({ message: "請提供優惠券代碼" })
-	}
-
-	try {
-		// 通過優惠券代碼查詢優惠券
-		const coupon = await prisma.discount_2.findUnique({
-			where: { CODE: code },
-		})
-
-		if (!coupon) {
-			return res.status(404).json({ message: "優惠券不存在" })
-		}
-
-		res.json({ id: coupon.id }) // 回傳對應的 ID
-	} catch (error) {
-		console.error("查詢優惠券失敗:", error.message)
-		res.status(500).json({ message: "伺服器錯誤" })
 	}
 })
 
