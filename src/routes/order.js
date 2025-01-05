@@ -1,7 +1,6 @@
 import express from "express"
 import prisma from "../configs/prisma.js"
 const router = express.Router()
-const API_URL = process.env.API_URL
 
 // 查詢訂單詳情 API
 router.get("/details/:purchaseID", async (req, res) => {
@@ -11,7 +10,7 @@ router.get("/details/:purchaseID", async (req, res) => {
 		// 1. 查詢訂單資訊
 		const orderInfo = await prisma.purchase_order.findMany({
 			where: { purchaseID },
-			select: { purchaseID: true , puID: true  },
+			select: { purchaseID: true , cuID: true,DeliverID: true,DeliveryWay:true , DeliverySite:true,payWay:true },
 		})
 
 		if (!orderInfo) {
@@ -19,14 +18,14 @@ router.get("/details/:purchaseID", async (req, res) => {
 		}
 
 		// 2. 查詢顧客資訊
-		const customerInfo = await prisma.customer_info.findFirst({
-			where: { cuID: orderInfo.cuID },
+		const customerInfo = await prisma.customer_info.findMany({
+			where: { cuID: orderInfo[0]?.cuID },
 			select: { cuName: true, cuPhone: true, gender: true },
 		})
 
 		// 3. 查詢送貨資訊
 		const deliveryInfo = await prisma.deliver_pro_info.findFirst({
-			where: { delivrID: orderInfo.DeliverID },
+			where: { delivrID: orderInfo[0]?.DeliverID },
 			select: { acName: true, acPhone: true, addr: true, city: true },
 		})
 
@@ -42,7 +41,7 @@ router.get("/details/:purchaseID", async (req, res) => {
 			select: { product_id: true, quantity: true },
 		})
 
-		// 6. 查詢每個商品的詳細信息（包含名稱、價格）
+		// 6. 查詢每個商品的品名和價格
 		const productInfo = await Promise.all(
 			products.map(async (product) => {
 				const productDetails = await prisma.products.findUnique({
@@ -101,9 +100,9 @@ router.get("/:userId", async (req, res) => {
 		})
 
 		if (!orders || orders.length === 0) {
-			return res.status(404).json({
-				status: "Error",
-				message: "該用戶沒有訂單",
+			return res.status(200).json({
+				status: "success",
+				message: "該用戶目前沒有訂單",
 			})
 		}
 

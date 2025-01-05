@@ -90,10 +90,10 @@ router.get("/reviews/:productId", async (req, res) => {
 				sku: true,
 			},
 		})
-
+		//判斷有沒有被評論過，memberOrder裡面有用到
 		if (!reviews || reviews.length === 0) {
-			return res.status(404).json({
-				status: "Error",
+			return res.status(200).json({
+				status: "success",
 				message: "該商品目前沒有評論",
 			})
 		}

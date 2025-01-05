@@ -90,12 +90,6 @@ router.get('/:memberId', async (req, res) => {
             },
         });
 
-        if (wishlists.length === 0) {
-            return res.status(404).json({
-                status: "Error",
-                message: "該會員的願望清單為空",
-            });
-        }
 
         res.status(200).json({
             status: "Success",
