@@ -1,7 +1,7 @@
 import express from "express"
 import prisma from "../configs/prisma.js"
 const router = express.Router()
-//打資料
+// 打資料
 router.post('/', async (req, res) => {
     const { wishlists_members_id, wishlists_products_id } = req.body;
 
@@ -11,7 +11,7 @@ router.post('/', async (req, res) => {
             message: "wishlists_members_id 和 wishlists_products_id 是必填的",
         });
     }
-
+    // 到users表找確定有這個user
     try {
         
         const memberExists = await prisma.users.findUnique({
@@ -23,8 +23,7 @@ router.post('/', async (req, res) => {
                 message: "沒這個user",
             });
         }
-
-       
+        // 到products表找確定有這個product       
         const productExists = await prisma.products.findUnique({
             where: { product_id: wishlists_products_id },
         });
@@ -35,7 +34,7 @@ router.post('/', async (req, res) => {
             });
         }
 
-        //打資料進去
+        // 打資料進去
         const newWishlist = await prisma.wishlists.create({
             data: {
                 wishlists_members_id,
@@ -56,7 +55,7 @@ router.post('/', async (req, res) => {
         });
     }
 });
-//拿資料
+// 拿資料
 router.get('/:memberId', async (req, res) => {
     const memberId = req.params.memberId;
 
@@ -64,6 +63,7 @@ router.get('/:memberId', async (req, res) => {
         // 查詢該會員的願望清單
         const wishlists = await prisma.wishlists.findMany({
             where: { wishlists_members_id: memberId },
+            // 因為這邊有綁FK所以可以用include
             include: {
                 products: {
                     select: {
@@ -103,7 +103,7 @@ router.get('/:memberId', async (req, res) => {
         });
     }
 });
-//刪除
+// 刪除
 router.delete('/delete/:id', async (req, res) => {
     const { id } = req.params;
 

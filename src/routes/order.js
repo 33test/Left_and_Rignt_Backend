@@ -60,8 +60,8 @@ router.get("/details/:purchaseID", async (req, res) => {
 				})
 
 				return {
-					product_id: product.product_id,
-					quantity: product.quantity,
+					product_id: product?.product_id || null,
+					quantity: product?.quantity || null,
 					product_name: productDetails?.product_name || null,
 					original_price: productDetails?.original_price || null,
 					sale_price: productDetails?.sale_price || null,
@@ -86,7 +86,7 @@ router.get("/details/:purchaseID", async (req, res) => {
 		})
 	}
 })
-//在MemberOrder裡面渲染訂單
+// 在MemberOrder裡面渲染訂單
 router.get("/:userId", async (req, res) => {
 	const { userId } = req.params
 
@@ -95,7 +95,7 @@ router.get("/:userId", async (req, res) => {
 			distinct: ["pu_id"],
 			where: { user_id: userId },
 			orderBy: {
-				temp_id: "desc", //新的訂單會在上面，用temp_id去排列
+				temp_id: "desc", // 新的訂單會在上面，用temp_id去排列
 			},
 			select: {
 				pu_id: true,
@@ -122,5 +122,39 @@ router.get("/:userId", async (req, res) => {
 		})
 	}
 })
+router.get("/isReviewed/:purchaseId", async (req, res) => {
+	const { purchaseId } = req.params;
+
+	try {
+		// 查詢這個訂單有沒有在 reviews_table 裡，有的話就是評論過了
+		const reviewExists = await prisma.reviews_table.findFirst({
+			where: { purchase_id: purchaseId }, // 根據 purchase_id 查詢
+			select: { id: true }, // 用布林值判斷
+		});
+
+		// 判斷是否有記錄
+		if (reviewExists) {
+			return res.status(200).json({
+				status: "Success",
+				message: "該訂單已被評論",
+				isReviewed: true, // 回傳已評論
+			});
+		} else {
+			return res.status(200).json({
+				status: "Success",
+				message: "該訂單尚未被評論",
+				isReviewed: false, // 回傳未評論
+			});
+		}
+	} catch (error) {
+		console.error("Database Error:", error);
+		res.status(500).json({
+			status: "Error",
+			message: "無法檢查訂單的評論狀態，請檢查伺服器日誌。",
+			error: error.message,
+		});
+	}
+});
+
 
 export default router

@@ -21,12 +21,11 @@ router.get("/info/:purchaseID", async (req, res) => {
 				message: "該訂單不存在或沒有相關商品",
 			})
 		}
-
-		//有找到的話存起來
+		// 要考慮到一個訂單會有多個商品，所以要把所有商品ID都抓出來
 		const userId = purchaseProducts[0].user_id
 		const productIds = purchaseProducts.map((item) => parseInt(item.product_id, 10))
 
-		//再用userID去找username
+		// 再用userID去找username，這是要丟給review這個component用的
 		const user = await prisma.users.findUnique({
 			where: { userId: userId },
 			select: { username: true },
@@ -41,7 +40,7 @@ router.get("/info/:purchaseID", async (req, res) => {
 
 		// 去 products 表找商品資訊然後丟給前端渲染
 		const products = await prisma.products.findMany({
-			where: { product_id: { in: productIds } }, //訂單編號裡面有的商品ID去抓他的商品資訊
+			where: { product_id: { in: productIds } }, // 訂單編號裡面有的商品ID去抓他的商品資訊
 			select: {
 				product_id: true,
 				product_name: true,
@@ -75,7 +74,7 @@ router.get("/info/:purchaseID", async (req, res) => {
 		})
 	}
 })
-//這邊是component的reviews頁面用的
+// 這邊是component的reviews頁面用的
 router.get("/reviews/:productId", async (req, res) => {
 	const { productId } = req.params
 
@@ -90,7 +89,7 @@ router.get("/reviews/:productId", async (req, res) => {
 				sku: true,
 			},
 		})
-		//判斷有沒有被評論過，memberOrder裡面有用到
+		// 判斷有沒有被評論過，memberOrder裡面有用到
 		if (!reviews || reviews.length === 0) {
 			return res.status(200).json({
 				status: "success",
@@ -112,7 +111,7 @@ router.get("/reviews/:productId", async (req, res) => {
 		})
 	}
 })
-//發布評論的post方法
+// 發布評論的post方法
 router.post("/addcomment", async (req, res) => {
 	const { purchase_id, product_id, comment, user_id, username, sku } = req.body
 
@@ -125,11 +124,10 @@ router.post("/addcomment", async (req, res) => {
 	}
 
 	try {
-		// 創建評論到資料庫中，確保評論與商品關聯
 		const newReview = await prisma.reviews_table.create({
 			data: {
 				purchase_id: purchase_id,
-				product_id: parseInt(product_id, 10), // 確保是數字型別
+				product_id: parseInt(product_id, 10), 
 				user_id: user_id,
 				comment: comment,
 				comment_time: Math.floor(Date.now() / 1000),
