@@ -94,6 +94,9 @@ router.get("/:userId", async (req, res) => {
 		const orders = await prisma.purchase_product.findMany({
 			distinct: ["pu_id"],
 			where: { user_id: userId },
+			orderBy: {
+				temp_id: "desc", //新的訂單會在上面，用temp_id去排列
+			},
 			select: {
 				pu_id: true,
 			},
