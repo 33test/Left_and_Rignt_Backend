@@ -18,9 +18,15 @@ import sharedCart from "./src/routes/sharedCart.js"
 import exchangeRate from "./src/routes/exchangeRate.js"
 import searchRouter from "./src/routes/search.js"
 import categoryRouter from "./src/routes/category.js"
+import sendMail from "./src/routes/sendMail.js"
+
 import orderRouter from "./src/routes/order.js"
 import commentRouter from "./src/routes/productComment.js"
 import wishlistRouter from "./src/routes/wishlists.js"
+import memberInformationRouter from "./src/routes/memberInformation.js"
+import updateUserInformation from "./src/routes/updateUserInformation.js"
+import deliverInfoRouter from "./src/routes/deliverInfo.js"
+import updateDeliverInfo from "./src/routes/updateDeliverInfomation.js"
 const app = express()
 // 修改 server 設定，不直接用 app.listen(自己創建 HTTP server)
 const server = http.createServer(app)
@@ -47,9 +53,14 @@ app.use("/", sharedCart)
 app.use("/exchangeRate", exchangeRate)
 app.use("/search", searchRouter)
 app.use("/sidebarCategory", categoryRouter)
+app.use("/sendmail", sendMail)
 app.use("/wishlist", wishlistRouter)
 app.use("/order", orderRouter)
 app.use("/comment", commentRouter)
+app.use("/", memberInformationRouter)
+app.use("/", updateUserInformation)
+app.use("/", deliverInfoRouter)
+app.use("/", updateDeliverInfo)
 
 // WebSocket 連接處理
 wss.on("connection", (ws) => {

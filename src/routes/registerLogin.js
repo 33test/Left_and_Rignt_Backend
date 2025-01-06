@@ -62,15 +62,18 @@ router.post("/find", async (req, res) => {
 
 // zod 定義註冊 schema
 const registerSchema = z.object({
-  username: z.string().min(3, "使用者名稱至少需要三個字").max(20, "使用者名稱不能超過20個字元"),
-
-  // .regex(/[A-Z]/, '密碼必須包含至少一個大寫英文字母'),
+  username: z.string().max(20, "使用者名稱不能超過20個字元"),
   email: z.string().email("請輸入正確的email"),
   gender: z.enum(["m", "f", "o"], {
     errorMap: () => ({ message: "請選擇有效性別" }),
   }),
   password: z.string().min(8, "密碼至少需要8個字元"),
-  // phone_number: z.string().regex(/^09\d{2}-?\d{3}-?\d{3}$/),
+  birthday: z
+    .string()
+    .refine((dateStr) => !isNaN(new Date(dateStr).getTime()), {
+      message: "請輸入有效的生日日期",
+    })
+    .transform((dateStr) => new Date(dateStr)),
 })
 
 //驗證註冊 middleware
@@ -94,10 +97,11 @@ const validateRegister = (req, res, next) => {
 //註冊
 router.post("/register", validateRegister, async (req, res) => {
   try {
-    const { username, email, password, gender } = req.body
+    const { username, email, password, gender, birthday } = req.body
     const hashPassword = await bcrypt.hash(password, 10) //密碼加密處理
-
     const newUserId = uuidv4()
+    const birthdayDate = new Date(birthday).toISOString()
+
     const existingUser = await prisma.users.findUnique({ where: { email } })
     if (existingUser) {
       return res.status(409).json({
@@ -111,6 +115,7 @@ router.post("/register", validateRegister, async (req, res) => {
           email,
           password_hash: hashPassword,
           gender,
+          birthday: birthdayDate,
         },
       })
       const token = jwt.sign(
