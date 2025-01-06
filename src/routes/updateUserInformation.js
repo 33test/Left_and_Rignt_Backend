@@ -4,7 +4,6 @@ const router = express.Router()
 
 router.put("/updateInformation", async (req, res) => {
   const {
-    uid,
     username,
     email,
     phone,
@@ -13,7 +12,7 @@ router.put("/updateInformation", async (req, res) => {
     mobile_phone,
     introduced_by,
   } = req.body
-
+  const uid = req.headers.uid
   // 構建一個空的更新資料對象
   const updateData = {}
   // 定義 email 的正則表達式
@@ -72,11 +71,11 @@ router.put("/updateInformation", async (req, res) => {
   try {
     const user = await prisma.users.update({
       where: {
-        userId: uid, // 使用 uid 查找用戶
+        userId: uid,
       },
-      data: updateData, // 傳遞更新的資料
+      data: updateData,
     })
-    return res.json(user) // 返回更新後的資料
+    return res.json(user)
   } catch (err) {
     console.error("更新失敗:", err)
     return res.status(500).send("伺服器錯誤")

@@ -4,8 +4,8 @@ import prisma from "../configs/prisma.js"
 const router = express.Router()
 
 router.put("/updateDeliverInfo", async (req, res) => {
-  const { uid, phone, recipient, recipient_phone, country, city, region } =
-    req.body
+  const { phone, recipient, recipient_phone, country, city, region } = req.body
+  const { uid } = req.headers
   const updateData = {}
 
   if (!phone) {

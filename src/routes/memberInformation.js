@@ -3,7 +3,7 @@ import prisma from "../configs/prisma.js"
 const router = express.Router()
 
 router.get("/memberInformation", async (req, res) => {
-  const { uid } = req.query
+  const { uid } = req.headers
 
   try {
     const user = await prisma.users.findUnique({

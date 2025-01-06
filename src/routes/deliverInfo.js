@@ -4,7 +4,7 @@ import prisma from "../configs/prisma.js"
 const router = express.Router()
 
 router.get("/getDeliverInfo", async (req, res) => {
-  const { uid } = req.query // 從查詢參數中取得 UID
+  const { uid } = req.headers
 
   try {
     // 根據 UID 查詢 users 資料表中的 userId
