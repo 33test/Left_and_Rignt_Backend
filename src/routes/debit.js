@@ -61,14 +61,14 @@ const createOrder = async (orderData) => {
 }
 
 // 處理購物車商品插入的方法
-const insertPurchaseProducts = async (cartResults, userID) => {
+const insertPurchaseProducts = async (cartResults, userID, orID) => {
   if (cartResults.length === 0) {
     throw new Error("購物車為空")
   }
 
   const puInsertQuery = `INSERT INTO purchase_product(pu_id, user_id, product_id, quantity) VALUES (?, ?, ?, ?)`
 
-  const insertPromises = cartResults.map((cartItem) => queryDatabase(puInsertQuery, [uuidv4(), userID, cartItem.product_id, cartItem.quantity]))
+  const insertPromises = cartResults.map((cartItem) => queryDatabase(puInsertQuery, [orID, userID, cartItem.product_id, cartItem.quantity]))
 
   await Promise.all(insertPromises)
 }
@@ -172,7 +172,7 @@ router.post("/orderInsert", async (req, res) => {
       }
 
       // 插入購買產品資料
-      await insertPurchaseProducts(cartResults, userID)
+      await insertPurchaseProducts(cartResults, userID , orID)
 
       // 清空購物車
       if (isSharedCart) {
