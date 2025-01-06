@@ -1,5 +1,5 @@
 import express from "express"
-import prisma from "../configs/prisma.js" // 使用 Prisma 作為資料庫 ORM
+import prisma from "../configs/prisma.js"
 const router = express.Router()
 
 router.put("/updateInformation", async (req, res) => {

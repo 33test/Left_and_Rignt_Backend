@@ -42,7 +42,7 @@ router.put("/updateDeliverInfo", async (req, res) => {
   try {
     // 直接使用 uid 查詢 deliver 表中的紀錄
     const existingDeliverInfo = await prisma.deliver.findFirst({
-      where: { owner: uid }, // 假設 deliver.owner 存的是 uid
+      where: { owner: uid },
     })
 
     if (!existingDeliverInfo) {
