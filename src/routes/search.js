@@ -25,7 +25,6 @@ router.get("/", async (req, res) => {
     })
 
     if (results.length === 0) {
-      console.log("查詢結果為空")
       return res.status(200).json({ message: "查無資料", data: [] })
     }
 
