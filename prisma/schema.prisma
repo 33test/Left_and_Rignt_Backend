@@ -47,14 +47,14 @@ model customer_info {
 }
 
 model deliver {
-  id                 Int                  @id @default(autoincrement())
+  id                 Int                  @id
   phone              String?              @db.VarChar(20)
-  recipient          String?              @db.VarChar(20)
-  recipient_phone    String?              @db.VarChar(20)
-  country            String?              @db.VarChar(100)
-  city               String?              @db.VarChar(100)
-  region             String?              @db.VarChar(100)
-  address            String?              @db.VarChar(100)
+  recepient          String               @db.VarChar(50)
+  recepient_phone    String               @db.VarChar(20)
+  country            String               @db.VarChar(100)
+  city               String               @db.VarChar(100)
+  region             String               @db.VarChar(100)
+  address            String               @db.Text
   owner              String               @db.VarChar(50)
   users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_owner_userId")
   orders_imformation orders_imformation[]
@@ -76,10 +76,17 @@ model deliver_pro_info {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model discount {
-  discount_id String  @db.VarChar(50)
-  dicription  String? @db.Text
-
-  @@ignore
+  user_id         String    @db.VarChar(255)
+  name            String    @db.VarChar(255)
+  min_spend       Decimal   @db.Decimal(10, 2)
+  discount_amount Decimal   @db.Decimal(10, 2)
+  start_date      DateTime  @db.DateTime(0)
+  end_date        DateTime  @db.DateTime(0)
+  id              Int       @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  status          String?   @db.VarChar(255)
+  claimed         Boolean   @default(false)
+  claimedAt       DateTime? @db.DateTime(0)
+  CODE            String?   @db.VarChar(45)
 }
 
 model orders_imformation {
