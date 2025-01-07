@@ -46,7 +46,6 @@ router.post("/cartInsert", (req, res) => {
 
           res.status(500).json("伺服器錯誤", err)
         } else {
-          console.log("更新成功:", updateResults)
           res.status(200).send("數量更新成功")
         }
       })
@@ -58,7 +57,6 @@ router.post("/cartInsert", (req, res) => {
           console.error("新增失敗:", err)
           res.status(500).send("伺服器錯誤", err)
         } else {
-          console.log("新增成功:", insertResults)
           res.status(201).send("新增成功")
         }
       })
@@ -100,8 +98,6 @@ router.put("/update-quantity", (req, res) => {
     }
 
     if (result.affectedRows === 0) {
-      console.log({ id: product_id, userId: userId })
-
       return res.status(404).json({ success: false, message: "找不到該產品", data: { id: product_id, userId: userId } })
     }
 

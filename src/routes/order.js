@@ -38,7 +38,7 @@ router.get("/details/:purchaseID", async (req, res) => {
 		// 5. 查詢商品資訊
 		const products = await prisma.purchase_product.findMany({
 			where: { pu_id: purchaseID },
-			select: { product_id: true, quantity: true },
+			select: { product_id: true, quantity: true , user_id:true },
 		})
 
 		// 6. 查詢每個商品的品名和價格
@@ -66,6 +66,7 @@ router.get("/details/:purchaseID", async (req, res) => {
 					original_price: productDetails?.original_price || null,
 					sale_price: productDetails?.sale_price || null,
 					image_path: image || null,
+					user_id: product.user_id || null
 				}
 			})
 		)
