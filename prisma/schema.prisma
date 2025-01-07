@@ -47,16 +47,16 @@ model customer_info {
 }
 
 model deliver {
-  id                 Int                  @id
   phone              String?              @db.VarChar(20)
-  recepient          String               @db.VarChar(50)
-  recepient_phone    String               @db.VarChar(20)
-  country            String               @db.VarChar(100)
-  city               String               @db.VarChar(100)
-  region             String               @db.VarChar(100)
-  address            String               @db.Text
-  owner              String               @db.VarChar(50)
-  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_owner_userId")
+  recipient          String?              @db.VarChar(50)
+  recipient_phone    String?              @db.VarChar(20)
+  country            String?              @db.VarChar(100)
+  city               String?              @db.VarChar(100)
+  region             String?              @db.VarChar(100)
+  address            String?              @db.Text
+  owner              String?              @db.VarChar(50)
+  id                 Int                  @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  users              users?               @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_deliver_owner_userId")
   orders_imformation orders_imformation[]
 
   @@index([owner], map: "fk_owner_userId_idx")
