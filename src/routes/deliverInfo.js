@@ -8,6 +8,7 @@ router.get("/getDeliverInfo", async (req, res) => {
 
   try {
     // 根據 UID 查詢 users 資料表中的 userId
+
     const user = await prisma.users.findUnique({
       where: {
         userId: uid,
@@ -34,12 +35,6 @@ router.get("/getDeliverInfo", async (req, res) => {
       const newDeliver = await prisma.deliver.create({
         data: {
           owner: user.userId,
-          phone: null, // 預設為 null 或其他默認值
-          recipient: null,
-          recipient_phone: null,
-          country: null,
-          city: null,
-          region: null,
         },
       })
 
