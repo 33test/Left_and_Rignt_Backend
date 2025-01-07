@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "scrape": "nodemon web_scraping.js"
+    "dev": "nodemon index.js"
   },
   "prisma": {
     "seed": "node --experimental-specifier-resolution=node prisma/seeds/index.js"
