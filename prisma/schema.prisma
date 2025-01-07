@@ -47,16 +47,16 @@ model customer_info {
 }
 
 model deliver {
-  id                 Int                  @id @default(autoincrement())
   phone              String?              @db.VarChar(20)
-  recipient          String?              @db.VarChar(20)
+  recipient          String?              @db.VarChar(50)
   recipient_phone    String?              @db.VarChar(20)
   country            String?              @db.VarChar(100)
   city               String?              @db.VarChar(100)
   region             String?              @db.VarChar(100)
-  address            String?              @db.VarChar(100)
-  owner              String               @db.VarChar(50)
-  users              users                @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_owner_userId")
+  address            String?              @db.Text
+  owner              String?              @db.VarChar(50)
+  id                 Int                  @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  users              users?               @relation(fields: [owner], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "fk_deliver_owner_userId")
   orders_imformation orders_imformation[]
 
   @@index([owner], map: "fk_owner_userId_idx")
@@ -74,12 +74,19 @@ model deliver_pro_info {
   temp_id    Int     @id @default(autoincrement())
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model discount {
-  discount_id String  @db.VarChar(50)
-  dicription  String? @db.Text
-
-  @@ignore
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model discount_2 {
+  user_id         String    @db.VarChar(255)
+  name            String    @db.VarChar(255)
+  min_spend       Decimal   @db.Decimal(10, 2)
+  discount_amount Decimal   @db.Decimal(10, 2)
+  start_date      DateTime  @db.DateTime(0)
+  end_date        DateTime  @db.DateTime(0)
+  id              Int       @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  status          String?   @db.VarChar(255)
+  claimed         Boolean   @default(false)
+  claimedAt       DateTime? @db.DateTime(0)
+  CODE            String?   @db.VarChar(45)
 }
 
 model orders_imformation {
