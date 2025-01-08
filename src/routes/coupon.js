@@ -42,12 +42,11 @@ router.post("/:user_id", async (req, res) => {
   }
 
   // 確保數據類型正確
-  const parsedUserId = parseInt(userId)
   const parsedMinSpend = parseFloat(minSpend)
   const parsedDiscountAmount = parseFloat(discountAmount)
 
-  if (isNaN(parsedUserId) || isNaN(parsedMinSpend) || isNaN(parsedDiscountAmount)) {
-    return res.status(400).send("用戶ID、最低消費和折扣金額必須是有效數字")
+  if (isNaN(parsedMinSpend) || isNaN(parsedDiscountAmount)) {
+    return res.status(400).send("最低消費和折扣金額必須是有效數字")
   }
 
   if (parsedMinSpend <= 0 || parsedDiscountAmount <= 0) {
