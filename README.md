@@ -5,33 +5,27 @@
 - [Left & Right 網站](https://left-and-right-accessory.up.railway.app/)
 - [Left & Right 前端專案](https://github.com/groupLR/Left_and_Right.git)
 
+# 致敬
+
+本專案的設計與功能參考了 Bonny & Read 官方網站，純粹作為學習用途，幫助我們提升前端開發與架構設計的能力。特別感謝原網站提供的靈感與參考資料，對我們的設計與學習過程帶來了重要的啟發。
+
+# 版權聲明
+
+圖片版權歸 Bonny & Read 團隊所有，本專案僅作為學習用途，未經授權不得商業使用或再分發。
+
 ## 系統架構
 
-- **框架**：Express.js 4.21.1
-- **資料庫**：MySQL 8.0
-- **ORM**：Prisma 6.0.0
+- **框架**：Express
+- **資料庫**：MySQL
+- **ORM**：Prisma
 - **即時共編**：WebSocket (ws)
 - **身份驗證**：JWT, Google OAuth
-- **主要套件**：
-  - dotenv：環境變數管理
-  - cors：跨域資源共享
-  - axios：HTTP 請求
-  - bcrypt：密碼加密
-  - uuid：唯一識別碼生成
-  - zod：資料驗證
-  - jsonwebtoken：JWT 身份驗證
-  - mysql2：MySQL 驅動程式
-  - node-schedule：排程任務
-  - ws：WebSocket 功能實現
 
 ## 主要功能
 
 - 會員系統（登入、註冊、Google OAuth）
 - 商品管理
-  - 搜尋
-  - 篩選
-  - 排序
-  - 分頁
+  - 搜尋、篩選、排序、分頁
 - 匯率轉換系統
 - 購物車系統
 - 訂單管理
@@ -101,7 +95,7 @@
 - **負責功能**：
   - 導覽列切版
   - 側邊欄功能
-  - 會員資料整合
+  - 會員資料
 
 ### 李沁騰
 
@@ -136,17 +130,7 @@ npm install
 
 3. 環境設定
 
-- 複製 .env.example 為 .env
-- 設定環境變數，以下範例
-
-```markdown
-DATABASE_URL="mysql://user:password@localhost:3306/database_name"
-CORS_ALLOW_HOST=http://localhost:5173
-SECRET_KEYT="your-jwt-secret"
-GOOGLE_CLIENT_ID="your-google-client-id"
-EXCHANGE_RATE_URL=https://v6.exchangerate-api.com/v6/
-WEBSOCKET_PORT=3300 # WebSocket 服務端口
-```
+複製 `.env.example` 檔案為 `.env`，以便為專案設定環境變數
 
 4. 資料庫設定
 
@@ -173,14 +157,3 @@ npm run dev
 ## 授權協議
 
 本專案採用 MIT 授權 - 詳見 LICENSE 檔案
-聯絡方式
-若有任何問題或建議，請聯絡：
-
-## 專案維護者：
-
-- Fang-33
-- Email：33justworkplace@gmail.com
-
-## 致謝
-
-感謝所有團隊成員的貢獻與努力。
